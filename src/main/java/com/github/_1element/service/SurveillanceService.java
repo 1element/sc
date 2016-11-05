@@ -76,9 +76,9 @@ public class SurveillanceService {
 
     // generate thumbnail
     Thumbnails.of(destinationFile)
-            .size(thumbnailWidth, thumbnailHeight)
-            .outputQuality(thumbnailQuality)
-            .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+      .size(thumbnailWidth, thumbnailHeight)
+      .outputQuality(thumbnailQuality)
+      .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
 
     // store image information in database
     SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
@@ -88,9 +88,9 @@ public class SurveillanceService {
   /**
    * Returns page of surveillance images.
    *
-   * @param camera optional camera identifier
-   * @param date optional date
-   * @param isArchive archive flag
+   * @param camera      optional camera identifier
+   * @param date        optional date
+   * @param isArchive   archive flag
    * @param pageRequest page request
    * @return
    */
@@ -123,7 +123,7 @@ public class SurveillanceService {
    * This is only wanted if no date filter is present.
    *
    * @param images page of surveillance images
-   * @param date optional date filter
+   * @param date   optional date filter
    * @return
    */
   public LocalDateTime getMostRecentImageDate(Page<SurveillanceImage> images, Optional<LocalDate> date) {

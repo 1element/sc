@@ -52,7 +52,7 @@ public class SurveillanceController {
   private static final String DEFAULT_CAMERA_DISPLAY_NAME = "alle Kameras";
 
   @RequestMapping(value = {URI_RECORDINGS, URI_RECORDINGS + "/{date}"}, method = RequestMethod.GET)
-  public String recordingsList(@PathVariable @DateTimeFormat(iso=ISO.DATE) Optional<LocalDate> date,
+  public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
                                @RequestParam Optional<String> camera, @RequestParam Optional<Boolean> archive,
                                @RequestParam Optional<Integer> page, Model model, Pageable pageable) throws Exception {
 
@@ -67,9 +67,9 @@ public class SurveillanceController {
     }
 
     PageRequest pageRequest = new PageRequest(
-            zeroBasedPageNumber,
-            pageSize,
-            new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD))
+      zeroBasedPageNumber,
+      pageSize,
+      new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD))
     );
 
     String currentCameraId = null;

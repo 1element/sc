@@ -28,8 +28,8 @@ public class MultiCameraAwareProperties {
   /**
    * Returns property value for given key and camera id. Default value if nothing was found.
    *
-   * @param propertyKey property key
-   * @param cameraId camera identifier
+   * @param propertyKey  property key
+   * @param cameraId     camera identifier
    * @param defaultValue default value
    * @return
    */
@@ -45,7 +45,7 @@ public class MultiCameraAwareProperties {
    * Returns property value for given key and camera id.
    *
    * @param propertyKey property key
-   * @param cameraId camera identifier
+   * @param cameraId    camera identifier
    * @return
    * @throws PropertyNotFoundException
    */
