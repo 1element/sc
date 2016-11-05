@@ -1,0 +1,16 @@
+a.thumbnail:focus,
+a.thumbnail:hover {
+  text-decoration: none;
+}
+
+h1.page-header {
+  font-size: 24px;
+}
+
+.table-sc > tbody > tr:first-child > td {
+  border-top: none;
+}
+
+.progress {
+  margin-bottom: 0;
+}
