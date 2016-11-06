@@ -16,6 +16,8 @@ public class Camera {
 
   private String snapshotUrl;
 
+  private String streamUrl;
+
   public String getId() {
     return id;
   }
@@ -70,6 +72,14 @@ public class Camera {
 
   public void setSnapshotUrl(String snapshotUrl) {
     this.snapshotUrl = snapshotUrl;
+  }
+
+  public String getStreamUrl() {
+    return streamUrl;
+  }
+
+  public void setStreamUrl(String streamUrl) {
+    this.streamUrl = streamUrl;
   }
 
 }

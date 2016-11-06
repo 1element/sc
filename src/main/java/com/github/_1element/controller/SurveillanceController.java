@@ -49,6 +49,8 @@ public class SurveillanceController {
 
   private static final String URI_LIVEVIEW = "/liveview";
 
+  private static final String URI_LIVESTREAM = "/livestream";
+
   private static final String PATH_SEPARATOR = "/";
 
   private static final String SORT_FIELD = "receivedAt";
@@ -152,6 +154,28 @@ public class SurveillanceController {
     model.addAttribute("liveviewAjaxUrl", URI_LIVEVIEW);
 
     return "liveview-single";
+  }
+
+  @RequestMapping(value = {URI_LIVESTREAM}, method = RequestMethod.GET)
+  public String livestream(Model model, HttpServletRequest request) throws Exception {
+    List<Camera> cameras = cameraRepository.findAll();
+
+    model.addAttribute("cameras", cameras);
+    model.addAttribute("livestreamUrl", URI_LIVESTREAM);
+
+    return "livestream";
+  }
+
+  @RequestMapping(value = {URI_LIVESTREAM + "/{cameraId}"}, method = RequestMethod.GET)
+  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
+    Camera camera = surveillanceService.getCamera(cameraId);
+    if (camera == null) {
+      throw new Exception("Camera not found.");
+    }
+
+    model.addAttribute("camera", camera);
+
+    return "livestream-single";
   }
 
 }

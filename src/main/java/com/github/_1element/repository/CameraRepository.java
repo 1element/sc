@@ -44,6 +44,8 @@ public class CameraRepository {
 
   private static final String PROPERTY_SNAPSHOT_URL = PROPERTY_MULTI_CAMERA_PREFIX + "url.snapshot";
 
+  private static final String PROPERTY_STREAM_URL = PROPERTY_MULTI_CAMERA_PREFIX + "url.stream";
+
   private static final String SEPARATOR = ",";
 
   /**
@@ -64,6 +66,7 @@ public class CameraRepository {
       camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
       camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));
       camera.setSnapshotUrl(multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId));
+      camera.setStreamUrl(multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId));
       cameras.put(cameraId, camera);
     }
   }
