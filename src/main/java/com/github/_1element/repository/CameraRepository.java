@@ -5,6 +5,7 @@ import com.github._1element.exception.PropertyNotFoundException;
 import com.github._1element.utils.MultiCameraAwareProperties;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,8 @@ public class CameraRepository {
 
   private static final String PROPERTY_NAME = PROPERTY_MULTI_CAMERA_PREFIX + "name";
 
+  private static final String PROPERTY_ROTATION = PROPERTY_MULTI_CAMERA_PREFIX + "rotation";
+
   private static final String PROPERTY_FTP_USERNAME = PROPERTY_MULTI_CAMERA_PREFIX + "ftp.username";
 
   private static final String PROPERTY_FTP_PASSWORD = PROPERTY_MULTI_CAMERA_PREFIX + "ftp.password";
@@ -56,6 +59,7 @@ public class CameraRepository {
       Camera camera = new Camera();
       camera.setId(cameraId);
       camera.setName(multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId));
+      camera.setRotation(NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION, cameraId, null)));
       camera.setFtpUsername(multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId));
       camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
       camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));

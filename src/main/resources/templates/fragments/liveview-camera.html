@@ -2,7 +2,10 @@
   <div class="row margin-top-s">
     <div class="col-lg-12">
       <div class="thumbnail">
-        <img class="img-responsive" th:src="@{{snapshotUrl}(snapshotUrl=${camera.snapshotUrl},t=${#temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')})}" src="http://placehold.it/150x200"/>
+        <img class="img-responsive"
+             th:attrappend="data-rotate=${camera.rotation != null and camera.rotation gt 0} ? ${camera.rotation}"
+             th:src="@{{snapshotUrl}(snapshotUrl=${camera.snapshotUrl},t=${#temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')})}"
+             src="http://placehold.it/150x200"/>
         <div class="caption">
           <div class="text-center" th:text="${camera.name}">Front door</div>
           <div class="text-center" th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2016-11-06 10:59:33</div>

@@ -6,6 +6,8 @@ public class Camera {
 
   private String name;
 
+  private Integer rotation;
+
   private String ftpUsername;
 
   private String ftpPassword;
@@ -28,6 +30,14 @@ public class Camera {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Integer getRotation() {
+    return rotation;
+  }
+
+  public void setRotation(Integer rotation) {
+    this.rotation = rotation;
   }
 
   public String getFtpUsername() {
