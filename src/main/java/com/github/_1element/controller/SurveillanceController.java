@@ -123,11 +123,15 @@ public class SurveillanceController {
   }
 
   @RequestMapping(value = {URI_LIVEVIEW}, method = RequestMethod.GET)
-  public String liveview(Model model) throws Exception {
+  public String liveview(Model model, HttpServletRequest request) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
     model.addAttribute("cameras", cameras);
     model.addAttribute("liveviewUrl", URI_LIVEVIEW);
+
+    if (RequestUtil.isAjax(request)) {
+      return "fragments/liveview-grid";
+    }
 
     return "liveview";
   }
@@ -146,6 +150,7 @@ public class SurveillanceController {
     }
 
     model.addAttribute("liveviewAjaxUrl", URI_LIVEVIEW);
+
     return "liveview-single";
   }
 
