@@ -12,6 +12,8 @@ public class Camera {
 
   private String ftpIncomingDirectory;
 
+  private String snapshotUrl;
+
   public String getId() {
     return id;
   }
@@ -50,6 +52,14 @@ public class Camera {
 
   public void setFtpIncomingDirectory(String ftpIncomingDirectory) {
     this.ftpIncomingDirectory = ftpIncomingDirectory;
+  }
+
+  public String getSnapshotUrl() {
+    return snapshotUrl;
+  }
+
+  public void setSnapshotUrl(String snapshotUrl) {
+    this.snapshotUrl = snapshotUrl;
   }
 
 }

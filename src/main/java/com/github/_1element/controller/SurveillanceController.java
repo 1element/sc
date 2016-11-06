@@ -6,6 +6,7 @@ import com.github._1element.domain.SurveillanceImage;
 import com.github._1element.repository.CameraRepository;
 import com.github._1element.repository.SurveillanceImageRepository;
 import com.github._1element.service.SurveillanceService;
+import com.github._1element.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +46,8 @@ public class SurveillanceController {
   private Integer pageSize;
 
   private static final String URI_RECORDINGS = "/recordings";
+
+  private static final String URI_LIVEVIEW = "/liveview";
 
   private static final String PATH_SEPARATOR = "/";
 
@@ -116,6 +120,33 @@ public class SurveillanceController {
     imageRepository.archiveByIds(imageIds);
 
     return "redirect:" + URI_RECORDINGS;
+  }
+
+  @RequestMapping(value = {URI_LIVEVIEW}, method = RequestMethod.GET)
+  public String liveview(Model model) throws Exception {
+    List<Camera> cameras = cameraRepository.findAll();
+
+    model.addAttribute("cameras", cameras);
+    model.addAttribute("liveviewUrl", URI_LIVEVIEW);
+
+    return "liveview";
+  }
+
+  @RequestMapping(value = {URI_LIVEVIEW + "/{cameraId}"}, method = RequestMethod.GET)
+  public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
+    Camera camera = surveillanceService.getCamera(cameraId);
+    if (camera == null) {
+      throw new Exception("Camera not found.");
+    }
+
+    model.addAttribute("camera", camera);
+
+    if (RequestUtil.isAjax(request)) {
+      return "fragments/liveview-camera";
+    }
+
+    model.addAttribute("liveviewAjaxUrl", URI_LIVEVIEW);
+    return "liveview-single";
   }
 
 }

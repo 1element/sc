@@ -14,3 +14,22 @@ h1.page-header {
 .progress {
   margin-bottom: 0;
 }
+
+.margin-top-s {
+  margin-top: 15px;
+}
+
+.has-spinner .fa-spinner {
+  opacity: 0;
+  max-width: 0;
+
+  -webkit-transition: opacity 0.25s, max-width 0.45s;
+  -moz-transition: opacity 0.25s, max-width 0.45s;
+  -o-transition: opacity 0.25s, max-width 0.45s;
+  transition: opacity 0.25s, max-width 0.45s;
+}
+
+.has-spinner.active .fa-spinner {
+  opacity: 1;
+  max-width: 50px;
+}

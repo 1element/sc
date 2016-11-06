@@ -39,6 +39,8 @@ public class CameraRepository {
 
   private static final String PROPERTY_FTP_INCOMING_DIR = PROPERTY_MULTI_CAMERA_PREFIX + "ftp.incoming-dir";
 
+  private static final String PROPERTY_SNAPSHOT_URL = PROPERTY_MULTI_CAMERA_PREFIX + "url.snapshot";
+
   private static final String SEPARATOR = ",";
 
   /**
@@ -57,6 +59,7 @@ public class CameraRepository {
       camera.setFtpUsername(multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId));
       camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
       camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));
+      camera.setSnapshotUrl(multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId));
       cameras.put(cameraId, camera);
     }
   }

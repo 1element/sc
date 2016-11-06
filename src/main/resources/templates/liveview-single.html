@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+
+<div id="wrapper">
+
+  <div th:replace="fragments/navigation :: navigation"></div>
+
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header" th:text="'Live-Ansicht: ' + ${camera.name}">Live-Ansicht: Front door</h1>
+      </div>
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+      <div class="col-lg-12">
+        <button type="button" class="btn btn-primary has-spinner js-refresh-liveview"
+                th:attr="data-url=@{{liveviewAjaxUrl}/{camera}(liveviewAjaxUrl=${liveviewAjaxUrl},camera=${camera.id})}">
+          <i class="fa fa-spinner fa-spin"></i> Refresh
+        </button>
+      </div>
+    </div>
+    <!-- /.row -->
+
+    <div th:replace="fragments/liveview-camera :: liveview-container"></div>
+
+  </div>
+  <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
