@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-// @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 public class CameraRepositoryTest {
 
   @Autowired
