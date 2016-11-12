@@ -45,6 +45,8 @@ public class SurveillanceController {
   @Value("${sc.view.images-per-page:50}")
   private Integer pageSize;
 
+  private static final String URI_ROOT = "/";
+
   private static final String URI_RECORDINGS = "/recordings";
 
   private static final String URI_LIVEVIEW = "/liveview";
@@ -56,6 +58,11 @@ public class SurveillanceController {
   private static final String SORT_FIELD = "receivedAt";
 
   private static final String DEFAULT_CAMERA_DISPLAY_NAME = "alle Kameras";
+
+  @RequestMapping(value = URI_ROOT, method = RequestMethod.GET)
+  public String home() throws Exception {
+    return "redirect:" + URI_LIVEVIEW;
+  }
 
   @RequestMapping(value = {URI_RECORDINGS, URI_RECORDINGS + "/{date}"}, method = RequestMethod.GET)
   public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
