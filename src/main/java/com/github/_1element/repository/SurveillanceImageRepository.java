@@ -35,6 +35,9 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   @Query("select s.receivedAt from SurveillanceImage s where s.archived = false order by s.receivedAt desc")
   List<LocalDateTime> getMostRecentImageDate(Pageable pageable);
 
+  @Query("select s from SurveillanceImage s where s.archived = true and s.receivedAt <= :dateBefore")
+  List<SurveillanceImage> getArchivedImagesToCleanup(@Param("dateBefore") LocalDateTime before);
+
   @Modifying
   @Transactional
   @Query("update SurveillanceImage s set s.archived = true where s.id in :ids")
