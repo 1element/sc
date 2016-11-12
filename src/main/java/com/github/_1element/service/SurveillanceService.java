@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -116,7 +117,7 @@ public class SurveillanceService {
   }
 
   /**
-   * Returns most recent image date.
+   * Returns most recent image date by extracting given page of surveillance images.
    * This is only wanted if no date filter is present.
    *
    * @param images page of surveillance images
@@ -129,6 +130,16 @@ public class SurveillanceService {
     }
 
     return null;
+  }
+
+  /**
+   * Returns most recent image date by querying database.
+   * @return
+   */
+  public LocalDateTime getMostRecentImageDate() {
+    List<LocalDateTime> resultList = imageRepository.getMostRecentImageDate(new PageRequest(0, 1));
+
+    return resultList.stream().findFirst().orElse(null);
   }
 
   /**

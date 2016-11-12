@@ -45,6 +45,9 @@ public class SurveillanceController {
   @Value("${sc.view.images-per-page:50}")
   private Integer pageSize;
 
+  @Value("${sc.feed.baseurl}")
+  private String feedBaseUrl;
+
   private static final String URI_ROOT = "/";
 
   private static final String URI_RECORDINGS = "/recordings";
@@ -52,6 +55,8 @@ public class SurveillanceController {
   private static final String URI_LIVEVIEW = "/liveview";
 
   private static final String URI_LIVESTREAM = "/livestream";
+
+  private static final String URI_FEED_STATUS = "/feed/status";
 
   private static final String PATH_SEPARATOR = "/";
 
@@ -176,6 +181,17 @@ public class SurveillanceController {
     model.addAttribute("camera", camera);
 
     return "livestream-single";
+  }
+
+  @RequestMapping(value = {URI_FEED_STATUS}, method = RequestMethod.GET)
+  public String statusfeed(Model model) throws Exception {
+
+    LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate();
+
+    model.addAttribute("mostRecentImageDate", mostRecentImageDate);
+    model.addAttribute("baseUrl", feedBaseUrl);
+
+    return "feed-status";
   }
 
   @ModelAttribute
