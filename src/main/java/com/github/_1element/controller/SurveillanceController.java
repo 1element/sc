@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -97,9 +98,6 @@ public class SurveillanceController {
     LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate(images, date);
     String visibleImageIds = images.getContent().stream().map(i -> String.valueOf(i.getId())).collect(Collectors.joining(","));
 
-    List<ImagesSummaryResult> imagesSummary = imageRepository.getImagesSummary();
-    Long countAllImages = imageRepository.countAllImages();
-
     List<Camera> cameras = cameraRepository.findAll();
 
     String baseUrl = URI_RECORDINGS;
@@ -116,10 +114,6 @@ public class SurveillanceController {
     model.addAttribute("currentCameraId", currentCameraId);
     model.addAttribute("currentCameraName", currentCameraName);
     model.addAttribute("visibleImageIds", visibleImageIds);
-
-    // navigation
-    model.addAttribute("countRecordings", countAllImages);
-    model.addAttribute("recordingsNavigation", imagesSummary);
 
     return "recordings";
   }
@@ -183,6 +177,15 @@ public class SurveillanceController {
     model.addAttribute("camera", camera);
 
     return "livestream-single";
+  }
+
+  @ModelAttribute
+  public void populateNavigationModel(Model model) {
+    List<ImagesSummaryResult> imagesSummary = imageRepository.getImagesSummary();
+    Long countAllImages = imageRepository.countAllImages();
+
+    model.addAttribute("countRecordings", countAllImages);
+    model.addAttribute("recordingsNavigation", imagesSummary);
   }
 
 }
