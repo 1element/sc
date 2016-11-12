@@ -32,6 +32,9 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   @Query("select count(*) from SurveillanceImage s where s.archived = false")
   Long countAllImages();
 
+  @Query("select s.receivedAt from SurveillanceImage s where s.archived = false order by s.receivedAt desc")
+  List<LocalDateTime> getMostRecentImageDate(Pageable pageable);
+
   @Modifying
   @Transactional
   @Query("update SurveillanceImage s set s.archived = true where s.id in :ids")
