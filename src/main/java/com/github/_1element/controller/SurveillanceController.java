@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -68,7 +67,7 @@ public class SurveillanceController {
   @RequestMapping(value = {URI_RECORDINGS, URI_RECORDINGS + "/{date}"}, method = RequestMethod.GET)
   public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
                                @RequestParam Optional<String> camera, @RequestParam Optional<Boolean> archive,
-                               @RequestParam Optional<Integer> page, Model model, Pageable pageable) throws Exception {
+                               @RequestParam Optional<Integer> page, Model model) throws Exception {
 
     Integer zeroBasedPageNumber = 0;
     if (page.isPresent()) {
@@ -158,7 +157,7 @@ public class SurveillanceController {
   }
 
   @RequestMapping(value = {URI_LIVESTREAM}, method = RequestMethod.GET)
-  public String livestream(Model model, HttpServletRequest request) throws Exception {
+  public String livestream(Model model) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
     model.addAttribute("cameras", cameras);
@@ -168,7 +167,7 @@ public class SurveillanceController {
   }
 
   @RequestMapping(value = {URI_LIVESTREAM + "/{cameraId}"}, method = RequestMethod.GET)
-  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
+  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
       throw new Exception("Camera not found.");
