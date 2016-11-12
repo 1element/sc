@@ -32,10 +32,7 @@ import java.util.Optional;
 public class SurveillanceService {
 
   @Autowired
-  private SurveillanceImageRepository surveillanceImageRepository;
-
-  @Autowired
-  SurveillanceImageRepository imageRepository;
+  private SurveillanceImageRepository imageRepository;
 
   @Autowired
   private CameraRepository cameraRepository;
@@ -82,7 +79,7 @@ public class SurveillanceService {
 
     // store image information in database
     SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
-    surveillanceImageRepository.save(image);
+    imageRepository.save(image);
   }
 
   /**
