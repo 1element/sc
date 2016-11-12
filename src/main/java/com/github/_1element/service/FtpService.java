@@ -36,6 +36,9 @@ public class FtpService {
   @Autowired
   private UploadFtplet uploadFtplet;
 
+  @Value("${sc.ftp.enabled:false}")
+  private boolean enabled;
+
   @Value("${sc.ftp.port:2221}")
   private int ftpServerPort;
 
@@ -50,6 +53,10 @@ public class FtpService {
    */
   @PostConstruct
   public void start() throws FtpException {
+    if (!enabled) {
+      return;
+    }
+
     FtpServerFactory ftpServerFactory = new FtpServerFactory();
     ListenerFactory listenerFactory = new ListenerFactory();
 
@@ -75,7 +82,9 @@ public class FtpService {
    */
   @PreDestroy
   public void stop() {
-    server.stop();
+    if (server != null) {
+      server.stop();
+    }
   }
 
   /**
