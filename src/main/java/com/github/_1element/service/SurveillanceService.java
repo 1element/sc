@@ -3,6 +3,7 @@ package com.github._1element.service;
 import com.github._1element.domain.Camera;
 import com.github._1element.domain.SurveillanceImage;
 import com.github._1element.events.ImageReceivedEvent;
+import com.github._1element.events.RemoteCopyEvent;
 import com.github._1element.repository.CameraRepository;
 import com.github._1element.repository.SurveillanceImageRepository;
 import net.coobird.thumbnailator.Thumbnails;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +39,9 @@ public class SurveillanceService {
 
   @Autowired
   private CameraRepository cameraRepository;
+
+  @Autowired
+  private ApplicationEventPublisher eventPublisher;
 
   @Value("${sc.image.storage-dir}")
   private String imageStorageDirectory;
@@ -81,6 +86,9 @@ public class SurveillanceService {
     // store image information in database
     SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
     imageRepository.save(image);
+
+    // publish event to invoke remote copy
+    eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName));
   }
 
   /**
