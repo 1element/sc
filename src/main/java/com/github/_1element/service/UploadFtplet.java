@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -32,7 +33,7 @@ public class UploadFtplet extends DefaultFtplet {
     String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
     String fileArgument = request.getArgument();
 
-    String fileName = userRoot + currentDirectory + fileArgument;
+    String fileName = userRoot + currentDirectory + File.separator + fileArgument;
     Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
 
     eventPublisher.publishEvent(new ImageReceivedEvent(fileName, camera));
