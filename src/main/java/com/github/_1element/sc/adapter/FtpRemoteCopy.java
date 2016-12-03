@@ -53,12 +53,24 @@ public class FtpRemoteCopy implements RemoteCopy {
   }
 
   /**
+   * Returns instance of ftp client.
+   * @return ftp client
+   */
+  private FTPClient getFTPClient() {
+    if (ftp == null) {
+      return new FTPClient();
+    }
+
+    return ftp;
+  }
+
+  /**
    * Connect to ftp server.
    *
    * @throws Exception
    */
   private void connect() throws Exception {
-    ftp = new FTPClient();
+    ftp = getFTPClient();
     ftp.connect(host);
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
