@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Oops an error occurred</title>
+
+  <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
+        th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link href="../static/css/sc.css" th:href="@{/css/sc.css}" rel="stylesheet"/>
+  <link href="http://cdn.jsdelivr.net/webjars/font-awesome/4.2.0/css/font-awesome.min.css"
+        th:href="@{/webjars/font-awesome/4.2.0/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+  <div class="error">
+    <div class="error-code margin-bottom-xs margin-top-m">
+      <span th:text="${status}">404</span> <i class="fa fa-warning"></i>
+    </div>
+    <h3 class="font-bold" th:text="${error}">Not found</h3>
+    <div class="error-description">
+      There seems to be a problem with the page you requested: <span th:text="${path}">/error.html</span><br/>
+      <span th:text="${message}">The page was either not found or does not exist.</span>
+    </div>
+  </div>
+
+</body>
+</html>
