@@ -16,4 +16,9 @@ public interface RemoteCopy {
   @EventListener
   void handle(RemoteCopyEvent remoteCopyEvent);
 
+  /**
+   * Remove old files. Should be scheduled.
+   */
+  void cleanup();
+
 }
