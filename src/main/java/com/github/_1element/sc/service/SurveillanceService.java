@@ -42,6 +42,9 @@ public class SurveillanceService {
   private CameraRepository cameraRepository;
 
   @Autowired
+  private FileService fileService;
+
+  @Autowired
   private ApplicationEventPublisher eventPublisher;
 
   @Autowired
@@ -76,8 +79,11 @@ public class SurveillanceService {
 
     // move file from incoming ftp directory to final storage directory
     File sourceFile = new File(imageReceivedEvent.getFileName());
-    String destinationFileName = imageStorageDirectory + imageReceivedEvent.getSource().getId() + SEPARATOR + sourceFile.getName();
-    File destinationFile = new File(destinationFileName);
+    StringBuilder destinationFileName = new StringBuilder(imageStorageDirectory);
+    destinationFileName.append(fileService.getUniquePrefix()).append(SEPARATOR);
+    destinationFileName.append(imageReceivedEvent.getSource().getId()).append(SEPARATOR);
+    destinationFileName.append(sourceFile.getName());
+    File destinationFile = new File(destinationFileName.toString());
 
     FileUtils.moveFile(sourceFile, destinationFile);
 
@@ -95,7 +101,7 @@ public class SurveillanceService {
     counterService.increment("images.received");
 
     // publish event to invoke remote copy
-    eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName));
+    eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
   }
 
   /**
