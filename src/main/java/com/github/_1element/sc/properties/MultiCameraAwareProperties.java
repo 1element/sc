@@ -1,4 +1,4 @@
-package com.github._1element.sc.utils;
+package com.github._1element.sc.properties;
 
 import com.github._1element.sc.exception.PropertyNotFoundException;
 import com.google.common.collect.ImmutableMap;

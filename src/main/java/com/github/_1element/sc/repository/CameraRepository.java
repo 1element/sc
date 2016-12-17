@@ -2,7 +2,7 @@ package com.github._1element.sc.repository;
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.exception.PropertyNotFoundException;
-import com.github._1element.sc.utils.MultiCameraAwareProperties;
+import com.github._1element.sc.properties.MultiCameraAwareProperties;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.math.NumberUtils;

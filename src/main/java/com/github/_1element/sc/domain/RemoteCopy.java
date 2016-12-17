@@ -1,4 +1,4 @@
-package com.github._1element.sc.adapter;
+package com.github._1element.sc.domain;
 
 import com.github._1element.sc.events.RemoteCopyEvent;
 import org.springframework.context.event.EventListener;

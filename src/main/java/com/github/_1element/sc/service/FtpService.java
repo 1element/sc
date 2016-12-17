@@ -1,6 +1,7 @@
 package com.github._1element.sc.service;
 
 import com.github._1element.sc.domain.Camera;
+import com.github._1element.sc.domain.UploadFtplet;
 import com.github._1element.sc.repository.CameraRepository;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.Ftplet;
