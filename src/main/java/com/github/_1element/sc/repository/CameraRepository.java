@@ -34,6 +34,8 @@ public class CameraRepository {
 
   private static final String PROPERTY_ROTATION = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "rotation";
 
+  private static final String PROPERTY_HOST = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "host";
+
   private static final String PROPERTY_FTP_USERNAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.username";
 
   private static final String PROPERTY_FTP_PASSWORD = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.password";
@@ -60,6 +62,7 @@ public class CameraRepository {
       camera.setId(cameraId);
       camera.setName(multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId));
       camera.setRotation(NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION, cameraId, null)));
+      camera.setHost(multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId));
       camera.setFtpUsername(multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId));
       camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
       camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));

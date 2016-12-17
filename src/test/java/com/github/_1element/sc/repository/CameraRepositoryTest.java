@@ -35,6 +35,7 @@ public class CameraRepositoryTest {
 
     assertEquals("Front door", camera1.getName());
     assertEquals((Integer)270, camera1.getRotation());
+    assertEquals("192.168.1.50", camera1.getHost());
     assertEquals("username", camera1.getFtpUsername());
     assertEquals("password", camera1.getFtpPassword());
     assertEquals("https://localhost/cam1/snapshot", camera1.getSnapshotUrl());
@@ -45,6 +46,7 @@ public class CameraRepositoryTest {
 
     assertEquals("Backyard", camera2.getName());
     assertNull(camera2.getRotation());
+    assertEquals("192.168.1.51", camera2.getHost());
     assertEquals("user2", camera2.getFtpUsername());
     assertEquals("password2", camera2.getFtpPassword());
     assertEquals("https://localhost/cam2/snapshot", camera2.getSnapshotUrl());
