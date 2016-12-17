@@ -1,6 +1,5 @@
 package com.github._1element.sc.domain;
 
-import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.events.ImageReceivedEvent;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.service.FileService;
