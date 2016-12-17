@@ -21,7 +21,7 @@
       <div class="col-lg-6 col-md-6 col-xs-12" th:each="camera : ${cameras}">
         <a class="thumbnail" th:href="@{{livestreamUrl}/{camera}(livestreamUrl=${livestreamUrl},camera=${camera.id})}"
            href="#">
-          <img class="img-responsive"
+          <img class="img-responsive js-camera-fallback"
                th:attrappend="data-rotate=${camera.rotation != null and camera.rotation gt 0} ? ${camera.rotation}"
                th:src="@{{streamUrl}(streamUrl=${camera.streamUrl})}"
                src="http://placehold.it/150x200"/>

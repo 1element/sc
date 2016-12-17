@@ -1,11 +1,13 @@
 var SurveillanceCenter = {
 
   CSS_TRIGGER_REFRESH_LIVEVIEW: '.js-refresh-liveview',
+  CSS_TRIGGER_CAMERA_FALLBACK: '.js-camera-fallback',
   CSS_LIVEVIEW_CONTAINER: '#liveview-container',
 
   init: function() {
     this.addRefreshLiveviewListener();
     this.addRotationListener();
+    this.addCameraFallbackImagesListener();
   },
 
   addRefreshLiveviewListener: function() {
@@ -19,7 +21,20 @@ var SurveillanceCenter = {
         $(that.CSS_LIVEVIEW_CONTAINER).replaceWith(data);
         $(button).removeClass('active');
         that.rotateImages();
+        that.addCameraFallbackImagesListener();
       });
+    });
+  },
+
+  /**
+   * Add camera fallback images listener.
+   * Will show a default image for cameras that are offline.
+   */
+  addCameraFallbackImagesListener: function() {
+    $(this.CSS_TRIGGER_CAMERA_FALLBACK).on('error', function() {
+      console.log('Camera ' + $(this).attr('src') + ' seems to be offline.');
+      $(this).off();
+      $(this).attr('src', '/img/camera-offline.svg');
     });
   },
 
