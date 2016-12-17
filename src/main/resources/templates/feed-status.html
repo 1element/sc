@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:th="http://www.thymeleaf.org">
 
   <channel>
-    <title>Surveillance Center Status</title>
+    <title th:text="#{feed.status.title}">Surveillance Center Status</title>
     <link th:text="${baseUrl}"></link>
-    <description>Surveillance Center Status</description>
+    <description th:text="#{feed.status.title}">Surveillance Center Status</description>
     <item>
-      <title>Status vom</title>
+      <title th:text="#{feed.status.date}">Date</title>
       <link th:text="${baseUrl}"></link>
       <description th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2016-11-06 10:59:33</description>
     </item>
     <item>
-      <title>Anzahl Aufnahmen</title>
+      <title th:text="#{feed.status.count}">Number of recordings</title>
       <link th:text="${baseUrl}"></link>
       <description th:text="${countRecordings}">11</description>
     </item>
     <item>
-      <title>Letzte Aufnahme</title>
+      <title th:text="#{feed.status.mostrecent}">Most recent</title>
       <link th:text="${baseUrl}"></link>
       <description th:if="${mostRecentImageDate != null}" th:text="${#temporals.format(mostRecentImageDate, 'yyyy-MM-dd HH:mm:ss')}">2016-11-06 10:45:33</description>
     </item>

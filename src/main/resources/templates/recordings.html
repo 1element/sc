@@ -12,13 +12,13 @@
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Aufnahmen</h1>
+        <h1 class="page-header" th:text="#{recordings.headline}">Recordings</h1>
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            <span th:text="${images.totalElements} + ' Aufnahmen.'">269 Aufnahmen.</span>
+            <span th:text="#{recordings.count(${images.totalElements})}">269 recordings.</span>
             <span th:if="${mostRecentImageDate != null}"
-                  th:text="'Aktuellste: ' + ${#temporals.format(mostRecentImageDate, 'yyyy-MM-dd HH:mm:ss')}">Aktuellste: 2016-04-12 19:07:26</span>
+                  th:text="#{recordings.mostrecent(${#temporals.format(mostRecentImageDate, 'yyyy-MM-dd HH:mm:ss')})}">Most recent: 2016-04-12 19:07:26</span>
           </div>
           <div class="panel-body">
 
@@ -27,16 +27,16 @@
                 <div class="dropdown">
                   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownCamera"
                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span th:text="${currentCameraName}">alle Kameras</span>
+                    <span th:text="${currentCameraName}">all cameras</span>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownCamera">
-                    <li th:class="${currentCameraId == null} ? 'disabled' : ''" class="disabled"><a
-                      th:href="@{${baseUrl}(archive=${isArchive})}" href="#">alle Kameras</a></li>
+                    <li th:class="${currentCameraId == null} ? 'disabled' : ''" class="disabled">
+                      <a th:href="@{${baseUrl}(archive=${isArchive})}" th:text="#{cameras.all}" href="#">all cameras</a></li>
                     <li th:each="camera : ${cameras}" th:class="${camera.id == currentCameraId} ? 'disabled' : ''">
                       <a th:href="@{${baseUrl}(camera=${camera.id},archive=${isArchive})}"
                          th:text="${camera.name}"
-                         href="#">Kamera 1</a>
+                         href="#">Camera 1</a>
                     </li>
                   </ul>
                 </div>
@@ -45,15 +45,15 @@
                 <div class="dropdown text-right">
                   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownFilter"
                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span th:if="${not isArchive}" th:text="${'neue Aufnahmen'}">neue Aufnahmen</span>
-                    <span th:if="${isArchive}" th:text="${'archivierte Aufnahmen'}"></span>
+                    <span th:if="${not isArchive}" th:text="#{recordings.new}">new recordings</span>
+                    <span th:if="${isArchive}" th:text="#{recordings.archived}"></span>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFilter">
-                    <li th:class="${not isArchive} ? 'disabled' : ''"><a
-                      th:href="@{${baseUrl}(camera=${currentCameraId})}" href="#">neue Aufnahmen</a></li>
-                    <li th:class="${isArchive} ? 'disabled' : ''"><a
-                      th:href="@{${baseUrl}(camera=${currentCameraId},archive=true)}" href="#">archivierte Aufnahmen</a>
+                    <li th:class="${not isArchive} ? 'disabled' : ''">
+                      <a th:href="@{${baseUrl}(camera=${currentCameraId})}" th:text="#{recordings.new}" href="#">new recordings</a></li>
+                    <li th:class="${isArchive} ? 'disabled' : ''">
+                      <a th:href="@{${baseUrl}(camera=${currentCameraId},archive=true)}" th:text="#{recordings.archived}" href="#">archived recordings</a>
                     </li>
                   </ul>
                 </div>
@@ -82,7 +82,7 @@
       <div class="col-lg-12">
         <form th:if="${not isArchive}" th:action="@{/recordings}" method="post" action="#">
           <input type="hidden" name="imageIds" th:value="${visibleImageIds}"/>
-          <button type="submit" class="btn btn-primary">Aufnahmen archivieren</button>
+          <button type="submit" class="btn btn-primary" th:text="#{recordings.archive.action}">Archive recordings</button>
         </form>
       </div>
     </div>

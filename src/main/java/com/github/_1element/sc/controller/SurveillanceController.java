@@ -9,6 +9,8 @@ import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -42,6 +44,9 @@ public class SurveillanceController {
   @Autowired
   private CameraRepository cameraRepository;
 
+  @Autowired
+  private MessageSource messageSource;
+
   @Value("${sc.view.images-per-page:50}")
   private Integer pageSize;
 
@@ -62,7 +67,7 @@ public class SurveillanceController {
 
   private static final String SORT_FIELD = "receivedAt";
 
-  private static final String DEFAULT_CAMERA_DISPLAY_NAME = "alle Kameras";
+  private static final String MESSAGE_PROPERTIES_CAMERAS_ALL = "cameras.all";
 
   @RequestMapping(value = URI_ROOT, method = RequestMethod.GET)
   public String home() throws Exception {
@@ -91,7 +96,7 @@ public class SurveillanceController {
     );
 
     String currentCameraId = null;
-    String currentCameraName = DEFAULT_CAMERA_DISPLAY_NAME;
+    String currentCameraName = messageSource.getMessage(MESSAGE_PROPERTIES_CAMERAS_ALL, null, LocaleContextHolder.getLocale());
     Camera currentCamera = surveillanceService.getCamera(camera);
     if (currentCamera != null) {
       currentCameraName = currentCamera.getName();
