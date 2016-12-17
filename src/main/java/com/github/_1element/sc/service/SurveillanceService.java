@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,9 @@ public class SurveillanceService {
 
   @Autowired
   private ApplicationEventPublisher eventPublisher;
+
+  @Autowired
+  private CounterService counterService;
 
   @Value("${sc.image.storage-dir}")
   private String imageStorageDirectory;
@@ -86,6 +90,9 @@ public class SurveillanceService {
     // store image information in database
     SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
     imageRepository.save(image);
+
+    // actuator metrics
+    counterService.increment("images.received");
 
     // publish event to invoke remote copy
     eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName));
