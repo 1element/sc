@@ -69,9 +69,9 @@ public class HealthCheckTasks {
 
       Status previousStatus = statusTrackingMap.get(camera);
       if ((previousStatus != null) && (previousStatus != currentStatus)) {
+        LOG.info("Camera health check. Host {} has new status: {}", camera.getHost(), currentStatus);
         String title = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_TITLE, null, LocaleContextHolder.getLocale());
         String message = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE, new Object[]{camera.getName(), camera.getHost(), currentStatus}, LocaleContextHolder.getLocale());
-        LOG.info(title + message);
         pushNotificationService.sendMessage(title, message);
       }
 
