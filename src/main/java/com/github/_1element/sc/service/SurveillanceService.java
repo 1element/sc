@@ -124,14 +124,14 @@ public class SurveillanceService {
 
     if (camera.isPresent() && StringUtils.isNotBlank(camera.get())) {
       if (date.isPresent()) {
-        return imageRepository.findAllByCameraIdAndReceivedAtBetweenAndArchived(camera.get(), startOfDay, endOfDay, isArchive, pageRequest);
+        return imageRepository.findAllForDateRangeAndCameraId(startOfDay, endOfDay, camera.get(), isArchive, pageRequest);
       }
 
       return imageRepository.findAllByCameraIdAndArchived(camera.get(), isArchive, pageRequest);
     }
 
     if (date.isPresent()) {
-      return imageRepository.findAllByReceivedAtBetweenAndArchived(startOfDay, endOfDay, isArchive, pageRequest);
+      return imageRepository.findAllForDateRange(startOfDay, endOfDay, isArchive, pageRequest);
     }
 
     return imageRepository.findAllByArchived(isArchive, pageRequest);
