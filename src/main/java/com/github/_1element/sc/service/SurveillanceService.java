@@ -77,8 +77,6 @@ public class SurveillanceService {
   @Async
   @EventListener
   public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) throws IOException {
-    LOG.info("ImageReceivedEvent for '{}'", imageReceivedEvent.getFileName());
-
     // move file from incoming ftp directory to final storage directory
     File sourceFile = new File(imageReceivedEvent.getFileName());
     StringBuilder destinationFileName = new StringBuilder(imageStorageDirectory);
@@ -100,6 +98,7 @@ public class SurveillanceService {
     imageRepository.save(image);
 
     // actuator metrics
+    LOG.info("New surveillance image '{}' was received.", image.getFileName());
     counterService.increment("images.received");
 
     // publish event to invoke remote copy

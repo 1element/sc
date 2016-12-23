@@ -10,6 +10,8 @@ import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpletResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,8 @@ public class UploadFtplet extends DefaultFtplet {
   private static final String NO_PERMISSION_DELETE_MESSAGE = "No permission to delete.";
 
   private static final String NO_PERMISSION_MESSAGE = "No permission.";
+
+  private static final Logger LOG = LoggerFactory.getLogger(UploadFtplet.class);
 
   /**
    * Check file extension before upload starts. Restrict invalid extensions.
@@ -71,6 +75,8 @@ public class UploadFtplet extends DefaultFtplet {
     String userRoot = session.getUser().getHomeDirectory();
     String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
     String fileArgument = request.getArgument();
+
+    LOG.debug("File '{}' was uploaded to ftp server by client '{}'", fileArgument, session.getClientAddress().getHostString());
 
     String fileName = userRoot + currentDirectory + File.separator + fileArgument;
     Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
@@ -109,5 +115,34 @@ public class UploadFtplet extends DefaultFtplet {
     session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, NO_PERMISSION_MESSAGE));
     return FtpletResult.SKIP;
   }
+
+  /**
+   * Log connections to ftp server.
+   *
+   * @param session ftp session
+   * @return default ftplet result
+   * @throws FtpException
+   * @throws IOException
+   */
+  @Override
+  public FtpletResult onConnect(FtpSession session) throws FtpException, IOException {
+    LOG.debug("Client '{}' connected to ftp server.", session.getClientAddress().getHostString());
+    return super.onConnect(session);
+  }
+
+  /**
+   * Log disconnections from ftp server.
+   *
+   * @param session ftp session
+   * @return default ftplet result
+   * @throws FtpException
+   * @throws IOException
+   */
+  @Override
+  public FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {
+    LOG.debug("Client '{}' disconnected from ftp server.", session.getClientAddress().getHostString());
+    return super.onDisconnect(session);
+  }
+
 
 }

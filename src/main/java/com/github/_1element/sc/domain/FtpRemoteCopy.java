@@ -49,7 +49,7 @@ public class FtpRemoteCopy implements RemoteCopy {
 
   @Override
   public void handle(RemoteCopyEvent remoteCopyEvent) {
-    remoteCopyEvent.getFileName();
+    LOG.debug("Ftp remote copy handler for '{}' invoked.", remoteCopyEvent.getFileName());
 
     try {
       connect();
