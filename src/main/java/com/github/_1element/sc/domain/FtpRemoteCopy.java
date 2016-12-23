@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ import java.util.TreeMap;
  */
 @ConditionalOnProperty(name="sc.remotecopy.ftp.enabled", havingValue="true")
 @Component
+@Scope("prototype")
 public class FtpRemoteCopy implements RemoteCopy {
 
   @Autowired
