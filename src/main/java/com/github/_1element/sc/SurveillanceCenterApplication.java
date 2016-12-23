@@ -5,12 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 @EntityScan(basePackageClasses = {SurveillanceCenterApplication.class, Jsr310JpaConverters.class})
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 public class SurveillanceCenterApplication {
 
   @Bean

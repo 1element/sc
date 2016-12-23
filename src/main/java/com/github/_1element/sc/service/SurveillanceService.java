@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -73,6 +74,7 @@ public class SurveillanceService {
    * @param imageReceivedEvent image received event
    * @throws IOException
    */
+  @Async
   @EventListener
   public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) throws IOException {
     LOG.info("ImageReceivedEvent for '{}'", imageReceivedEvent.getFileName());
