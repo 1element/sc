@@ -34,7 +34,8 @@ var SurveillanceCenter = {
     $(this.CSS_TRIGGER_CAMERA_FALLBACK).on('error', function() {
       console.log('Camera ' + $(this).attr('src') + ' seems to be offline.');
       $(this).off();
-      $(this).attr('src', '/img/camera-offline.svg');
+      var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf("/liveview"));
+      $(this).attr('src', contextPath + '/img/camera-offline.svg');
     });
   },
 
