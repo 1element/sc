@@ -1,17 +1,15 @@
-<div xmlns:th="http://www.thymeleaf.org" id="liveview-container" th:fragment="liveview-container">
-  <div class="row margin-top-s">
-    <div class="col-lg-12">
-      <div class="thumbnail">
-        <img class="img-responsive js-camera-fallback"
-             th:attrappend="data-rotate=${camera.rotation != null and camera.rotation gt 0} ? ${camera.rotation}"
-             th:src="@{{snapshotUrl}(snapshotUrl=${camera.snapshotUrl},t=${#temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')})}"
-             src="http://placehold.it/150x200"/>
-        <div class="caption">
-          <div class="text-center" th:text="${camera.name}">Front door</div>
-          <div class="text-center" th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2016-11-06 10:59:33</div>
-        </div>
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="liveview-container" class="row margin-top-s">
+  <div class="col-lg-12">
+    <div class="thumbnail">
+      <img class="img-responsive js-camera-fallback"
+           th:attrappend="data-rotate=${camera.rotation != null and camera.rotation gt 0} ? ${camera.rotation}"
+           th:src="@{{snapshotUrl}(snapshotUrl=${camera.snapshotUrl},t=${#temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')})}"
+           src="http://placehold.it/150x200"/>
+      <div class="caption">
+        <div class="text-center" th:text="${camera.name}">Front door</div>
+        <div class="text-center" th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2016-11-06 10:59:33</div>
       </div>
     </div>
   </div>
-  <!-- /.row -->
 </div>
+<!-- /.row -->

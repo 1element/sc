@@ -27,7 +27,10 @@
     </div>
     <!-- /.row -->
 
-    <div th:replace="fragments/liveview-camera :: liveview-container"></div>
+    <div id="liveview-container">
+      <div th:replace="fragments/liveview-camera :: liveview-container"></div>
+    </div>
+    <div id="liveview-container-loader" class="hidden"></div>
 
   </div>
   <!-- /#page-wrapper -->
