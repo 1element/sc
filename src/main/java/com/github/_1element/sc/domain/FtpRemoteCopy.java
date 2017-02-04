@@ -1,6 +1,7 @@
 package com.github._1element.sc.domain;
 
 import com.github._1element.sc.events.RemoteCopyEvent;
+import com.github._1element.sc.exception.FtpRemoteCopyException;
 import com.github._1element.sc.properties.FtpRemoteCopyProperties;
 import com.github._1element.sc.service.FileService;
 import org.apache.commons.io.FileUtils;
@@ -93,18 +94,19 @@ public class FtpRemoteCopy implements RemoteCopy {
   /**
    * Connect to ftp server.
    *
-   * @throws Exception
+   * @throws FtpRemoteCopyException
+   * @throws IOException
    */
-  private void connect() throws Exception {
+  private void connect() throws FtpRemoteCopyException, IOException {
     ftp = getFTPClient();
     ftp.connect(ftpRemoteCopyProperties.getHost());
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-      throw new Exception("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
+      throw new FtpRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
     }
 
     if (!ftp.login(ftpRemoteCopyProperties.getUsername(), ftpRemoteCopyProperties.getPassword())) {
-      throw new Exception("Could not login to remote ftp server. Invalid username or password.");
+      throw new FtpRemoteCopyException("Could not login to remote ftp server. Invalid username or password.");
     }
     ftp.setFileType(FTP.BINARY_FILE_TYPE);
     ftp.enterLocalPassiveMode();
@@ -114,11 +116,12 @@ public class FtpRemoteCopy implements RemoteCopy {
    * Delete old files from ftp server.
    * Files are deleted either if timestamp is too old or if quota is reached.
    *
-   * @throws Exception
+   * @throws FtpRemoteCopyException
+   * @throws IOException
    */
-  private void removeOldFiles() throws Exception {
+  private void removeOldFiles() throws FtpRemoteCopyException, IOException {
     if (!ftp.changeWorkingDirectory(ftpRemoteCopyProperties.getDir())) {
-      throw new Exception("Could not change to directory '" + ftpRemoteCopyProperties.getDir() + "' on remote ftp server. Response was: " + ftp.getReplyString());
+      throw new FtpRemoteCopyException("Could not change to directory '" + ftpRemoteCopyProperties.getDir() + "' on remote ftp server. Response was: " + ftp.getReplyString());
     }
 
     Map<Calendar, FTPFile> ftpFileMap = new TreeMap<Calendar, FTPFile>();
@@ -170,14 +173,15 @@ public class FtpRemoteCopy implements RemoteCopy {
    * Transfer file to ftp server.
    *
    * @param localFullFilepath full path to local file
-   * @throws Exception
+   * @throws FtpRemoteCopyException
+   * @throws IOException
    */
-  private void transferFile(String localFullFilepath) throws Exception {
+  private void transferFile(String localFullFilepath) throws FtpRemoteCopyException, IOException {
     File file = new File(localFullFilepath);
     InputStream inputStream = new FileInputStream(file);
 
     if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
-      throw new Exception("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
+      throw new FtpRemoteCopyException("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
     }
 
     LOG.info("File '{}' was successfully uploaded to remote ftp server.", file.getName());

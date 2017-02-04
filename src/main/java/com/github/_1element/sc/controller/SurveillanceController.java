@@ -3,6 +3,7 @@ package com.github._1element.sc.controller;
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.dto.ImagesSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
+import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;
@@ -152,7 +153,7 @@ public class SurveillanceController {
   public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
-      throw new Exception("Camera not found.");
+      throw new CameraNotFoundException();
     }
 
     model.addAttribute("camera", camera);
@@ -180,7 +181,7 @@ public class SurveillanceController {
   public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
-      throw new Exception("Camera not found.");
+      throw new CameraNotFoundException();
     }
 
     model.addAttribute("camera", camera);
