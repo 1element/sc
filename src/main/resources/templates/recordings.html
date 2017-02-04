@@ -66,6 +66,9 @@
       <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
+
+    <div th:replace="fragments/recordings-archive-action :: archive-action"></div>
+
     <div class="row">
       <div class="col-lg-3 col-md-4 col-xs-6" th:each="image : ${images}">
         <a class="thumbnail" th:href="@{/images/{file}(file=${image.fileName})}" href="#">
@@ -78,15 +81,7 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-lg-12">
-        <form th:if="${showArchiveAction}" th:action="@{/recordings}" method="post" action="#">
-          <input type="hidden" name="imageIds" th:value="${visibleImageIds}"/>
-          <button type="submit" class="btn btn-primary" th:text="#{recordings.archive.action}">Archive recordings</button>
-        </form>
-      </div>
-    </div>
-    <!-- /.row -->
+    <div th:replace="fragments/recordings-archive-action :: archive-action"></div>
 
     <div class="row">
       <div class="col-lg-12 text-center">
