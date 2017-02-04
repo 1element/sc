@@ -80,7 +80,7 @@
 
     <div class="row">
       <div class="col-lg-12">
-        <form th:if="${not isArchive}" th:action="@{/recordings}" method="post" action="#">
+        <form th:if="${showArchiveAction}" th:action="@{/recordings}" method="post" action="#">
           <input type="hidden" name="imageIds" th:value="${visibleImageIds}"/>
           <button type="submit" class="btn btn-primary" th:text="#{recordings.archive.action}">Archive recordings</button>
         </form>

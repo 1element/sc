@@ -8,6 +8,7 @@ import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.RequestUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -124,6 +125,7 @@ public class SurveillanceController {
     model.addAttribute("currentCameraId", currentCameraId);
     model.addAttribute("currentCameraName", currentCameraName);
     model.addAttribute("visibleImageIds", visibleImageIds);
+    model.addAttribute("showArchiveAction", (StringUtils.isNotBlank(visibleImageIds) && !isArchive));
 
     return "recordings";
   }
