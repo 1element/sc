@@ -70,7 +70,7 @@
     <div th:replace="fragments/recordings-archive-action :: archive-action"></div>
 
     <div class="row">
-      <div class="col-lg-3 col-md-4 col-xs-6" th:each="image : ${images}">
+      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" th:each="image : ${images}">
         <a class="thumbnail" th:href="@{/images/{file}(file=${image.fileName})}" href="#">
           <img class="img-responsive" th:src="@{/images/{file}(file=${image.fileName})}" th:alt="${image.receivedAt}"
                src="http://placehold.it/150x200"/>
