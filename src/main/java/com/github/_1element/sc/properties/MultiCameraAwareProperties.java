@@ -1,14 +1,12 @@
 package com.github._1element.sc.properties;
 
 import com.github._1element.sc.exception.PropertyNotFoundException;
-import com.google.common.collect.ImmutableMap;
-import com.ibm.icu.text.MessageFormat;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.text.MessageFormat;
 
 /**
  * Properties handling for multi camera.
@@ -19,11 +17,7 @@ public class MultiCameraAwareProperties {
   @Autowired
   private Environment environment;
 
-  private static final String PROPERTY_CAMERA_ID_PLACEHOLDER = "cameraId";
-
-  public static final String PROPERTY_MULTI_CAMERA_PREFIX = "sc.camera[{" + PROPERTY_CAMERA_ID_PLACEHOLDER + "}].";
-
-  private static final Logger log = LoggerFactory.getLogger(MultiCameraAwareProperties.class);
+  public static final String PROPERTY_MULTI_CAMERA_PREFIX = "sc.camera[{0}].";
 
   /**
    * Returns property value for given key and camera id. Default value if nothing was found.
@@ -54,7 +48,7 @@ public class MultiCameraAwareProperties {
       throw new PropertyNotFoundException("Property '" + propertyKey + "' not found. Empty camera id was given.");
     }
 
-    String formattedPropertyKey = new MessageFormat(propertyKey).format(ImmutableMap.of(PROPERTY_CAMERA_ID_PLACEHOLDER, cameraId));
+    String formattedPropertyKey = MessageFormat.format(propertyKey, cameraId);
 
     if (!environment.containsProperty(formattedPropertyKey)) {
       throw new PropertyNotFoundException("Property not found for key '" + formattedPropertyKey + "'.");
