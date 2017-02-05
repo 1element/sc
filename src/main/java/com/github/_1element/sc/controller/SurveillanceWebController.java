@@ -4,10 +4,12 @@ import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.dto.ImagesSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.exception.CameraNotFoundException;
+import com.github._1element.sc.properties.TitleNotifierProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.RequestUtil;
+import com.github._1element.sc.utils.URIConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 import static org.springframework.format.annotation.DateTimeFormat.*;
 
 @Controller
-public class SurveillanceController {
+public class SurveillanceWebController {
 
   @Autowired
   private SurveillanceService surveillanceService;
@@ -47,23 +49,13 @@ public class SurveillanceController {
   private CameraRepository cameraRepository;
 
   @Autowired
+  private TitleNotifierProperties titleNotifierProperties;
+
+  @Autowired
   private MessageSource messageSource;
 
   @Value("${sc.view.images-per-page:50}")
   private Integer pageSize;
-
-  @Value("${sc.feed.baseurl}")
-  private String feedBaseUrl;
-
-  private static final String URI_ROOT = "/";
-
-  private static final String URI_RECORDINGS = "/recordings";
-
-  private static final String URI_LIVEVIEW = "/liveview";
-
-  private static final String URI_LIVESTREAM = "/livestream";
-
-  private static final String URI_FEED_STATUS = "/feed/status";
 
   private static final String PATH_SEPARATOR = "/";
 
@@ -71,12 +63,12 @@ public class SurveillanceController {
 
   private static final String MESSAGE_PROPERTIES_CAMERAS_ALL = "cameras.all";
 
-  @RequestMapping(value = URI_ROOT, method = RequestMethod.GET)
+  @RequestMapping(value = URIConstants.ROOT, method = RequestMethod.GET)
   public String home() throws Exception {
-    return "redirect:" + URI_LIVEVIEW;
+    return "redirect:" + URIConstants.LIVEVIEW;
   }
 
-  @RequestMapping(value = {URI_RECORDINGS, URI_RECORDINGS + "/{date}"}, method = RequestMethod.GET)
+  @RequestMapping(value = {URIConstants.RECORDINGS, URIConstants.RECORDINGS + "/{date}"}, method = RequestMethod.GET)
   public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
                                @RequestParam Optional<String> camera, @RequestParam Optional<Boolean> archive,
                                @RequestParam Optional<Integer> page, Model model) throws Exception {
@@ -111,7 +103,7 @@ public class SurveillanceController {
 
     List<Camera> cameras = cameraRepository.findAll();
 
-    String baseUrl = URI_RECORDINGS;
+    String baseUrl = URIConstants.RECORDINGS;
     if (date.isPresent()) {
       baseUrl = baseUrl + PATH_SEPARATOR + date.get().toString();
     }
@@ -130,19 +122,19 @@ public class SurveillanceController {
     return "recordings";
   }
 
-  @RequestMapping(value = URI_RECORDINGS, method = RequestMethod.POST)
+  @RequestMapping(value = URIConstants.RECORDINGS, method = RequestMethod.POST)
   public String recordingsArchive(@RequestParam List<Long> imageIds) throws Exception {
     imageRepository.archiveByIds(imageIds);
 
-    return "redirect:" + URI_RECORDINGS;
+    return "redirect:" + URIConstants.RECORDINGS;
   }
 
-  @RequestMapping(value = {URI_LIVEVIEW}, method = RequestMethod.GET)
+  @RequestMapping(value = {URIConstants.LIVEVIEW}, method = RequestMethod.GET)
   public String liveview(Model model, HttpServletRequest request) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
     model.addAttribute("cameras", cameras);
-    model.addAttribute("liveviewUrl", URI_LIVEVIEW);
+    model.addAttribute("liveviewUrl", URIConstants.LIVEVIEW);
 
     if (RequestUtil.isAjax(request)) {
       return "fragments/liveview-grid";
@@ -151,7 +143,7 @@ public class SurveillanceController {
     return "liveview";
   }
 
-  @RequestMapping(value = {URI_LIVEVIEW + "/{cameraId}"}, method = RequestMethod.GET)
+  @RequestMapping(value = {URIConstants.LIVEVIEW + "/{cameraId}"}, method = RequestMethod.GET)
   public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
@@ -164,22 +156,22 @@ public class SurveillanceController {
       return "fragments/liveview-camera";
     }
 
-    model.addAttribute("liveviewAjaxUrl", URI_LIVEVIEW);
+    model.addAttribute("liveviewAjaxUrl", URIConstants.LIVEVIEW);
 
     return "liveview-single";
   }
 
-  @RequestMapping(value = {URI_LIVESTREAM}, method = RequestMethod.GET)
+  @RequestMapping(value = {URIConstants.LIVESTREAM}, method = RequestMethod.GET)
   public String livestream(Model model) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
     model.addAttribute("cameras", cameras);
-    model.addAttribute("livestreamUrl", URI_LIVESTREAM);
+    model.addAttribute("livestreamUrl", URIConstants.LIVESTREAM);
 
     return "livestream";
   }
 
-  @RequestMapping(value = {URI_LIVESTREAM + "/{cameraId}"}, method = RequestMethod.GET)
+  @RequestMapping(value = {URIConstants.LIVESTREAM + "/{cameraId}"}, method = RequestMethod.GET)
   public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
@@ -191,17 +183,6 @@ public class SurveillanceController {
     return "livestream-single";
   }
 
-  @RequestMapping(value = {URI_FEED_STATUS}, method = RequestMethod.GET)
-  public String statusfeed(Model model) throws Exception {
-
-    LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate();
-
-    model.addAttribute("mostRecentImageDate", mostRecentImageDate);
-    model.addAttribute("baseUrl", feedBaseUrl);
-
-    return "feed-status";
-  }
-
   @ModelAttribute
   public void populateNavigationModel(Model model) {
     List<ImagesSummaryResult> imagesSummary = imageRepository.getImagesSummary();
@@ -209,6 +190,7 @@ public class SurveillanceController {
 
     model.addAttribute("countRecordings", countAllImages);
     model.addAttribute("recordingsNavigation", imagesSummary);
+    model.addAttribute("titleNotifierProperties", titleNotifierProperties);
   }
 
 }

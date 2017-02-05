@@ -2,6 +2,7 @@ var SurveillanceCenter = {
 
   CSS_TRIGGER_REFRESH_LIVEVIEW: '.js-refresh-liveview',
   CSS_TRIGGER_CAMERA_FALLBACK: '.js-camera-fallback',
+  CSS_TITLE_NOTIFIER_CONFIGURATION: '#title-notifier-configuration',
   CSS_LIVEVIEW_CONTAINER: '#liveview-container',
   CSS_LIVEVIEW_CONTAINER_LOADER: '#liveview-container-loader',
   LIVEVIEW_CONTAINER_ID: 'liveview-container',
@@ -14,6 +15,7 @@ var SurveillanceCenter = {
     this.addRefreshLiveviewListener();
     this.addRotationListener();
     this.addCameraFallbackImagesListener();
+    this.addTitleNotifier();
   },
 
   /**
@@ -60,6 +62,37 @@ var SurveillanceCenter = {
       var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf("/liveview"));
       $(this).attr('src', contextPath + '/img/camera-offline.svg');
     });
+  },
+
+  /**
+   * Add title notifier, showing number of recordings in window title.
+   */
+  addTitleNotifier: function() {
+    var enabled = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-enabled');
+    if (enabled) {
+      var endpoint = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-endpoint');
+      var interval = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-interval') * 1000;
+
+      (function pollApi() {
+        $.getJSON(endpoint, function(data) {
+          var count = data.count;
+          var currentTitle = $(document).attr('title');
+          var pattern = /\(\d+\)/;
+
+          // remove, replace or append count in title tag
+          if (count === 0) {
+            $(document).attr('title', currentTitle.replace(pattern, ''));
+          } else {
+            if (pattern.exec(currentTitle)) {
+              $(document).attr('title', currentTitle.replace(pattern, '(' + count + ')'));
+            } else {
+              $(document).attr('title', currentTitle + ' (' + count + ')');
+            }
+          }
+          setTimeout(pollApi, interval);
+        });
+      }());
+    }
   },
 
   /**

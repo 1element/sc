@@ -3,6 +3,9 @@
 <body>
 
 <div th:fragment="footer" th:remove="tag">
+
+  <div th:replace="fragments/title-notifier :: title-notifier"></div>
+
   <!-- jQuery -->
   <script src="//cdn.jsdelivr.net/webjars/jquery/2.1.4/jquery.min.js"
           th:src="@{/webjars/jquery/2.1.4/jquery.min.js}"></script>
