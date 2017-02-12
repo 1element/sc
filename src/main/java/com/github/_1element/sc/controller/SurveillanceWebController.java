@@ -4,7 +4,7 @@ import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.dto.ImagesSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.exception.CameraNotFoundException;
-import com.github._1element.sc.properties.TitleNotifierProperties;
+import com.github._1element.sc.properties.NotifierProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;
@@ -46,7 +46,7 @@ public class SurveillanceWebController {
   private CameraRepository cameraRepository;
 
   @Autowired
-  private TitleNotifierProperties titleNotifierProperties;
+  private NotifierProperties notifierProperties;
 
   @Autowired
   private MessageSource messageSource;
@@ -195,7 +195,7 @@ public class SurveillanceWebController {
 
     model.addAttribute("countRecordings", countAllImages);
     model.addAttribute("recordingsNavigation", imagesSummary);
-    model.addAttribute("titleNotifierProperties", titleNotifierProperties);
+    model.addAttribute("notifierProperties", notifierProperties);
   }
 
 }

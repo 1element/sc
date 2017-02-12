@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="notifier"
+     id="notifier-configuration"
+     th:attrappend="data-notifier-enabled=${notifierProperties.enabled},
+                    data-notifier-interval=${notifierProperties.interval},
+                    data-notifier-endpoint=@{/api/v1/recordings/count}">
+</div>
+
+</body>
+</html>

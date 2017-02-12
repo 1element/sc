@@ -4,11 +4,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Configuration properties for title notifications.
+ * Configuration properties for new recordings notifications.
  */
 @Component
-@ConfigurationProperties("sc.title-notifier")
-public class TitleNotifierProperties {
+@ConfigurationProperties("sc.notifier")
+public class NotifierProperties {
 
   private boolean enabled = true;
 

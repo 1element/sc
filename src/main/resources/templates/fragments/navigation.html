@@ -11,7 +11,10 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" th:href="@{/}" th:text="#{application.title}" href="recordings.html">Surveillance Center</a>
+    <a class="navbar-brand" th:href="@{/recordings}" href="recordings.html">
+      <span th:text="#{application.title}">Surveillance Center</span>
+      <span id="js-notifier-badge" class="badge"></span>
+    </a>
   </div>
   <!-- /.navbar-header -->
 

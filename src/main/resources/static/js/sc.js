@@ -2,7 +2,8 @@ var SurveillanceCenter = {
 
   CSS_TRIGGER_REFRESH_LIVEVIEW: '.js-refresh-liveview',
   CSS_TRIGGER_CAMERA_FALLBACK: '.js-camera-fallback',
-  CSS_TITLE_NOTIFIER_CONFIGURATION: '#title-notifier-configuration',
+  CSS_NOTIFIER_CONFIGURATION: '#notifier-configuration',
+  CSS_NOTIFIER_BADGE: '#js-notifier-badge',
   CSS_LIVEVIEW_CONTAINER: '#liveview-container',
   CSS_LIVEVIEW_CONTAINER_LOADER: '#liveview-container-loader',
   LIVEVIEW_CONTAINER_ID: 'liveview-container',
@@ -15,7 +16,7 @@ var SurveillanceCenter = {
     this.addRefreshLiveviewListener();
     this.addRotationListener();
     this.addCameraFallbackImagesListener();
-    this.addTitleNotifier();
+    this.addNotifier();
   },
 
   /**
@@ -65,13 +66,14 @@ var SurveillanceCenter = {
   },
 
   /**
-   * Add title notifier, showing number of recordings in window title.
+   * Add notifier, showing number of recordings in window title and as headline badge.
    */
-  addTitleNotifier: function() {
-    var enabled = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-enabled');
+  addNotifier: function() {
+    var enabled = $(this.CSS_NOTIFIER_CONFIGURATION).data('notifier-enabled');
     if (enabled) {
-      var endpoint = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-endpoint');
-      var interval = $(this.CSS_TITLE_NOTIFIER_CONFIGURATION).data('title-notifier-interval') * 1000;
+      var endpoint = $(this.CSS_NOTIFIER_CONFIGURATION).data('notifier-endpoint');
+      var interval = $(this.CSS_NOTIFIER_CONFIGURATION).data('notifier-interval') * 1000;
+      var that = this;
 
       (function pollApi() {
         $.getJSON(endpoint, function(data) {
@@ -79,10 +81,12 @@ var SurveillanceCenter = {
           var currentTitle = $(document).attr('title');
           var pattern = /\(\d+\)/;
 
-          // remove, replace or append count in title tag
+          // remove, replace or append count value
           if (count === 0) {
+            $(that.CSS_NOTIFIER_BADGE).text('');
             $(document).attr('title', currentTitle.replace(pattern, ''));
           } else {
+            $(that.CSS_NOTIFIER_BADGE).text(count);
             if (pattern.exec(currentTitle)) {
               $(document).attr('title', currentTitle.replace(pattern, '(' + count + ')'));
             } else {
