@@ -23,13 +23,10 @@ import java.util.Map;
 @Component
 public class HealthCheckTasks {
 
-  @Autowired
   private CameraRepository cameraRepository;
 
-  @Autowired
   private PushNotificationService pushNotificationService;
 
-  @Autowired
   private MessageSource messageSource;
 
   private static Map<Camera, Status> statusTrackingMap = new HashMap<>();
@@ -46,6 +43,14 @@ public class HealthCheckTasks {
   private static final String MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE = "healthcheck.message";
 
   private static final Logger LOG = LoggerFactory.getLogger(HealthCheckTasks.class);
+
+  @Autowired
+  public HealthCheckTasks(CameraRepository cameraRepository, PushNotificationService pushNotificationService,
+                          MessageSource messageSource) {
+    this.cameraRepository = cameraRepository;
+    this.pushNotificationService = pushNotificationService;
+    this.messageSource = messageSource;
+  }
 
   /**
    * Perform camera health checks.

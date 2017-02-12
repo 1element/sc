@@ -36,10 +36,8 @@ import java.util.Optional;
 @Service
 public class SurveillanceService {
 
-  @Autowired
   private SurveillanceImageRepository imageRepository;
 
-  @Autowired
   private CameraRepository cameraRepository;
 
   @Autowired
@@ -66,6 +64,12 @@ public class SurveillanceService {
   private static final String SEPARATOR = "-";
 
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceService.class);
+
+  @Autowired
+  public SurveillanceService(SurveillanceImageRepository imageRepository, CameraRepository cameraRepository) {
+    this.imageRepository = imageRepository;
+    this.cameraRepository = cameraRepository;
+  }
 
   /**
    * Event listener for image received events.
@@ -147,7 +151,7 @@ public class SurveillanceService {
    * @return
    */
   public LocalDateTime getMostRecentImageDate(Page<SurveillanceImage> images, Optional<LocalDate> date) {
-    if (!date.isPresent() && images != null && images.getContent() != null && images.getContent().size() > 0) {
+    if (!date.isPresent() && images != null && images.getContent() != null && !images.getContent().isEmpty()) {
       return images.getContent().get(0).getReceivedAt();
     }
 

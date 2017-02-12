@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = URIConstants.API_ROOT)
 public class SurveillanceApiController {
 
-  @Autowired
   private SurveillanceImageRepository imageRepository;
+
+  @Autowired
+  public SurveillanceApiController(SurveillanceImageRepository imageRepository) {
+    this.imageRepository = imageRepository;
+  }
 
   @RequestMapping(value = URIConstants.API_RECORDINGS_COUNT, method = RequestMethod.GET)
   public ImagesCountResult recordingsCount() throws Exception {

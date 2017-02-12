@@ -5,11 +5,15 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Request utility class.
  */
-public class RequestUtil {
+public final class RequestUtil {
 
   private static final String HEADER_REQUESTED_WITH = "X-Requested-With";
 
   private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
+
+  private RequestUtil() {
+    // hide constructor for static utility class
+  }
 
   /**
    * Returns true if it is an ajax request.

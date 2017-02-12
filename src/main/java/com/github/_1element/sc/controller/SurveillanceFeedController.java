@@ -16,14 +16,18 @@ import java.time.LocalDateTime;
 @RequestMapping(value = URIConstants.FEED_ROOT)
 public class SurveillanceFeedController {
 
-  @Autowired
   private SurveillanceService surveillanceService;
 
-  @Autowired
   private SurveillanceImageRepository imageRepository;
 
   @Value("${sc.feed.baseurl}")
   private String feedBaseUrl;
+
+  @Autowired
+  public SurveillanceFeedController(SurveillanceService surveillanceService, SurveillanceImageRepository imageRepository) {
+    this.surveillanceService = surveillanceService;
+    this.imageRepository = imageRepository;
+  }
 
   @RequestMapping(value = URIConstants.FEED_STATUS, method = RequestMethod.GET)
   public String statusfeed(Model model) throws Exception {

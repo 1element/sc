@@ -17,10 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class PushNotificationService {
 
-  @Autowired
   private PushNotificationProperties properties;
 
   private static final Logger LOG = LoggerFactory.getLogger(PushNotificationService.class);
+
+  @Autowired
+  public PushNotificationService(PushNotificationProperties properties) {
+    this.properties = properties;
+  }
 
   /**
    * Send push message.

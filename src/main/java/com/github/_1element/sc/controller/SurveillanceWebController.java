@@ -39,13 +39,10 @@ import static org.springframework.format.annotation.DateTimeFormat.*;
 @Controller
 public class SurveillanceWebController {
 
-  @Autowired
   private SurveillanceService surveillanceService;
 
-  @Autowired
   private SurveillanceImageRepository imageRepository;
 
-  @Autowired
   private CameraRepository cameraRepository;
 
   @Autowired
@@ -62,6 +59,14 @@ public class SurveillanceWebController {
   private static final String SORT_FIELD = "receivedAt";
 
   private static final String MESSAGE_PROPERTIES_CAMERAS_ALL = "cameras.all";
+
+  @Autowired
+  public SurveillanceWebController(SurveillanceService surveillanceService, SurveillanceImageRepository imageRepository,
+                                   CameraRepository cameraRepository) {
+    this.surveillanceService = surveillanceService;
+    this.imageRepository = imageRepository;
+    this.cameraRepository = cameraRepository;
+  }
 
   @RequestMapping(value = URIConstants.ROOT, method = RequestMethod.GET)
   public String home() throws Exception {
@@ -117,7 +122,7 @@ public class SurveillanceWebController {
     model.addAttribute("currentCameraId", currentCameraId);
     model.addAttribute("currentCameraName", currentCameraName);
     model.addAttribute("visibleImageIds", visibleImageIds);
-    model.addAttribute("showArchiveAction", (StringUtils.isNotBlank(visibleImageIds) && !isArchive));
+    model.addAttribute("showArchiveAction", StringUtils.isNotBlank(visibleImageIds) && !isArchive);
 
     return "recordings";
   }

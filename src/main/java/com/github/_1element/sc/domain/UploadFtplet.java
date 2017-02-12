@@ -25,13 +25,10 @@ import java.io.IOException;
 @Component
 public class UploadFtplet extends DefaultFtplet {
 
-  @Autowired
   private ApplicationEventPublisher eventPublisher;
 
-  @Autowired
   private CameraRepository cameraRepository;
 
-  @Autowired
   private FileService fileService;
 
   private static final String INVALID_EXTENSION_MESSAGE = "Permission denied. Invalid file extension.";
@@ -41,6 +38,14 @@ public class UploadFtplet extends DefaultFtplet {
   private static final String NO_PERMISSION_MESSAGE = "No permission.";
 
   private static final Logger LOG = LoggerFactory.getLogger(UploadFtplet.class);
+
+  @Autowired
+  public UploadFtplet(ApplicationEventPublisher eventPublisher, CameraRepository cameraRepository,
+                      FileService fileService) {
+    this.eventPublisher = eventPublisher;
+    this.cameraRepository = cameraRepository;
+    this.fileService = fileService;
+  }
 
   /**
    * Check file extension before upload starts. Restrict invalid extensions.

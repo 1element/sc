@@ -3,7 +3,7 @@ package com.github._1element.sc.utils;
 /**
  * Constants for URI building.
  */
-public class URIConstants {
+public final class URIConstants {
 
   public static final String ROOT = "/";
 
@@ -22,7 +22,7 @@ public class URIConstants {
   public static final String API_RECORDINGS_COUNT = "/recordings/count";
 
   private URIConstants() {
-
+    // hide constructor
   }
 
 }

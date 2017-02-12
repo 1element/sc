@@ -36,17 +36,28 @@ import java.util.TreeMap;
 @Scope("prototype")
 public class FtpRemoteCopy implements RemoteCopy {
 
-  @Autowired
   private FileService fileService;
 
-  @Autowired
   private FtpRemoteCopyProperties ftpRemoteCopyProperties;
 
   private FTPClient ftp;
 
+  private long sizeRemoved = 0;
+
+  private long filesRemoved = 0;
+
+  private long totalSize = 0;
+
   private static final String CRON_EVERY_DAY_AT_5_AM = "0 0 5 * * *";
 
   private static final Logger LOG = LoggerFactory.getLogger(FtpRemoteCopy.class);
+
+  @Autowired
+  public FtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+    this.ftpRemoteCopyProperties = ftpRemoteCopyProperties;
+    this.ftp = ftp;
+    this.fileService = fileService;
+  }
 
   @Override
   public void handle(RemoteCopyEvent remoteCopyEvent) {
@@ -80,25 +91,12 @@ public class FtpRemoteCopy implements RemoteCopy {
   }
 
   /**
-   * Returns instance of ftp client.
-   * @return ftp client
-   */
-  private FTPClient getFTPClient() {
-    if (ftp == null) {
-      return new FTPClient();
-    }
-
-    return ftp;
-  }
-
-  /**
    * Connect to ftp server.
    *
    * @throws FtpRemoteCopyException
    * @throws IOException
    */
   private void connect() throws FtpRemoteCopyException, IOException {
-    ftp = getFTPClient();
     ftp.connect(ftpRemoteCopyProperties.getHost());
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
@@ -124,49 +122,72 @@ public class FtpRemoteCopy implements RemoteCopy {
       throw new FtpRemoteCopyException("Could not change to directory '" + ftpRemoteCopyProperties.getDir() + "' on remote ftp server. Response was: " + ftp.getReplyString());
     }
 
-    Map<Calendar, FTPFile> ftpFileMap = new TreeMap<Calendar, FTPFile>();
-    long totalSize = 0;
-    long sizeRemoved = 0;
-    long filesRemoved = 0;
+    sizeRemoved = 0;
+    filesRemoved = 0;
+    totalSize = 0;
+
+    Map<Calendar, FTPFile> ftpFileMap = removeFilesByDate();
+    removeFilesByQuota(ftpFileMap);
+
+    LOG.info("Cleanup job deleted " + filesRemoved + " files with " + FileUtils.byteCountToDisplaySize(sizeRemoved) + " disk space.");
+  }
+
+  /**
+   * Remove files from ftp server that are older than the configured number of days.
+   * Returns map of still existing files on ftp after deletion.
+   *
+   * @return map of all ftp files left
+   * @throws IOException
+   */
+  private Map<Calendar, FTPFile> removeFilesByDate() throws IOException {
+    Map<Calendar, FTPFile> ftpFileMap = new TreeMap<>();
 
     FTPFile[] ftpFiles = ftp.listFiles();
     for (FTPFile ftpFile : ftpFiles) {
       if (ftpFile.isFile() && fileService.hasValidExtension(ftpFile.getName())) {
         LocalDateTime removeBefore = LocalDateTime.now().minusDays(ftpRemoteCopyProperties.getCleanupKeep());
         LocalDateTime ftpFileTimestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(ftpFile.getTimestamp().getTimeInMillis()), ZoneId.systemDefault());
-        if (ftpFileTimestamp.isBefore(removeBefore)) {
+        if (ftpFileTimestamp.isBefore(removeBefore) && ftp.deleteFile(ftpFile.getName())) {
           // delete straight if file is too old
-          if (ftp.deleteFile(ftpFile.getName())) {
-            LOG.debug("Successfully removed file '{}' on remote ftp server, was older than {} days.", ftpFile.getName(), ftpRemoteCopyProperties.getCleanupKeep());
-            sizeRemoved += ftpFile.getSize();
-            filesRemoved++;
-          }
+          LOG.debug("Successfully removed file '{}' on remote ftp server, was older than {} days.", ftpFile.getName(), ftpRemoteCopyProperties.getCleanupKeep());
+          sizeRemoved += ftpFile.getSize();
+          filesRemoved++;
         } else {
-          // put to map for deletion by quota
+          // put to return map for deletion by quota
           ftpFileMap.put(ftpFile.getTimestamp(), ftpFile);
           totalSize += ftpFile.getSize();
         }
       }
     }
 
-    // check if max disk space/quota has been reached
-    if (totalSize > ftpRemoteCopyProperties.getCleanupMaxDiskSpace()) {
-      long sizeToBeRemoved = totalSize - ftpRemoteCopyProperties.getCleanupMaxDiskSpace();
+    return ftpFileMap;
+  }
 
-      for (Map.Entry<Calendar, FTPFile> entry: ftpFileMap.entrySet()) {
-        FTPFile ftpFile = entry.getValue();
-        if (ftp.deleteFile(ftpFile.getName())) {
-          LOG.debug("Successfully removed file '{}' on remote ftp server, quota was reached.", ftpFile.getName());
-          sizeRemoved += ftpFile.getSize();
-          filesRemoved++;
-        }
-        if (sizeRemoved >= sizeToBeRemoved) {
-          break;
-        }
-      }
+  /**
+   * Removes files from ftp server if configured quota has been reached.
+   *
+   * @param ftpFileMap map of ftp files to consider for deletion
+   * @throws IOException
+   */
+  private void removeFilesByQuota(Map<Calendar, FTPFile> ftpFileMap) throws IOException {
+    if (totalSize < ftpRemoteCopyProperties.getCleanupMaxDiskSpace()) {
+      // do nothing if max disk space/quota has not been reached
+      return;
     }
 
-    LOG.info("Cleanup job deleted " + filesRemoved + " files with " + FileUtils.byteCountToDisplaySize(sizeRemoved) + " disk space.");
+    long sizeToBeRemoved = totalSize - ftpRemoteCopyProperties.getCleanupMaxDiskSpace();
+
+    for (Map.Entry<Calendar, FTPFile> entry: ftpFileMap.entrySet()) {
+      FTPFile ftpFile = entry.getValue();
+      if (ftp.deleteFile(ftpFile.getName())) {
+        LOG.debug("Successfully removed file '{}' on remote ftp server, quota was reached.", ftpFile.getName());
+        sizeRemoved += ftpFile.getSize();
+        filesRemoved++;
+      }
+      if (sizeRemoved >= sizeToBeRemoved) {
+        break;
+      }
+    }
   }
 
   /**

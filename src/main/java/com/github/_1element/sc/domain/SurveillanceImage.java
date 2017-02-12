@@ -22,7 +22,7 @@ public class SurveillanceImage {
 
   private LocalDateTime receivedAt;
 
-  private Boolean archived = false;
+  private boolean archived = false;
 
   protected SurveillanceImage() {
   }
@@ -57,11 +57,11 @@ public class SurveillanceImage {
     this.receivedAt = receivedAt;
   }
 
-  public Boolean getArchived() {
+  public boolean isArchived() {
     return archived;
   }
 
-  public void setArchived(Boolean archived) {
+  public void setArchived(boolean archived) {
     this.archived = archived;
   }
 

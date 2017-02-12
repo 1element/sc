@@ -31,10 +31,8 @@ import java.util.Map;
 @Service
 public class FtpService {
 
-  @Autowired
   private CameraRepository cameraRepository;
 
-  @Autowired
   private UploadFtplet uploadFtplet;
 
   @Value("${sc.ftp.enabled:false}")
@@ -46,6 +44,12 @@ public class FtpService {
   private FtpServer server;
 
   private PropertiesUserManagerFactory userManagerFactory;
+
+  @Autowired
+  public FtpService(CameraRepository cameraRepository, UploadFtplet uploadFtplet) {
+    this.cameraRepository = cameraRepository;
+    this.uploadFtplet = uploadFtplet;
+  }
 
   /**
    * Start ftp server.
@@ -69,7 +73,7 @@ public class FtpService {
     ftpServerFactory.setUserManager(populateUserManager());
 
     // ftplet
-    Map<String, Ftplet> ftpletMap = new HashMap<String, Ftplet>();
+    Map<String, Ftplet> ftpletMap = new HashMap<>();
     ftpletMap.put("uploadFtplet", uploadFtplet);
     ftpServerFactory.setFtplets(ftpletMap);
 
@@ -97,7 +101,7 @@ public class FtpService {
   private UserManager populateUserManager() throws FtpException {
     UserManager userManager = userManagerFactory.createUserManager();
 
-    List<Authority> authorities = new ArrayList<Authority>();
+    List<Authority> authorities = new ArrayList<>();
     authorities.add(new WritePermission());
 
     for (Camera camera : cameraRepository.findAll()) {

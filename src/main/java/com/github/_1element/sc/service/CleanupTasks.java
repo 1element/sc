@@ -21,8 +21,7 @@ import java.util.List;
 @Component
 public class CleanupTasks {
 
-  @Autowired
-  SurveillanceImageRepository imageRepository;
+  private SurveillanceImageRepository imageRepository;
 
   @Value("${sc.archive.cleanup.enabled:false}")
   private Boolean isCleanupEnabled;
@@ -36,6 +35,11 @@ public class CleanupTasks {
   private static final String CRON_EVERY_DAY_AT_4_AM = "0 0 4 * * *";
 
   private static final Logger LOG = LoggerFactory.getLogger(CleanupTasks.class);
+
+  @Autowired
+  public CleanupTasks(SurveillanceImageRepository imageRepository) {
+    this.imageRepository = imageRepository;
+  }
 
   /**
    * Remove archived images older than X hours.

@@ -18,15 +18,15 @@ import java.util.List;
  */
 public interface SurveillanceImageRepository extends JpaRepository<SurveillanceImage, Long> {
 
-  Page<SurveillanceImage> findAllByArchived(Boolean archived, Pageable pageable);
+  Page<SurveillanceImage> findAllByArchived(boolean archived, Pageable pageable);
 
-  Page<SurveillanceImage> findAllByCameraIdAndArchived(String cameraId, Boolean archived, Pageable pageable);
+  Page<SurveillanceImage> findAllByCameraIdAndArchived(String cameraId, boolean archived, Pageable pageable);
 
   @Query("select s from SurveillanceImage s where (s.receivedAt between :start and :end) and s.archived = :archived")
-  Page<SurveillanceImage> findAllForDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("archived") Boolean archived, Pageable pageable);
+  Page<SurveillanceImage> findAllForDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("archived") boolean archived, Pageable pageable);
 
   @Query("select s from SurveillanceImage s where s.cameraId = :cameraId and (s.receivedAt between :start and :end) and s.archived = :archived")
-  Page<SurveillanceImage> findAllForDateRangeAndCameraId(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("cameraId") String cameraId, @Param("archived") Boolean archived, Pageable pageable);
+  Page<SurveillanceImage> findAllForDateRangeAndCameraId(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("cameraId") String cameraId, @Param("archived") boolean archived, Pageable pageable);
 
   @Query("select new com.github._1element.sc.dto.ImagesSummaryResult(cast(receivedAt as date), count(*)) from SurveillanceImage s where s.archived = false group by cast(receivedAt as date) order by cast(receivedAt as date) desc")
   List<ImagesSummaryResult> getImagesSummary();

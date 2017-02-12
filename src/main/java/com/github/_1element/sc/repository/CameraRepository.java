@@ -22,13 +22,12 @@ import java.util.Map;
 @Component
 public class CameraRepository {
 
-  @Autowired
   private MultiCameraAwareProperties multiCameraAwareProperties;
 
   @Value("${sc.cameras.available}")
   private String camerasAvailable;
 
-  private Map<String, Camera> cameras = new HashMap<String, Camera>();
+  private Map<String, Camera> cameras = new HashMap<>();
 
   private static final String PROPERTY_NAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name";
 
@@ -47,6 +46,11 @@ public class CameraRepository {
   private static final String PROPERTY_STREAM_URL = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.stream";
 
   private static final String SEPARATOR = ",";
+
+  @Autowired
+  public CameraRepository(MultiCameraAwareProperties multiCameraAwareProperties) {
+    this.multiCameraAwareProperties = multiCameraAwareProperties;
+  }
 
   /**
    * Initialize repository. Read properties configuration.
@@ -98,7 +102,7 @@ public class CameraRepository {
    * @return
    */
   public List<Camera> findAll() {
-    return new ArrayList<Camera>(cameras.values());
+    return new ArrayList<>(cameras.values());
   }
 
   /**
