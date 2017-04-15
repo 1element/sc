@@ -22,6 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,6 +68,11 @@ public class CleanupTasksTest {
 
     cleanupTasks.cleanupArchive();
 
+    // verify static method calls to delete files (2 images + 2 thumbnails)
+    PowerMockito.verifyStatic(times(4));
+    Files.delete(any(Path.class));
+
+    // verify image repository db deletion for 2 images
     verify(imageRepository, times(2)).delete(any(SurveillanceImage.class));
   }
 

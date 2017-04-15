@@ -32,8 +32,10 @@ public class CleanupTasks {
   @Value("${sc.image.storage-dir}")
   private String imageStorageDirectory;
 
-  private static final String CRON_EVERY_DAY_AT_4_AM = "0 0 4 * * *";
+  private static final String THUMBNAIL_PREFIX = "thumbnail.";
 
+  private static final String CRON_EVERY_DAY_AT_4_AM = "0 0 4 * * *";
+  
   private static final Logger LOG = LoggerFactory.getLogger(CleanupTasks.class);
 
   @Autowired
@@ -56,12 +58,15 @@ public class CleanupTasks {
 
     int numberOfImages = 0;
     for (SurveillanceImage image : images) {
-      Path filePath = Paths.get(imageStorageDirectory + image.getFileName());
+      Path imageFilePath = Paths.get(imageStorageDirectory + image.getFileName());
+      Path thumbnailFilePath = Paths.get(imageStorageDirectory + THUMBNAIL_PREFIX + image.getFileName());
       try {
-        Files.delete(filePath);
+        Files.delete(imageFilePath);
+        Files.delete(thumbnailFilePath);
         numberOfImages++;
       } catch (Exception e) {
-        LOG.warn("Exception occurred while removing file '{}', cause '{}'", filePath.toString(), e.getMessage());
+        LOG.warn("Exception occurred while removing old archived image/thumbnail '{}'/'{}', cause '{}'",
+            imageFilePath.toString(), thumbnailFilePath.toString(), e.getMessage());
       }
       imageRepository.delete(image);
     }
