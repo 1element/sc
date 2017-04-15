@@ -1,4 +1,4 @@
-package com.github._1element.sc.exception;
+package com.github._1element.sc.exception; //NOSONAR
 
 public class CameraNotFoundException extends Exception {
 

@@ -1,4 +1,4 @@
-package com.github._1element.sc.repository;
+package com.github._1element.sc.repository; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.exception.PropertyNotFoundException;

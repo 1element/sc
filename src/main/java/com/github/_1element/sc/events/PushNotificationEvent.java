@@ -1,4 +1,4 @@
-package com.github._1element.sc.events;
+package com.github._1element.sc.events; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 

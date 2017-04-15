@@ -1,4 +1,4 @@
-package com.github._1element.sc.utils;
+package com.github._1element.sc.utils; //NOSONAR
 
 /**
  * Constants for URI building.

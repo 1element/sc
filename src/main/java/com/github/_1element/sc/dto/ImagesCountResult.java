@@ -1,4 +1,4 @@
-package com.github._1element.sc.dto;
+package com.github._1element.sc.dto; //NOSONAR
 
 /**
  * Count of surveillance images.

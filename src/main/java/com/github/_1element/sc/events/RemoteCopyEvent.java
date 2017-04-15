@@ -1,4 +1,4 @@
-package com.github._1element.sc.events;
+package com.github._1element.sc.events; //NOSONAR
 
 /**
  * Event to trigger remote copy.

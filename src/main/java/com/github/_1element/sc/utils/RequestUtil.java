@@ -1,4 +1,4 @@
-package com.github._1element.sc.utils;
+package com.github._1element.sc.utils; //NOSONAR
 
 import javax.servlet.http.HttpServletRequest;
 

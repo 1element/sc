@@ -1,4 +1,4 @@
-package com.github._1element.sc.service;
+package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.repository.SurveillanceImageRepository;

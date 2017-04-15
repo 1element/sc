@@ -1,4 +1,4 @@
-package com.github._1element.sc.configuration;
+package com.github._1element.sc.configuration; //NOSONAR
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

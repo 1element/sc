@@ -1,4 +1,4 @@
-package com.github._1element.sc.domain;
+package com.github._1element.sc.domain; //NOSONAR
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.github._1element.sc.service;
+package com.github._1element.sc.service; //NOSONAR
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;

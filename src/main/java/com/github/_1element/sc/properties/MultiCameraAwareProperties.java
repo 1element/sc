@@ -1,4 +1,4 @@
-package com.github._1element.sc.properties;
+package com.github._1element.sc.properties; //NOSONAR
 
 import com.github._1element.sc.exception.PropertyNotFoundException;
 import org.apache.commons.lang3.StringUtils;

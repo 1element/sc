@@ -1,4 +1,4 @@
-package com.github._1element.sc.controller;
+package com.github._1element.sc.controller; //NOSONAR
 
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;

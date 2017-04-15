@@ -1,4 +1,4 @@
-package com.github._1element.sc.service;
+package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.UploadFtplet;

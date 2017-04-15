@@ -1,4 +1,4 @@
-package com.github._1element.sc.controller;
+package com.github._1element.sc.controller; //NOSONAR
 
 import com.github._1element.sc.domain.PushNotificationSetting;
 import com.github._1element.sc.dto.ImagesCountResult;

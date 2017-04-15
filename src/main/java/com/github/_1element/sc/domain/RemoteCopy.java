@@ -1,4 +1,4 @@
-package com.github._1element.sc.domain;
+package com.github._1element.sc.domain; //NOSONAR
 
 import com.github._1element.sc.events.RemoteCopyEvent;
 import org.springframework.context.event.EventListener;

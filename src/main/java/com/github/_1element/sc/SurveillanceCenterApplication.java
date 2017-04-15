@@ -1,4 +1,4 @@
-package com.github._1element.sc;
+package com.github._1element.sc; //NOSONAR
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
