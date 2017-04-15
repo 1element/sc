@@ -77,6 +77,7 @@ public class FtpRemoteCopy implements RemoteCopy {
   @Scheduled(cron=CRON_EVERY_DAY_AT_5_AM)
   public void cleanup() {
     if (!ftpRemoteCopyProperties.isCleanupEnabled()) {
+      LOG.info("Ftp remote copy cleanup task is disabled in configuration.");
       return;
     }
 
