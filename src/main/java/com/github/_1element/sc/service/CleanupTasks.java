@@ -47,7 +47,7 @@ public class CleanupTasks {
   @Scheduled(cron=CRON_EVERY_DAY_AT_4_AM)
   public void cleanupArchive() {
     if (!Boolean.TRUE.equals(isCleanupEnabled)) {
-      LOG.info("Task to remove old archive images not enabled in configuration. Do nothing.");
+      LOG.info("Task to remove old archived images not enabled in configuration. Do nothing.");
       return;
     }
 
