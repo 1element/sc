@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.time.LocalDateTime;
 
 @Controller
-@RequestMapping(value = URIConstants.FEED_ROOT)
+@RequestMapping(URIConstants.FEED_ROOT)
 public class SurveillanceFeedController {
 
   private SurveillanceService surveillanceService;
@@ -29,7 +29,7 @@ public class SurveillanceFeedController {
     this.imageRepository = imageRepository;
   }
 
-  @RequestMapping(value = URIConstants.FEED_STATUS, method = RequestMethod.GET)
+  @GetMapping(URIConstants.FEED_STATUS)
   public String statusfeed(Model model) throws Exception {
 
     Long countAllImages = imageRepository.countAllImages();

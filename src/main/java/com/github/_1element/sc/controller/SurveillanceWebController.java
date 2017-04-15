@@ -23,10 +23,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,12 +73,12 @@ public class SurveillanceWebController {
     this.pushNotificationService = pushNotificationService;
   }
 
-  @RequestMapping(value = URIConstants.ROOT, method = RequestMethod.GET)
+  @GetMapping(URIConstants.ROOT)
   public String home() throws Exception {
     return "redirect:" + URIConstants.LIVEVIEW;
   }
 
-  @RequestMapping(value = {URIConstants.RECORDINGS, URIConstants.RECORDINGS + "/{date}"}, method = RequestMethod.GET)
+  @GetMapping(value = {URIConstants.RECORDINGS, URIConstants.RECORDINGS + "/{date}"})
   public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
                                @RequestParam Optional<String> camera, @RequestParam Optional<Boolean> archive,
                                @RequestParam Optional<Integer> page, Model model) throws Exception {
@@ -132,14 +132,14 @@ public class SurveillanceWebController {
     return "recordings";
   }
 
-  @RequestMapping(value = URIConstants.RECORDINGS, method = RequestMethod.POST)
+  @PostMapping(URIConstants.RECORDINGS)
   public String recordingsArchive(@RequestParam List<Long> imageIds) throws Exception {
     imageRepository.archiveByIds(imageIds);
 
     return "redirect:" + URIConstants.RECORDINGS;
   }
 
-  @RequestMapping(value = {URIConstants.LIVEVIEW}, method = RequestMethod.GET)
+  @GetMapping(URIConstants.LIVEVIEW)
   public String liveview(Model model, HttpServletRequest request) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
@@ -153,7 +153,7 @@ public class SurveillanceWebController {
     return "liveview";
   }
 
-  @RequestMapping(value = {URIConstants.LIVEVIEW + "/{cameraId}"}, method = RequestMethod.GET)
+  @GetMapping(URIConstants.LIVEVIEW + "/{cameraId}")
   public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
@@ -171,7 +171,7 @@ public class SurveillanceWebController {
     return "liveview-single";
   }
 
-  @RequestMapping(value = {URIConstants.LIVESTREAM}, method = RequestMethod.GET)
+  @GetMapping(URIConstants.LIVESTREAM)
   public String livestream(Model model) throws Exception {
     List<Camera> cameras = cameraRepository.findAll();
 
@@ -181,7 +181,7 @@ public class SurveillanceWebController {
     return "livestream";
   }
 
-  @RequestMapping(value = {URIConstants.LIVESTREAM + "/{cameraId}"}, method = RequestMethod.GET)
+  @GetMapping(URIConstants.LIVESTREAM + "/{cameraId}")
   public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null) {
@@ -193,7 +193,7 @@ public class SurveillanceWebController {
     return "livestream-single";
   }
 
-  @RequestMapping(value = {URIConstants.SETTINGS}, method = RequestMethod.GET)
+  @GetMapping(URIConstants.SETTINGS)
   public String settings(Model model) throws Exception {
     List<CameraPushNotificationSettingResult> cameraPushNotificationSettings = pushNotificationService.getAllSettings();
 

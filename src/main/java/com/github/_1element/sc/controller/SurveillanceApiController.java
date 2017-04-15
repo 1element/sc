@@ -7,14 +7,15 @@ import com.github._1element.sc.repository.PushNotificationSettingRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.utils.URIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = URIConstants.API_ROOT)
+@RequestMapping(URIConstants.API_ROOT)
 public class SurveillanceApiController {
 
   private SurveillanceImageRepository imageRepository;
@@ -28,14 +29,14 @@ public class SurveillanceApiController {
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
   }
 
-  @RequestMapping(value = URIConstants.API_RECORDINGS_COUNT, method = RequestMethod.GET)
+  @GetMapping(URIConstants.API_RECORDINGS_COUNT)
   public ImagesCountResult recordingsCount() throws Exception {
     Long imagesCount = imageRepository.countAllImages();
 
     return new ImagesCountResult(imagesCount);
   }
 
-  @RequestMapping(value = URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}", method = RequestMethod.PUT)
+  @PutMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
   public PushNotificationSetting updatePushNotificationSetting(@PathVariable String cameraId,
                                                                @RequestBody PushNotificationSetting pushNotificationSetting) throws Exception {
 
