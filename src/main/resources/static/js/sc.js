@@ -2,6 +2,9 @@ var SurveillanceCenter = {
 
   CSS_TRIGGER_REFRESH_LIVEVIEW: '.js-refresh-liveview',
   CSS_TRIGGER_CAMERA_FALLBACK: '.js-camera-fallback',
+  CSS_TRIGGER_PUSH_NOTIFICATION_SETTINGS_TOGGLE: '.js-push-notification-settings-toggle',
+  CSS_PUSH_NOTIFICATION_SETTINGS_ERROR: '#js-push-notification-settings-error',
+  CSS_SETTINGS_ENDPOINT_CONFIGURATION: '#settings-endpoint-configuration',
   CSS_NOTIFIER_CONFIGURATION: '#notifier-configuration',
   CSS_NOTIFIER_BADGE: '#js-notifier-badge',
   CSS_LIVEVIEW_CONTAINER: '#liveview-container',
@@ -16,6 +19,7 @@ var SurveillanceCenter = {
     this.addRefreshLiveviewListener();
     this.addRotationListener();
     this.addCameraFallbackImagesListener();
+    this.addPushNotificationSettingsToggleListener();
     this.addNotifier();
   },
 
@@ -62,6 +66,37 @@ var SurveillanceCenter = {
       $(this).off();
       var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf("/liveview"));
       $(this).attr('src', contextPath + '/img/camera-offline.svg');
+    });
+  },
+
+  /**
+   * Add listener for push notification toggle buttons on settings page.
+   */
+  addPushNotificationSettingsToggleListener: function() {
+    var that = this;
+    $(this.CSS_TRIGGER_PUSH_NOTIFICATION_SETTINGS_TOGGLE).on('click', function() {
+      var endpoint = $(that.CSS_SETTINGS_ENDPOINT_CONFIGURATION).data('push-notification-settings-endpoint');
+      var cameraId = $(this).data('camera-id');
+      var currentEnabledStatus = $(this).data('enabled-status');
+      var newEnabledStatus = !currentEnabledStatus;
+      var data = {
+    	'enabled': newEnabledStatus	  
+      };
+      var button = this;
+      $.ajax({
+        url: endpoint + cameraId,
+        method: 'PUT',
+        contentType: 'application/json; charset=UTF-8',
+        dataType: 'json',
+        data: JSON.stringify(data)
+      }).done(function(data) {
+        $(button).data('enabled-status', newEnabledStatus);
+        $(button).find('.btn').toggleClass('active');
+        $(button).find('.btn').toggleClass('btn-primary');
+        $(button).find('.btn').toggleClass('btn-default');
+      }).fail(function(data) {
+        $(that.CSS_PUSH_NOTIFICATION_SETTINGS_ERROR).collapse('show');
+      });
     });
   },
 

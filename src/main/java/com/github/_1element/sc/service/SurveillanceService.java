@@ -3,6 +3,7 @@ package com.github._1element.sc.service;
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.events.ImageReceivedEvent;
+import com.github._1element.sc.events.PushNotificationEvent;
 import com.github._1element.sc.events.RemoteCopyEvent;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
@@ -105,8 +106,9 @@ public class SurveillanceService {
     LOG.info("New surveillance image '{}' was received.", image.getFileName());
     counterService.increment("images.received");
 
-    // publish event to invoke remote copy
+    // publish events to invoke remote copy and push notification
     eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
+    eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
   }
 
   /**

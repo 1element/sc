@@ -16,6 +16,10 @@ public class PushNotificationProperties {
 
   private String userToken;
 
+  private long groupTime = 0;
+  
+  private String url;
+
   public boolean isEnabled() {
     return enabled;
   }
@@ -40,4 +44,20 @@ public class PushNotificationProperties {
     this.userToken = userToken;
   }
 
+  public long getGroupTime() {
+    return groupTime;
+  }
+
+  public void setGroupTime(long groupTime) {
+    this.groupTime = groupTime;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+  
 }

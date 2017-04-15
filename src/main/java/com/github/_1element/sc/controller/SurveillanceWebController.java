@@ -1,12 +1,14 @@
 package com.github._1element.sc.controller;
 
 import com.github._1element.sc.domain.Camera;
+import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
 import com.github._1element.sc.dto.ImagesSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.properties.NotifierProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
+import com.github._1element.sc.service.PushNotificationService;
 import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.RequestUtil;
 import com.github._1element.sc.utils.URIConstants;
@@ -45,6 +47,8 @@ public class SurveillanceWebController {
 
   private CameraRepository cameraRepository;
 
+  private PushNotificationService pushNotificationService;
+
   @Autowired
   private NotifierProperties notifierProperties;
 
@@ -62,10 +66,11 @@ public class SurveillanceWebController {
 
   @Autowired
   public SurveillanceWebController(SurveillanceService surveillanceService, SurveillanceImageRepository imageRepository,
-                                   CameraRepository cameraRepository) {
+                                   CameraRepository cameraRepository, PushNotificationService pushNotificationService) {
     this.surveillanceService = surveillanceService;
     this.imageRepository = imageRepository;
     this.cameraRepository = cameraRepository;
+    this.pushNotificationService = pushNotificationService;
   }
 
   @RequestMapping(value = URIConstants.ROOT, method = RequestMethod.GET)
@@ -186,6 +191,15 @@ public class SurveillanceWebController {
     model.addAttribute("camera", camera);
 
     return "livestream-single";
+  }
+
+  @RequestMapping(value = {URIConstants.SETTINGS}, method = RequestMethod.GET)
+  public String settings(Model model) throws Exception {
+    List<CameraPushNotificationSettingResult> cameraPushNotificationSettings = pushNotificationService.getAllSettings();
+
+    model.addAttribute("cameraPushNotificationSettings", cameraPushNotificationSettings);
+
+    return "settings";
   }
 
   @ModelAttribute
