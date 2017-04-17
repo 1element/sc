@@ -20,6 +20,8 @@ public final class URIConstants {
   public static final String FEED_STATUS = "/status";
 
   public static final String API_ROOT = "/api/v1";
+  
+  public static final String API_RECORDINGS = "/recordings";
 
   public static final String API_RECORDINGS_COUNT = "/recordings/count";
 

@@ -17,7 +17,9 @@
     </div>
     <!-- /.row -->
 
-    <div id="settings-endpoint-configuration" th:attrappend="data-push-notification-settings-endpoint=@{/api/v1/push-notification-settings/}"></div>
+    <div id="settings-endpoint-configuration" th:attrappend="data-push-notification-settings-endpoint=@{/api/v1/push-notification-settings/},
+                                                             data-archive-recordings-settings-endpoint=@{/api/v1/recordings}">
+    </div>
 
     <div class="row">
       <div class="col-lg-12">
@@ -55,6 +57,41 @@
     </div>
     <!-- /.row -->
 
+    <div class="row">
+      <div class="col-lg-12">
+        <h4 th:text="#{settings.archive-recordings.headline}">Archive recordings</h4>
+        <p th:text="#{settings.archive-recordings.intro}">This will move all recordings to the archive. Use this if you have a lot of images and don't want to inspect all of it.</p>
+      </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="js-archive-recordings-settings-result-success" class="alert alert-success collapse" role="alert">
+          <button type="button" class="close" data-toggle="collapse" data-target="#js-archive-recordings-settings-result-success" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <span th:text="#{settings.archive-recordings.success}">Successfully archived all recordings.</span>
+        </div>
+      </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="js-archive-recordings-settings-result-error" class="alert alert-danger collapse" role="alert">
+          <button type="button" class="close" data-toggle="collapse" data-target="#js-archive-recordings-settings-result-error" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <span th:text="#{settings.archive-recordings.error}">An error occurred while archiving recordings.</span>
+        </div>
+      </div>
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+      <div class="col-lg-12">
+        <button type="button" class="btn btn-primary js-archive-recordings-settings-click" th:text="#{settings.archive-recordings.action}">Archive all recordings</button>
+      </div>
+    </div>
+    <!-- /.row -->
+    
   </div>
   <!-- /#page-wrapper -->
 

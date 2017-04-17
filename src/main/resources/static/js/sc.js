@@ -3,8 +3,11 @@ var SurveillanceCenter = {
   CSS_TRIGGER_REFRESH_LIVEVIEW: '.js-refresh-liveview',
   CSS_TRIGGER_CAMERA_FALLBACK: '.js-camera-fallback',
   CSS_TRIGGER_PUSH_NOTIFICATION_SETTINGS_TOGGLE: '.js-push-notification-settings-toggle',
+  CSS_TRIGGER_ARCHIVE_RECORDINGS_SETTINGS_CLICK: '.js-archive-recordings-settings-click',
   CSS_PUSH_NOTIFICATION_SETTINGS_ERROR: '#js-push-notification-settings-error',
   CSS_SETTINGS_ENDPOINT_CONFIGURATION: '#settings-endpoint-configuration',
+  CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_SUCCESS: '#js-archive-recordings-settings-result-success',
+  CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_ERROR: '#js-archive-recordings-settings-result-error',
   CSS_NOTIFIER_CONFIGURATION: '#notifier-configuration',
   CSS_NOTIFIER_BADGE: '#js-notifier-badge',
   CSS_LIVEVIEW_CONTAINER: '#liveview-container',
@@ -20,6 +23,7 @@ var SurveillanceCenter = {
     this.addRotationListener();
     this.addCameraFallbackImagesListener();
     this.addPushNotificationSettingsToggleListener();
+    this.addArchiveRecordingsSettingsListener();
     this.addNotifier();
   },
 
@@ -96,6 +100,32 @@ var SurveillanceCenter = {
         $(button).find('.btn').toggleClass('btn-default');
       }).fail(function(data) {
         $(that.CSS_PUSH_NOTIFICATION_SETTINGS_ERROR).collapse('show');
+      });
+    });
+  },
+
+  /**
+   * Add listener to archive all recordings button on settings page.
+   */
+  addArchiveRecordingsSettingsListener: function() {
+    var that = this;
+
+    $(this.CSS_TRIGGER_ARCHIVE_RECORDINGS_SETTINGS_CLICK).on('click', function() {
+      var endpoint = $(that.CSS_SETTINGS_ENDPOINT_CONFIGURATION).data('archive-recordings-settings-endpoint');
+      var data = {
+        'archived': true
+      };
+
+      $.ajax({
+        url: endpoint,
+        method: 'POST',
+        contentType: 'application/json; charset=UTF-8',
+        dataType: 'json',
+        data: JSON.stringify(data)
+      }).done(function() {
+        $(that.CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_SUCCESS).collapse('show');
+      }).fail(function() {
+        $(that.CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_ERROR).collapse('show');
       });
     });
   },
