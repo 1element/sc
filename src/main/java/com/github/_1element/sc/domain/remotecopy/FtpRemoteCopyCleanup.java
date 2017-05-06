@@ -1,26 +1,6 @@
-package com.github._1element.sc.domain; //NOSONAR
+package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
-import com.github._1element.sc.events.RemoteCopyEvent;
-import com.github._1element.sc.exception.FtpRemoteCopyException;
-import com.github._1element.sc.properties.FtpRemoteCopyProperties;
-import com.github._1element.sc.service.FileService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,19 +8,28 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.github._1element.sc.exception.FtpRemoteCopyException;
+import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.service.FileService;
+
 /**
- * Copy surveillance image to ftp remote server (backup).
+ * Cleanup old surveillance images on remote ftp server.
  */
-@ConditionalOnProperty(name="sc.remotecopy.ftp.enabled", havingValue="true")
+@ConditionalOnProperty(name="sc.remotecopy.ftp.cleanup-enabled", havingValue="true")
 @Component
-@Scope("prototype")
-public class FtpRemoteCopy implements RemoteCopy {
+public class FtpRemoteCopyCleanup extends AbstractFtpRemoteCopy implements RemoteCopyCleanup {
 
   private FileService fileService;
-
-  private FtpRemoteCopyProperties ftpRemoteCopyProperties;
-
-  private FTPClient ftp;
 
   private long sizeRemoved = 0;
 
@@ -50,27 +39,12 @@ public class FtpRemoteCopy implements RemoteCopy {
 
   private static final String CRON_EVERY_DAY_AT_5_AM = "0 0 5 * * *";
 
-  private static final Logger LOG = LoggerFactory.getLogger(FtpRemoteCopy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FtpRemoteCopyCleanup.class);
 
   @Autowired
-  public FtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
-    this.ftpRemoteCopyProperties = ftpRemoteCopyProperties;
-    this.ftp = ftp;
+  public FtpRemoteCopyCleanup(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+    super(ftpRemoteCopyProperties, ftp);
     this.fileService = fileService;
-  }
-
-  @Override
-  public void handle(RemoteCopyEvent remoteCopyEvent) {
-    LOG.debug("Ftp remote copy handler for '{}' invoked.", remoteCopyEvent.getFileName());
-
-    try {
-      connect();
-      transferFile(remoteCopyEvent.getFileName());
-    } catch (Exception e) {
-      LOG.warn("Error during remote ftp copy: {}", e.getMessage());
-    } finally {
-      disconnect();
-    }
   }
 
   @Override
@@ -90,27 +64,7 @@ public class FtpRemoteCopy implements RemoteCopy {
       disconnect();
     }
   }
-
-  /**
-   * Connect to ftp server.
-   *
-   * @throws FtpRemoteCopyException
-   * @throws IOException
-   */
-  private void connect() throws FtpRemoteCopyException, IOException {
-    ftp.connect(ftpRemoteCopyProperties.getHost());
-
-    if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-      throw new FtpRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
-    }
-
-    if (!ftp.login(ftpRemoteCopyProperties.getUsername(), ftpRemoteCopyProperties.getPassword())) {
-      throw new FtpRemoteCopyException("Could not login to remote ftp server. Invalid username or password.");
-    }
-    ftp.setFileType(FTP.BINARY_FILE_TYPE);
-    ftp.enterLocalPassiveMode();
-  }
-
+  
   /**
    * Delete old files from ftp server.
    * Files are deleted either if timestamp is too old or if quota is reached.
@@ -130,7 +84,7 @@ public class FtpRemoteCopy implements RemoteCopy {
     Map<Calendar, FTPFile> ftpFileMap = removeFilesByDate();
     removeFilesByQuota(ftpFileMap);
 
-    LOG.info("Cleanup job deleted " + filesRemoved + " files with " + FileUtils.byteCountToDisplaySize(sizeRemoved) + " disk space.");
+    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved, FileUtils.byteCountToDisplaySize(sizeRemoved));
   }
 
   /**
@@ -190,37 +144,5 @@ public class FtpRemoteCopy implements RemoteCopy {
       }
     }
   }
-
-  /**
-   * Transfer file to ftp server.
-   *
-   * @param localFullFilepath full path to local file
-   * @throws FtpRemoteCopyException
-   * @throws IOException
-   */
-  private void transferFile(String localFullFilepath) throws FtpRemoteCopyException, IOException {
-    File file = new File(localFullFilepath);
-    InputStream inputStream = new FileInputStream(file);
-
-    if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
-      throw new FtpRemoteCopyException("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
-    }
-
-    LOG.info("File '{}' was successfully uploaded to remote ftp server.", file.getName());
-  }
-
-  /**
-   * Disconnect from ftp server.
-   */
-  private void disconnect() {
-    if (ftp != null && ftp.isConnected()) {
-      try {
-        ftp.logout();
-        ftp.disconnect();
-      } catch (IOException e) {
-        // silently ignore disconnect exceptions
-      }
-    }
-  }
-
+  
 }

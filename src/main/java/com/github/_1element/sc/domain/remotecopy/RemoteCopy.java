@@ -1,4 +1,4 @@
-package com.github._1element.sc.domain; //NOSONAR
+package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
 import com.github._1element.sc.events.RemoteCopyEvent;
 import org.springframework.context.event.EventListener;
@@ -15,10 +15,5 @@ public interface RemoteCopy {
    */
   @EventListener
   void handle(RemoteCopyEvent remoteCopyEvent);
-
-  /**
-   * Remove old files. Should be scheduled.
-   */
-  void cleanup();
 
 }
