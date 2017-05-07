@@ -3,7 +3,7 @@
     <a class="thumbnail" th:href="@{{liveviewUrl}/{camera}(liveviewUrl=${liveviewUrl},camera=${camera.id})}" href="#">
       <img class="img-responsive js-camera-fallback"
            th:attrappend="data-rotate=${camera.rotation != null and camera.rotation gt 0} ? ${camera.rotation}"
-           th:src="@{{snapshotUrl}(snapshotUrl=${camera.snapshotUrl},t=${#temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')})}"
+           th:src="@{${camera.snapshotUrl + '#' + #temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')}}"
            src="http://placehold.it/150x200"/>
       <div class="caption">
         <div class="text-center" th:text="${camera.name}">Front door</div>
