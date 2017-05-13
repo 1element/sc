@@ -21,7 +21,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
   baseName = 'surveillancecenter'
-  version = '0.0.1-SNAPSHOT'
+  version = '1.0.0'
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
