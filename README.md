@@ -24,6 +24,13 @@ You either have to use the build-in motion detection of your IP camera or
 a third party software like [motion](https://github.com/Motion-Project/motion).
 
 
+## Screenshots
+
+[![screenshot1](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot1-thumbnail.png)](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot1.png)
+[![screenshot2](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot2-thumbnail.png)](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot2.png)
+[![screenshot3](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot3-thumbnail.png)](https://raw.githubusercontent.com/1element/sc/master/docs/screenshots/screenshot3.png)
+
+
 ## Installation
 
 1. Make sure you have the Java 8 Runtime Environment installed on 
