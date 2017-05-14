@@ -61,7 +61,7 @@ for details.
 application server:
 
    ```
-   java -jar suveillance-center-<VERSION>.jar
+   java -jar surveillancecenter-<VERSION>.jar
    ```
 
    Once you see the output line `Started SurveillanceCenterApplication in X.X seconds` 
