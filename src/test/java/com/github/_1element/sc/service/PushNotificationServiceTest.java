@@ -43,7 +43,7 @@ import net.pushover.client.PushoverMessage;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*"})
+@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
 @PrepareForTest(PushNotificationService.class)
 public class PushNotificationServiceTest {
   

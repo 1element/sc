@@ -1,9 +1,12 @@
 package com.github._1element.sc.domain.remotecopy;
 
-import com.github._1element.sc.SurveillanceCenterApplication;
-import com.github._1element.sc.events.RemoteCopyEvent;
-import org.apache.commons.net.ftp.FTPClient;
-import org.junit.Before;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.io.File;
+import java.io.FileInputStream;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,49 +20,32 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import com.github._1element.sc.SurveillanceCenterApplication;
+import com.github._1element.sc.events.RemoteCopyEvent;
+import com.github.sardine.Sardine;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
 @PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
-@PrepareForTest(FtpRemoteCopy.class)
-public class FtpRemoteCopyTest {
+@PrepareForTest(WebdavRemoteCopy.class)
+public class WebdavRemoteCopyTest {
 
   @Mock
-  private FTPClient ftpClient;
+  private Sardine sardine;
 
   @Autowired
   @InjectMocks
-  private FtpRemoteCopy ftpRemoteCopy;
-
-  private static final String EXPECTED_FTP_USERNAME = "ftpuser";
-
-  private static final String EXPECTED_FTP_PASSWORD = "secret";
-
-  private static final String EXPECTED_REMOTE_FILENAME = "/remote-copy-directory/local-file.jpg";
-
-  @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    Mockito.when(ftpClient.getReplyCode()).thenReturn(200);
-    Mockito.when(ftpClient.login(eq(EXPECTED_FTP_USERNAME), eq(EXPECTED_FTP_PASSWORD))).thenReturn(true);
-  }
+  private WebdavRemoteCopy webdavRemoteCopy;
 
   @Test
   public void testHandle() throws Exception {
     // mocking
-    Mockito.when(ftpClient.storeFile(eq(EXPECTED_REMOTE_FILENAME), any())).thenReturn(true);
+    MockitoAnnotations.initMocks(this);
     File fileMock = mock(File.class);
     Mockito.when(fileMock.getName()).thenReturn("local-file.jpg");
     FileInputStream fileInputStreamMock = mock(FileInputStream.class);
@@ -69,10 +55,9 @@ public class FtpRemoteCopyTest {
 
     // execute and verify
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent("/tmp/test/local-file.jpg");
-    ftpRemoteCopy.handle(remoteCopyEvent);
+    webdavRemoteCopy.handle(remoteCopyEvent);
 
-    verify(ftpClient).login(eq(EXPECTED_FTP_USERNAME), eq(EXPECTED_FTP_PASSWORD));
-    verify(ftpClient).storeFile(eq(EXPECTED_REMOTE_FILENAME), any());
+    verify(sardine).put(eq("https://test-webdav.local/remote-copy-directory/local-file.jpg"), eq(fileInputStreamMock));
   }
 
 }

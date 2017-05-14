@@ -35,7 +35,7 @@ import com.github._1element.sc.properties.FtpRemoteCopyProperties;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*"})
+@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
 @PrepareForTest(FtpRemoteCopyCleanup.class)
 public class FtpRemoteCopyCleanupTest {
 

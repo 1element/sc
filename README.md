@@ -15,7 +15,7 @@ browse and manage surveillance snapshots.
 * Ability to archive already seen images
 * Auto removal of old archived images
 * Configurable push notifications (via pushover.net)
-* Optional image copy to remote FTP server (off-site backup)
+* Optional image copy to remote server (FTP, WebDAV)
 * Camera health check
 * Simple livestream and snapshot view of cameras
 

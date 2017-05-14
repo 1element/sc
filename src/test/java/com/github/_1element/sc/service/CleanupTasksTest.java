@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*"})
+@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
 @PrepareForTest(CleanupTasks.class)
 public class CleanupTasksTest {
 
