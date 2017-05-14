@@ -14,6 +14,8 @@ var SurveillanceCenter = {
   CSS_LIVEVIEW_CONTAINER_LOADER: '#liveview-container-loader',
   LIVEVIEW_CONTAINER_ID: 'liveview-container',
   LIVEVIEW_CONTAINER_LOADER_ID: 'liveview-container-loader',
+  NOTIFIER_TITLE_PATTERN: /\(\d+\)/,
+
 
   /**
    * Initialize all listeners.
@@ -124,6 +126,7 @@ var SurveillanceCenter = {
         data: JSON.stringify(data)
       }).done(function() {
         $(that.CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_SUCCESS).collapse('show');
+        that.resetNotifier();
       }).fail(function() {
         $(that.CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_ERROR).collapse('show');
       });
@@ -143,13 +146,12 @@ var SurveillanceCenter = {
       (function pollApi() {
         $.getJSON(endpoint, function(data) {
           var count = data.count;
+          var pattern = that.NOTIFIER_TITLE_PATTERN;
           var currentTitle = $(document).attr('title');
-          var pattern = /\(\d+\)/;
 
           // remove, replace or append count value
           if (count === 0) {
-            $(that.CSS_NOTIFIER_BADGE).text('');
-            $(document).attr('title', currentTitle.replace(pattern, ''));
+            that.resetNotifier();
           } else {
             $(that.CSS_NOTIFIER_BADGE).text(count);
             if (pattern.exec(currentTitle)) {
@@ -177,6 +179,16 @@ var SurveillanceCenter = {
     $(window).resize(function() {
       that.rotateImages();
     });
+  },
+
+  /**
+   * Adjust notifier value to zero. Document title and notification badge.
+   * @private
+   */
+  resetNotifier: function() {
+    var currentTitle = $(document).attr('title');
+    $(this.CSS_NOTIFIER_BADGE).text('');
+    $(document).attr('title', currentTitle.replace(this.NOTIFIER_TITLE_PATTERN, ''));
   },
 
   /**
