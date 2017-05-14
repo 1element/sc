@@ -27,6 +27,7 @@ var SurveillanceCenter = {
     this.addPushNotificationSettingsToggleListener();
     this.addArchiveRecordingsSettingsListener();
     this.addNotifier();
+    this.addLightboxListener();
   },
 
   /**
@@ -178,6 +179,16 @@ var SurveillanceCenter = {
     this.rotateImages();
     $(window).resize(function() {
       that.rotateImages();
+    });
+  },
+
+  /**
+   * Add lightbox gallery for image recordings.
+   */
+  addLightboxListener: function() {
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox();
     });
   },
 
