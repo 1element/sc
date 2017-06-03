@@ -141,7 +141,7 @@ public class SurveillanceWebController {
 
   @GetMapping(URIConstants.LIVEVIEW)
   public String liveview(Model model, HttpServletRequest request) throws Exception {
-    List<Camera> cameras = cameraRepository.findAll();
+    List<Camera> cameras = cameraRepository.findAllWithSnapshotUrl();
 
     model.addAttribute("cameras", cameras);
     model.addAttribute("liveviewUrl", URIConstants.LIVEVIEW);
@@ -156,7 +156,7 @@ public class SurveillanceWebController {
   @GetMapping(URIConstants.LIVEVIEW + "/{cameraId}")
   public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
-    if (camera == null) {
+    if (camera == null || camera.getSnapshotUrl() == null) {
       throw new CameraNotFoundException();
     }
 
@@ -173,7 +173,7 @@ public class SurveillanceWebController {
 
   @GetMapping(URIConstants.LIVESTREAM)
   public String livestream(Model model) throws Exception {
-    List<Camera> cameras = cameraRepository.findAll();
+    List<Camera> cameras = cameraRepository.findAllWithStreamUrl();
 
     model.addAttribute("cameras", cameras);
     model.addAttribute("livestreamUrl", URIConstants.LIVESTREAM);
@@ -184,7 +184,7 @@ public class SurveillanceWebController {
   @GetMapping(URIConstants.LIVESTREAM + "/{cameraId}")
   public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
     Camera camera = surveillanceService.getCamera(cameraId);
-    if (camera == null) {
+    if (camera == null || camera.getStreamUrl() == null) {
       throw new CameraNotFoundException();
     }
 

@@ -70,8 +70,8 @@ public class CameraRepository {
       camera.setFtpUsername(multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId));
       camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
       camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));
-      camera.setSnapshotUrl(multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId));
-      camera.setStreamUrl(multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId));
+      camera.setSnapshotUrl(multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, null));
+      camera.setStreamUrl(multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId, null));
       cameras.put(cameraId, camera);
     }
   }
@@ -87,7 +87,7 @@ public class CameraRepository {
       return null;
     }
 
-    for (Camera camera : findAll()) {
+    for (Camera camera : cameras.values()) {
       if (cameraId.equals(camera.getId())) {
         return camera;
       }
@@ -106,6 +106,40 @@ public class CameraRepository {
   }
 
   /**
+   * Find all cameras which have a stream url configured.
+   * 
+   * @return list of cameras with stream url
+   */
+  public List<Camera> findAllWithStreamUrl() {
+    List<Camera> resultList = new ArrayList<>();
+
+    for (Camera camera : cameras.values()) {
+      if (camera.getStreamUrl() != null) {
+        resultList.add(camera);
+      }
+    }
+
+    return resultList;
+  }
+
+  /**
+   * Find all cameras which have a snapshot url configured.
+   * 
+   * @return list of cameras with snapshot url
+   */
+  public List<Camera> findAllWithSnapshotUrl() {
+    List<Camera> resultList = new ArrayList<>();
+
+    for (Camera camera : cameras.values()) {
+      if (camera.getSnapshotUrl() != null) {
+        resultList.add(camera);
+      }
+    }
+
+    return resultList;
+  }
+
+  /**
    * Find camera by given ftp username.
    *
    * @param ftpUsername ftp username
@@ -116,7 +150,7 @@ public class CameraRepository {
       return null;
     }
 
-    for (Camera camera : findAll()) {
+    for (Camera camera : cameras.values()) {
       if (ftpUsername.equals(camera.getFtpUsername())) {
         return camera;
       }

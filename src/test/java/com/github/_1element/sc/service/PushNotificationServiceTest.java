@@ -84,18 +84,18 @@ public class PushNotificationServiceTest {
   @Test
   public void testGetAllSettings() throws Exception {
     List<CameraPushNotificationSettingResult> settings = pushNotificationService.getAllSettings();
-    
-    assertTrue(settings.size() == 2);
-    
-    assertNotNull(settings.get(0));
-    assertEquals("Backyard", settings.get(0).getCamera().getName());
-    assertEquals("testcamera2", settings.get(0).getCamera().getId());
-    assertFalse(settings.get(0).getPushNotificationSetting().isEnabled());
-    
-    assertNotNull(settings.get(1));
-    assertEquals("Front door", settings.get(1).getCamera().getName());
-    assertEquals("testcamera1", settings.get(1).getCamera().getId());
-    assertTrue(settings.get(1).getPushNotificationSetting().isEnabled());
+
+    assertTrue(settings.size() == 4);
+
+    assertNotNull(settings.get(2));
+    assertEquals("Backyard", settings.get(2).getCamera().getName());
+    assertEquals("testcamera2", settings.get(2).getCamera().getId());
+    assertFalse(settings.get(2).getPushNotificationSetting().isEnabled());
+
+    assertNotNull(settings.get(3));
+    assertEquals("Front door", settings.get(3).getCamera().getName());
+    assertEquals("testcamera1", settings.get(3).getCamera().getId());
+    assertTrue(settings.get(3).getPushNotificationSetting().isEnabled());
   }
   
   @Test

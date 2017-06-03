@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
@@ -26,7 +27,11 @@ public class CameraRepositoryTest {
   public void testFindAll() throws Exception {
     List<Camera> result = cameraRepository.findAll();
 
-    assertEquals(2, result.size());
+    assertEquals(4, result.size());
+    assertTrue(result.stream().anyMatch(e -> "testcamera1".equals(e.getId())));
+    assertTrue(result.stream().anyMatch(e -> "testcamera2".equals(e.getId())));
+    assertTrue(result.stream().anyMatch(e -> "testcamera3".equals(e.getId())));
+    assertTrue(result.stream().anyMatch(e -> "testcamera4".equals(e.getId())));
   }
 
   @Test
@@ -67,6 +72,22 @@ public class CameraRepositoryTest {
     assertEquals("testcamera2", camera2.getId());
     assertEquals("password2", camera2.getFtpPassword());
     assertEquals("/tmp/camera2/", camera2.getFtpIncomingDirectory());
+  }
+
+  @Test
+  public void testFindAllWithStreamUrl() throws Exception {
+    List<Camera> result = cameraRepository.findAllWithStreamUrl();
+
+    assertEquals(3, result.size());
+    assertTrue(result.stream().noneMatch(e -> "Camera without stream url".equals(e.getName())));
+  }
+  
+  @Test
+  public void testFindAllWithSnapshotUrl() throws Exception {
+    List<Camera> result = cameraRepository.findAllWithSnapshotUrl();
+    
+    assertEquals(3, result.size());
+    assertTrue(result.stream().noneMatch(e -> "Camera without snapshot url".equals(e.getName())));
   }
 
 }
