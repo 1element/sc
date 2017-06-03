@@ -17,81 +17,10 @@
     </div>
     <!-- /.row -->
 
-    <div id="settings-endpoint-configuration" th:attrappend="data-push-notification-settings-endpoint=@{/api/v1/push-notification-settings/},
-                                                             data-archive-recordings-settings-endpoint=@{/api/v1/recordings}">
-    </div>
+    <div th:replace="fragments/settings-archive-all :: archive-all"></div>
 
-    <div class="row">
-      <div class="col-lg-12">
-        <h4 th:text="#{settings.push-notifications.headline}">Push notifications</h4>
-        <p th:text="#{settings.push-notifications.intro}">You can enable or disable push notifications for each camera here. If enabled, a push notification will be
-          sent as soon as a new image is received via FTP.</p>
-      </div>
-    </div>
-    <!-- /.row -->
+    <div th:replace="fragments/settings-push-notifications :: push-notifications"></div>
 
-    <div class="row">
-    	<div class="col-lg-12">
-        <div id="js-push-notification-settings-error" class="alert alert-danger collapse" role="alert">
-          <button type="button" class="close" data-toggle="collapse" data-target="#js-push-notification-settings-error" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <span th:text="#{settings.push-notifications.error}">An error occurred while saving push notification state.</span>
-        </div>
-    	</div>
-    </div>
-    <!-- /.row -->
-
-    <div class="row margin-bottom-xs" th:each="setting : ${cameraPushNotificationSettings}">
-      <div class="col-lg-2" th:text="${setting.camera.name}">Front door camera</div>
-      <div class="col-lg-10">
-        <div class="btn-group js-push-notification-settings-toggle"
-             th:attrappend="data-enabled-status=${setting.pushNotificationSetting.enabled},
-                            data-camera-id=${setting.camera.id}">
-          <button class="btn btn-sm"
-                  th:classappend="${setting.pushNotificationSetting.enabled} ? 'btn-primary active' : 'btn-default'"
-                  th:text="#{setting.on}">ON</button>
-          <button class="btn btn-sm"
-                  th:classappend="${!setting.pushNotificationSetting.enabled} ? 'btn-primary active' : 'btn-default'"
-                  th:text="#{setting.off}">OFF</button>
-        </div>
-      </div>
-    </div>
-    <!-- /.row -->
-
-    <div class="row">
-      <div class="col-lg-12">
-        <h4 th:text="#{settings.archive-recordings.headline}">Archive recordings</h4>
-        <p th:text="#{settings.archive-recordings.intro}">This will move all recordings to the archive. Use this if you have a lot of images and don't want to inspect all of it.</p>
-      </div>
-    </div>
-    <!-- /.row -->
-    
-    <div class="row">
-      <div class="col-lg-12">
-        <div id="js-archive-recordings-settings-result-success" class="alert alert-success collapse" role="alert">
-          <button type="button" class="close" data-toggle="collapse" data-target="#js-archive-recordings-settings-result-success" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <span th:text="#{settings.archive-recordings.success}">Successfully archived all recordings.</span>
-        </div>
-      </div>
-    </div>
-    <!-- /.row -->
-    
-    <div class="row">
-      <div class="col-lg-12">
-        <div id="js-archive-recordings-settings-result-error" class="alert alert-danger collapse" role="alert">
-          <button type="button" class="close" data-toggle="collapse" data-target="#js-archive-recordings-settings-result-error" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <span th:text="#{settings.archive-recordings.error}">An error occurred while archiving recordings.</span>
-        </div>
-      </div>
-    </div>
-    <!-- /.row -->
-    
-    <div class="row">
-      <div class="col-lg-12">
-        <button type="button" class="btn btn-primary js-archive-recordings-settings-click" th:text="#{settings.archive-recordings.action}">Archive all recordings</button>
-      </div>
-    </div>
-    <!-- /.row -->
-    
   </div>
   <!-- /#page-wrapper -->
 
