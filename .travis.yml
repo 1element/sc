@@ -1,7 +1,14 @@
 language: java
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 before_install:
- - chmod +x gradlew
+- chmod +x gradlew
+deploy:
+  provider: releases
+  api_key:
+    secure: N0l8RIT3z9lrzDJw2T4sABZlvCfSmqIbQJhSs2Eg3z0203fETk8T0ziSx5q3FSWbaPITXh9BkpixQltPq1QsFKChmjlaL22nLtBV1F/6s9LVwhsxngShpVLBn3YCUpKwv83TBlSyyO+JTZO2Xxh0ng1jXQCVY+KFreC0iQj8+uRKn2t6/Tf44cYWaBZ+tUAUre3ICMAD8LlInhZ/yGocFB6IbvSEFWQNg2RIBoyFPosPZd8CtXMyJdm/E9lAOg9i5vsMJFLtRiRB/JdUhrPb7Upl5/90DDHzCAIjZBgjV19Ficzaq8Zj6Wd4Fzfy6yeu0RT5XNKFLKlDmDolBmgHUoMUPDUBtEy0ozm8/oo47n06S41AVeQj+ETsbKHQQj0gyKOTtSnzF19Ko7kJ3H3p6xTtAeRHjYZscHXod754Jt22suDkjfx9XUKJFuIrUKm2SRvSEj4wHNvgln5ugMamkyT8jyf48bPi3DAHsTmGysxKhiden+OzGkYZGCUTs5LFf7IFK9v1On2KTvv8GJt1vByfzF/6SLqk8TkvkZt6tnsbDrVfoAuoKcxYmO4EUH6P5lh0SEyAe/qZtST1wHDAAPdSnnA4AnqvMf2KpGbPT6nGOrrVmymy4fwVwJa+asuK7wDUKCgHAUJ79bNx4hDT2GiOwmZT+ZWL0ZIX4GBecjo=
+  file_glob: true
+  file: "*/build/libs/surveillancecenter-*.jar"
+  on:
+    repo: 1element/sc
+    tags: true
