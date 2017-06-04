@@ -83,17 +83,7 @@ public class CameraRepository {
    * @return
    */
   public Camera findById(String cameraId) {
-    if (cameraId == null) {
-      return null;
-    }
-
-    for (Camera camera : cameras.values()) {
-      if (cameraId.equals(camera.getId())) {
-        return camera;
-      }
-    }
-
-    return null;
+    return cameras.get(cameraId);
   }
 
   /**

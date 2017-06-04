@@ -96,12 +96,12 @@ var SurveillanceCenter = {
         contentType: 'application/json; charset=UTF-8',
         dataType: 'json',
         data: JSON.stringify(data)
-      }).done(function(data) {
+      }).done(function() {
         $(button).data('enabled-status', newEnabledStatus);
         $(button).find('.btn').toggleClass('active');
         $(button).find('.btn').toggleClass('btn-primary');
         $(button).find('.btn').toggleClass('btn-default');
-      }).fail(function(data) {
+      }).fail(function() {
         $(that.CSS_PUSH_NOTIFICATION_SETTINGS_ERROR).collapse('show');
       });
     });
