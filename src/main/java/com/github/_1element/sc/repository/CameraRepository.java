@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class CameraRepository {
   @Value("${sc.cameras.available}")
   private String camerasAvailable;
 
-  private Map<String, Camera> cameras = new HashMap<>();
+  private Map<String, Camera> cameras = new LinkedHashMap<>();
 
   private static final String PROPERTY_NAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name";
 

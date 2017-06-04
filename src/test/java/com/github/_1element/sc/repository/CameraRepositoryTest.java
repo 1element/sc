@@ -28,10 +28,10 @@ public class CameraRepositoryTest {
     List<Camera> result = cameraRepository.findAll();
 
     assertEquals(4, result.size());
-    assertTrue(result.stream().anyMatch(e -> "testcamera1".equals(e.getId())));
-    assertTrue(result.stream().anyMatch(e -> "testcamera2".equals(e.getId())));
-    assertTrue(result.stream().anyMatch(e -> "testcamera3".equals(e.getId())));
-    assertTrue(result.stream().anyMatch(e -> "testcamera4".equals(e.getId())));
+    assertEquals("testcamera1", result.get(0).getId());
+    assertEquals("testcamera2", result.get(1).getId());
+    assertEquals("testcamera3", result.get(2).getId());
+    assertEquals("testcamera4", result.get(3).getId());
   }
 
   @Test
@@ -81,7 +81,7 @@ public class CameraRepositoryTest {
     assertEquals(3, result.size());
     assertTrue(result.stream().noneMatch(e -> "Camera without stream url".equals(e.getName())));
   }
-  
+
   @Test
   public void testFindAllWithSnapshotUrl() throws Exception {
     List<Camera> result = cameraRepository.findAllWithSnapshotUrl();
