@@ -3,6 +3,8 @@ jdk:
 - oraclejdk8
 before_install:
 - chmod +x gradlew
+script:
+- ./gradlew clean build --stacktrace
 deploy:
   provider: releases
   api_key:
