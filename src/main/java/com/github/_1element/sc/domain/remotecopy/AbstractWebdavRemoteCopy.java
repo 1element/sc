@@ -10,6 +10,8 @@ import com.github.sardine.Sardine;
  */
 public abstract class AbstractWebdavRemoteCopy {
 
+  protected static final String SEPARATOR = "/";
+  
   protected Sardine sardine;
 
   protected WebdavRemoteCopyProperties webdavRemoteCopyProperties;

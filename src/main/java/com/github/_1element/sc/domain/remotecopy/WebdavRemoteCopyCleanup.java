@@ -77,28 +77,49 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
    */
   private Map<Date, DavResource> removeFilesByDate() throws IOException {
     Map<Date, DavResource> remoteFileMap = new TreeMap<>();
-    
-    String location = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir();
-    List<DavResource> resources = sardine.list(location);
-    for (DavResource resource : resources) {
-      if (!resource.isDirectory() && fileService.hasValidExtension(resource.getName())) {
-        LocalDateTime removeBefore = LocalDateTime.now().minusDays(webdavRemoteCopyProperties.getCleanupKeep());
-        LocalDateTime remoteFileTimestamp = resource.getCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        if (remoteFileTimestamp.isBefore(removeBefore)) {
-          // delete straight if file is too old
-          sardine.delete(location + resource.getName());
-          LOG.debug("Successfully removed file '{}' on remote webdav server, was older than {} days.", resource.getName(), webdavRemoteCopyProperties.getCleanupKeep());
-          sizeRemoved += resource.getContentLength();
-          filesRemoved++;
-        } else {
-          // put to return map for deletion by quota
-          remoteFileMap.put(resource.getCreation(), resource);
-          totalSize += resource.getContentLength();
+
+    String baseLocation = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir();
+    List<DavResource> baseResources = sardine.list(baseLocation);
+    for (DavResource baseResource : baseResources) {
+      boolean isParentResource = baseResource.getName().equals(webdavRemoteCopyProperties.getDir().replaceAll(SEPARATOR, ""));
+      if (baseResource.isDirectory() && !isParentResource) {
+        String location = baseLocation + baseResource.getName() + SEPARATOR;
+        List<DavResource> resources = sardine.list(location);
+        for (DavResource resource : resources) {
+          if (fileService.hasValidExtension(resource.getName()) && (!removeResourceIfOutDated(resource))) {
+            // put to return map for possible deletion by quota
+            remoteFileMap.put(resource.getCreation(), resource);
+            totalSize += resource.getContentLength();
+          }
         }
       }
     }
-      
+
     return remoteFileMap;
+  }
+
+  /**
+   * Delete webdav resource if it's older than the configured days.
+   * 
+   * @param resource the webdav resource to delete
+   * 
+   * @return true if file has been deleted
+   * @throws IOException
+   */
+  private boolean removeResourceIfOutDated(DavResource resource) throws IOException {
+    LocalDateTime removeBefore = LocalDateTime.now().minusDays(webdavRemoteCopyProperties.getCleanupKeep());
+    LocalDateTime remoteFileTimestamp = resource.getCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+    if (remoteFileTimestamp.isBefore(removeBefore)) {
+      sardine.delete(webdavRemoteCopyProperties.getHost() + resource.getHref().toString());
+      LOG.debug("Successfully removed file '{}' on remote webdav server, was older than {} days.", resource.getName(), webdavRemoteCopyProperties.getCleanupKeep());
+      sizeRemoved += resource.getContentLength();
+      filesRemoved++;
+
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -114,11 +135,10 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
     }
 
     long sizeToBeRemoved = totalSize - webdavRemoteCopyProperties.getCleanupMaxDiskSpace();
-    String location = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir();
-    
+
     for (Map.Entry<Date, DavResource> entry: remoteFileMap.entrySet()) {
       DavResource davResource = entry.getValue();
-      sardine.delete(location + davResource.getName());
+      sardine.delete(webdavRemoteCopyProperties.getHost() + davResource.getHref().toString());
       LOG.debug("Successfully removed file '{}' on remote webdav server, quota was reached.", davResource.getName());
       sizeRemoved += davResource.getContentLength();
       filesRemoved++;

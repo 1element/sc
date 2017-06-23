@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +53,15 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
     File file = new File(localFullFilepath);
     InputStream inputStream = new FileInputStream(file);
 
-    String destination = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + file.getName();
-    sardine.put(destination, inputStream);
+    String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
+
+    if (!sardine.exists(destinationDirectory)) {
+      sardine.createDirectory(destinationDirectory);
+    }
+
+    String fullDestinationPath = destinationDirectory + file.getName();
+    sardine.put(fullDestinationPath, inputStream);
 
     LOG.info("File '{}' was successfully uploaded to remote webdav server.", file.getName());
   }

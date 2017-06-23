@@ -1,6 +1,7 @@
 package com.github._1element.sc.domain.remotecopy;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -57,7 +58,7 @@ public class WebdavRemoteCopyTest {
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent("/tmp/test/local-file.jpg");
     webdavRemoteCopy.handle(remoteCopyEvent);
 
-    verify(sardine).put(eq("https://test-webdav.local/remote-copy-directory/local-file.jpg"), eq(fileInputStreamMock));
+    verify(sardine).put(matches("https\\:\\/\\/test-webdav\\.local\\/remote-copy-directory\\/\\d{4}-\\d{2}-\\d{2}\\/local-file\\.jpg"), eq(fileInputStreamMock));
   }
 
 }
