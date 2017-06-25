@@ -114,6 +114,11 @@ var SurveillanceCenter = {
     var that = this;
 
     $(this.CSS_TRIGGER_ARCHIVE_RECORDINGS_SETTINGS_CLICK).on('click', function() {
+      // disable button and show spinner
+      var button = this;
+      $(button).addClass('active');
+      $(button).prop('disabled', true);
+
       var endpoint = $(that.CSS_SETTINGS_ENDPOINT_CONFIGURATION).data('archive-recordings-settings-endpoint');
       var data = {
         'archived': true
@@ -130,6 +135,10 @@ var SurveillanceCenter = {
         that.resetNotifier();
       }).fail(function() {
         $(that.CSS_ARCHIVE_RECORDINGS_SETTINGS_RESULT_ERROR).collapse('show');
+      }).always(function() {
+        // enable button again
+        $(button).prop('disabled', false);
+        $(button).removeClass('active');
       });
     });
   },
