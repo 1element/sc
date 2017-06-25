@@ -28,8 +28,6 @@ import com.github.sardine.Sardine;
 @Component
 public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements RemoteCopyCleanup {
 
-  private FileService fileService;
-  
   private long sizeRemoved = 0;
 
   private long filesRemoved = 0;

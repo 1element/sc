@@ -5,7 +5,6 @@ import com.github._1element.sc.exception.FtpRemoteCopyException;
 import com.github._1element.sc.properties.FtpRemoteCopyProperties;
 import com.github._1element.sc.service.FileService;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 

@@ -1,7 +1,6 @@
 package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;

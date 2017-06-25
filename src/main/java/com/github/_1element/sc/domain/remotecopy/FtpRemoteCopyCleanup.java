@@ -29,8 +29,6 @@ import com.github._1element.sc.service.FileService;
 @Component
 public class FtpRemoteCopyCleanup extends AbstractFtpRemoteCopy implements RemoteCopyCleanup {
 
-  private FileService fileService;
-
   private long sizeRemoved = 0;
 
   private long filesRemoved = 0;
