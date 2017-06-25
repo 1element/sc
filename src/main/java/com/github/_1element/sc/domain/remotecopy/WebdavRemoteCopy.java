@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.github._1element.sc.events.RemoteCopyEvent;
 import com.github._1element.sc.properties.WebdavRemoteCopyProperties;
+import com.github._1element.sc.service.FileService;
 import com.github.sardine.Sardine;
 
 /**
@@ -29,8 +30,8 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
   private static final Logger LOG = LoggerFactory.getLogger(WebdavRemoteCopy.class);
 
   @Autowired
-  public WebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties) {
-    super(sardine, webdavRemoteCopyProperties);
+  public WebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties, FileService fileService) {
+    super(sardine, webdavRemoteCopyProperties, fileService);
   }
 
   @Override
@@ -50,18 +51,19 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
    * @param localFullFilepath full path to local file
    */
   private void transferFile(String localFullFilepath) throws IOException {
-    File file = new File(localFullFilepath);
-    InputStream inputStream = new FileInputStream(file);
+    File file = fileService.createFile(localFullFilepath);
 
-    String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
+    try (InputStream inputStream = fileService.createInputStream(file)) {
+      String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
 
-    if (!sardine.exists(destinationDirectory)) {
-      sardine.createDirectory(destinationDirectory);
+      if (!sardine.exists(destinationDirectory)) {
+        sardine.createDirectory(destinationDirectory);
+      }
+
+      String fullDestinationPath = destinationDirectory + file.getName();
+      sardine.put(fullDestinationPath, inputStream);
     }
-
-    String fullDestinationPath = destinationDirectory + file.getName();
-    sardine.put(fullDestinationPath, inputStream);
 
     LOG.info("File '{}' was successfully uploaded to remote webdav server.", file.getName());
   }

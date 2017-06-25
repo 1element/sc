@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github._1element.sc.exception.FtpRemoteCopyException;
 import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.service.FileService;
 
 /**
  * Abstract ftp remote copy class.
@@ -18,11 +19,14 @@ public abstract class AbstractFtpRemoteCopy {
   protected FtpRemoteCopyProperties ftpRemoteCopyProperties;
 
   protected FTPClient ftp;
+  
+  protected FileService fileService;
 
   @Autowired
-  public AbstractFtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp) {
+  public AbstractFtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
     this.ftpRemoteCopyProperties = ftpRemoteCopyProperties;
     this.ftp = ftp;
+    this.fileService = fileService;
   }
 
   /**

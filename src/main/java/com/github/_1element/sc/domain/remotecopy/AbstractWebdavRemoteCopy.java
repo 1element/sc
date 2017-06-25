@@ -3,6 +3,7 @@ package com.github._1element.sc.domain.remotecopy; //NOSONAR
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github._1element.sc.properties.WebdavRemoteCopyProperties;
+import com.github._1element.sc.service.FileService;
 import com.github.sardine.Sardine;
 
 /**
@@ -15,11 +16,14 @@ public abstract class AbstractWebdavRemoteCopy {
   protected Sardine sardine;
 
   protected WebdavRemoteCopyProperties webdavRemoteCopyProperties;
+  
+  protected FileService fileService;
 
   @Autowired
-  public AbstractWebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties) {
+  public AbstractWebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties, FileService fileService) {
     this.sardine = sardine;
     this.webdavRemoteCopyProperties = webdavRemoteCopyProperties;
+    this.fileService = fileService;
     setCredentials();
   }
 

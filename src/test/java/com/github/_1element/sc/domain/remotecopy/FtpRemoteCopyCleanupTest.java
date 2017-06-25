@@ -17,10 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,12 +27,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.github._1element.sc.SurveillanceCenterApplication;
 import com.github._1element.sc.properties.FtpRemoteCopyProperties;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
-@PrepareForTest(FtpRemoteCopyCleanup.class)
 public class FtpRemoteCopyCleanupTest {
 
   @Mock

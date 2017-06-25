@@ -43,7 +43,7 @@ public class FtpRemoteCopyCleanup extends AbstractFtpRemoteCopy implements Remot
 
   @Autowired
   public FtpRemoteCopyCleanup(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
-    super(ftpRemoteCopyProperties, ftp);
+    super(ftpRemoteCopyProperties, ftp, fileService);
     this.fileService = fileService;
   }
 

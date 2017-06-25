@@ -42,7 +42,7 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
 
   @Autowired
   public WebdavRemoteCopyCleanup(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties, FileService fileService) {
-    super(sardine, webdavRemoteCopyProperties);
+    super(sardine, webdavRemoteCopyProperties, fileService);
     this.fileService = fileService;
   }
 

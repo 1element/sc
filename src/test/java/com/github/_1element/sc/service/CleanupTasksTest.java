@@ -11,17 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,16 +25,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
-@PrepareForTest(CleanupTasks.class)
 public class CleanupTasksTest {
 
   @Mock
   private SurveillanceImageRepository imageRepository;
+
+  @Mock
+  private FileService fileService;
 
   @InjectMocks
   private CleanupTasks cleanupTasks;
@@ -59,7 +53,6 @@ public class CleanupTasksTest {
     // mocking
     MockitoAnnotations.initMocks(this);
     Mockito.when(imageRepository.getArchivedImagesToCleanup(any())).thenReturn(images);
-    PowerMockito.mockStatic(Files.class);
   }
 
   @Test
@@ -68,9 +61,8 @@ public class CleanupTasksTest {
 
     cleanupTasks.cleanupArchive();
 
-    // verify static method calls to delete files (2 images + 2 thumbnails)
-    PowerMockito.verifyStatic(times(4));
-    Files.delete(any(Path.class));
+    // verify method calls to delete files (2 images + 2 thumbnails)
+    verify(fileService, times(4)).delete(any(Path.class));
 
     // verify image repository db deletion for 2 images
     verify(imageRepository, times(2)).delete(any(SurveillanceImage.class));

@@ -3,6 +3,9 @@ package com.github._1element.sc.domain.remotecopy; //NOSONAR
 import com.github._1element.sc.events.RemoteCopyEvent;
 import com.github._1element.sc.exception.FtpRemoteCopyException;
 import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.service.FileService;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +30,8 @@ public class FtpRemoteCopy extends AbstractFtpRemoteCopy implements RemoteCopy {
   private static final Logger LOG = LoggerFactory.getLogger(FtpRemoteCopy.class);
 
   @Autowired
-  public FtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp) {
-    super(ftpRemoteCopyProperties, ftp);
+  public FtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+    super(ftpRemoteCopyProperties, ftp, fileService);
   }
 
   @Override
@@ -53,11 +56,12 @@ public class FtpRemoteCopy extends AbstractFtpRemoteCopy implements RemoteCopy {
    * @throws IOException
    */
   private void transferFile(String localFullFilepath) throws FtpRemoteCopyException, IOException {
-    File file = new File(localFullFilepath);
-    InputStream inputStream = new FileInputStream(file);
+    File file = fileService.createFile(localFullFilepath);
 
-    if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
-      throw new FtpRemoteCopyException("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
+    try (InputStream inputStream = fileService.createInputStream(file)) {
+      if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
+        throw new FtpRemoteCopyException("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
+      }
     }
 
     LOG.info("File '{}' was successfully uploaded to remote ftp server.", file.getName());

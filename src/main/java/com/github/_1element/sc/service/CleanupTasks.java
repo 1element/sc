@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +21,8 @@ import java.util.List;
 public class CleanupTasks {
 
   private SurveillanceImageRepository imageRepository;
+
+  private FileService fileService;
 
   @Value("${sc.archive.cleanup.enabled:false}")
   private Boolean isCleanupEnabled;
@@ -39,8 +40,9 @@ public class CleanupTasks {
   private static final Logger LOG = LoggerFactory.getLogger(CleanupTasks.class);
 
   @Autowired
-  public CleanupTasks(SurveillanceImageRepository imageRepository) {
+  public CleanupTasks(SurveillanceImageRepository imageRepository, FileService fileService) {
     this.imageRepository = imageRepository;
+    this.fileService = fileService;
   }
 
   /**
@@ -58,13 +60,13 @@ public class CleanupTasks {
 
     int numberOfImages = 0;
     for (SurveillanceImage image : images) {
-      Path imageFilePath = Paths.get(imageStorageDirectory + image.getFileName());
-      Path thumbnailFilePath = Paths.get(imageStorageDirectory + THUMBNAIL_PREFIX + image.getFileName());
+      Path imageFilePath = fileService.getPath(imageStorageDirectory + image.getFileName());
+      Path thumbnailFilePath = fileService.getPath(imageStorageDirectory + THUMBNAIL_PREFIX + image.getFileName());
       try {
-        Files.delete(imageFilePath);
-        Files.delete(thumbnailFilePath);
+        fileService.delete(imageFilePath);
+        fileService.delete(thumbnailFilePath);
         numberOfImages++;
-      } catch (Exception e) {
+      } catch (IOException e) {
         LOG.warn("Exception occurred while removing old archived image/thumbnail '{}'/'{}', cause '{}'",
             imageFilePath.toString(), thumbnailFilePath.toString(), e.getMessage());
       }

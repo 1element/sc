@@ -13,10 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -30,12 +26,9 @@ import com.github.sardine.Sardine;
 import com.google.common.collect.Lists;
 import com.github.sardine.DavResource;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-@PowerMockIgnore({"javax.management.*", "org.apache.http.conn.ssl.*"})
-@PrepareForTest(WebdavRemoteCopyCleanup.class)
 public class WebdavRemoteCopyCleanupTest {
 
   @Mock
@@ -129,5 +122,5 @@ public class WebdavRemoteCopyCleanupTest {
 
     verifyZeroInteractions(sardine);
   }
-  
+
 }
