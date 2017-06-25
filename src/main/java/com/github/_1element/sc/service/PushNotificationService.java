@@ -2,17 +2,15 @@ package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.PushNotificationSetting;
+import com.github._1element.sc.domain.pushnotification.PushNotificationClient;
+import com.github._1element.sc.domain.pushnotification.PushNotificationClientFactory;
 import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
 import com.github._1element.sc.events.PushNotificationEvent;
+import com.github._1element.sc.exception.PushNotificationClientException;
 import com.github._1element.sc.properties.PushNotificationProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.PushNotificationSettingRepository;
 
-import net.pushover.client.PushoverClient;
-import net.pushover.client.PushoverException;
-import net.pushover.client.PushoverMessage;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +29,20 @@ import java.util.Map;
 
 /**
  * Service to send push notifications and retrieve configuration settings.
- * Uses pushover.net API.
  */
 @Service
 public class PushNotificationService {
 
+  private PushNotificationClientFactory pushNotificationClientFactory;
+
   private PushNotificationSettingRepository pushNotificationSettingRepository;
 
   private CameraRepository cameraRepository;
-  
-  private PushoverClient pushoverClient;
 
   private PushNotificationProperties properties;
 
   private MessageSource messageSource;
-
+  
   private static Map<String, Instant> lastPushNotification = new HashMap<>();
 
   private static final String MESSAGE_PROPERTIES_PUSH_TITLE = "push-notification.title";
@@ -55,13 +52,14 @@ public class PushNotificationService {
   private static final Logger LOG = LoggerFactory.getLogger(PushNotificationService.class);
 
   @Autowired
-  public PushNotificationService(PushNotificationSettingRepository pushNotificationSettingRepository,
-                                 CameraRepository cameraRepository, PushoverClient pushoverClient, 
+  public PushNotificationService(PushNotificationClientFactory pushNotificationClientFactory,
+                                 PushNotificationSettingRepository pushNotificationSettingRepository, 
+                                 CameraRepository cameraRepository,
                                  PushNotificationProperties properties,
                                  MessageSource messageSource) {
+    this.pushNotificationClientFactory = pushNotificationClientFactory;
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
     this.cameraRepository = cameraRepository;
-    this.pushoverClient = pushoverClient;
     this.properties = properties;
     this.messageSource = messageSource;
   }
@@ -89,22 +87,13 @@ public class PushNotificationService {
       return;
     }
 
-    PushoverMessage.Builder pushoverMessageBuilder = PushoverMessage.builderWithApiToken(properties.getApiToken())
-      .setUserId(properties.getUserToken())
-      .setTitle(title)
-      .setMessage(text);
-    
-    if (StringUtils.isNotBlank(url)) {
-      pushoverMessageBuilder.setUrl(url);
-    }
-
-    PushoverMessage pushoverMessage = pushoverMessageBuilder.build();
+    PushNotificationClient pushNotificationClient = pushNotificationClientFactory.getClient(properties.getAdapter());
 
     try {
-      pushoverClient.pushMessage(pushoverMessage);
-      LOG.debug("Push notification with title '{}' was sent.", pushoverMessage.getTitle());
-    } catch (PushoverException e) {
-      LOG.error("Could not send push notification '{}', exception was: {}", title, e.getMessage());
+      pushNotificationClient.sendMessage(title, text, url);
+      LOG.debug("Push notification with title '{}' was sent.", title);
+    } catch (PushNotificationClientException e) {
+      LOG.error("Push notification with title '{}' was not sent. {}", title, e.getMessage());
     }
   }
 

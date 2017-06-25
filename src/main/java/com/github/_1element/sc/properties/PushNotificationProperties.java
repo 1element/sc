@@ -12,6 +12,8 @@ public class PushNotificationProperties {
 
   private boolean enabled = false;
 
+  private String adapter;
+  
   private String apiToken;
 
   private String userToken;
@@ -26,6 +28,14 @@ public class PushNotificationProperties {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+  
+  public String getAdapter() {
+    return adapter;
+  }
+
+  public void setAdapter(String adapter) {
+    this.adapter = adapter;
   }
 
   public String getApiToken() {

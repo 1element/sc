@@ -44,7 +44,6 @@ dependencies {
   compile('org.apache.commons:commons-lang3:3.4')
   compile('com.google.guava:guava:19.0')
   compile('org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE')
-  compile('com.github.sps.pushover.net:pushover-client:1.0.0')
   compile('com.github.lookfirst:sardine:5.7')
   compile('org.webjars:bootstrap:3.3.6')
   compile('org.webjars:startbootstrap-sb-admin-2:1.0.8')
