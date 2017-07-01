@@ -123,7 +123,7 @@ public class PushNotificationServiceTest {
   }
 
   @Test
-  public void testHandlePushNotificatonEventDisabledForCamera() throws Exception {
+  public void testHandlePushNotificationEventDisabledForCamera() throws Exception {
     ReflectionTestUtils.setField(properties, "enabled", true);
     
     Camera camera = cameraRepository.findById("testcamera2");
