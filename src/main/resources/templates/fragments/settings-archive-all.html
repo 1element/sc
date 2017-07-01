@@ -10,7 +10,7 @@
     </div>
   </div>
   <!-- /.row -->
-  
+
   <div class="row">
     <div class="col-lg-12">
       <div id="js-archive-recordings-settings-result-success" class="alert alert-success collapse" role="alert">
@@ -20,7 +20,7 @@
     </div>
   </div>
   <!-- /.row -->
-  
+
   <div class="row">
     <div class="col-lg-12">
       <div id="js-archive-recordings-settings-result-error" class="alert alert-danger collapse" role="alert">
@@ -30,10 +30,12 @@
     </div>
   </div>
   <!-- /.row -->
-  
+
   <div class="row">
     <div class="col-lg-12">
-      <button type="button" class="btn btn-primary js-archive-recordings-settings-click" th:text="#{settings.archive-recordings.action}">Archive all recordings</button>
+      <button type="button" class="btn btn-primary has-spinner js-archive-recordings-settings-click">
+        <i class="fa fa-spinner fa-spin"></i> <span th:text="#{settings.archive-recordings.action}">Archive all recordings</span>
+      </button>
     </div>
   </div>
   <!-- /.row -->
