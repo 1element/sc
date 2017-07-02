@@ -2,6 +2,7 @@ package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.SurveillanceImage;
+import com.github._1element.sc.dto.ImagesCameraSummaryResult;
 import com.github._1element.sc.events.ImageReceivedEvent;
 import com.github._1element.sc.events.PushNotificationEvent;
 import com.github._1element.sc.events.RemoteCopyEvent;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,12 +164,37 @@ public class SurveillanceService {
 
   /**
    * Returns most recent image date by querying database.
-   * @return
+   * 
+   * @return most recent image date
    */
   public LocalDateTime getMostRecentImageDate() {
     List<LocalDateTime> resultList = imageRepository.getMostRecentImageDate(new PageRequest(0, 1));
 
     return resultList.stream().findFirst().orElse(null);
+  }
+
+  /**
+   * Returns images summary for each camera.
+   * 
+   * @return the images camera summary result
+   */
+  public List<ImagesCameraSummaryResult> getImagesCameraSummary() {
+    List<ImagesCameraSummaryResult> result = new ArrayList<>();
+    PageRequest limitPageRequest = new PageRequest(0, 1);
+
+    List<Camera> cameras = cameraRepository.findAll();
+
+    for (Camera camera : cameras) {
+      Long count = imageRepository.countImagesForCamera(camera.getId());
+      LocalDateTime mostRecentDate = null;
+      if (count > 0) {
+        List<LocalDateTime> mostRecentDateList = imageRepository.getMostRecentImageDateForCamera(camera.getId(), limitPageRequest);
+        mostRecentDate = mostRecentDateList.stream().findFirst().orElse(null);
+      }
+      result.add(new ImagesCameraSummaryResult(camera, count, mostRecentDate));
+    }
+
+    return result;
   }
 
   /**

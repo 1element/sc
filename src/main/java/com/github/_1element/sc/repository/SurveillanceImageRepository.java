@@ -1,6 +1,6 @@
 package com.github._1element.sc.repository; //NOSONAR
 
-import com.github._1element.sc.dto.ImagesSummaryResult;
+import com.github._1element.sc.dto.ImagesDateSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,14 +28,20 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   @Query("select s from SurveillanceImage s where s.cameraId = :cameraId and (s.receivedAt between :start and :end) and s.archived = :archived")
   Page<SurveillanceImage> findAllForDateRangeAndCameraId(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("cameraId") String cameraId, @Param("archived") boolean archived, Pageable pageable);
 
-  @Query("select new com.github._1element.sc.dto.ImagesSummaryResult(cast(receivedAt as date), count(*)) from SurveillanceImage s where s.archived = false group by cast(receivedAt as date) order by cast(receivedAt as date) desc")
-  List<ImagesSummaryResult> getImagesSummary();
+  @Query("select new com.github._1element.sc.dto.ImagesDateSummaryResult(cast(receivedAt as date), count(*)) from SurveillanceImage s where s.archived = false group by cast(receivedAt as date) order by cast(receivedAt as date) desc")
+  List<ImagesDateSummaryResult> getImagesSummary();
 
   @Query("select count(*) from SurveillanceImage s where s.archived = false")
   Long countAllImages();
 
+  @Query("select count(*) from SurveillanceImage s where s.cameraId = :cameraId and s.archived = false")
+  Long countImagesForCamera(@Param("cameraId") String cameraId);
+
   @Query("select s.receivedAt from SurveillanceImage s where s.archived = false order by s.receivedAt desc")
   List<LocalDateTime> getMostRecentImageDate(Pageable pageable);
+
+  @Query("select s.receivedAt from SurveillanceImage s where s.cameraId = :cameraId and s.archived = false order by s.receivedAt desc")
+  List<LocalDateTime> getMostRecentImageDateForCamera(@Param("cameraId") String cameraId, Pageable pageable);
 
   @Query("select s from SurveillanceImage s where s.archived = true and s.receivedAt <= :dateBefore")
   List<SurveillanceImage> getArchivedImagesToCleanup(@Param("dateBefore") LocalDateTime before);

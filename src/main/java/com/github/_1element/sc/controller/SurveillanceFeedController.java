@@ -1,5 +1,6 @@
 package com.github._1element.sc.controller; //NOSONAR
 
+import com.github._1element.sc.dto.ImagesCameraSummaryResult;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.URIConstants;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping(URIConstants.FEED_ROOT)
@@ -31,7 +33,6 @@ public class SurveillanceFeedController {
 
   @GetMapping(URIConstants.FEED_STATUS)
   public String statusfeed(Model model) throws Exception {
-
     Long countAllImages = imageRepository.countAllImages();
     LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate();
 
@@ -40,6 +41,16 @@ public class SurveillanceFeedController {
     model.addAttribute("baseUrl", feedBaseUrl);
 
     return "feed-status";
+  }
+
+  @GetMapping(URIConstants.FEED_CAMERAS)
+  public String camerasfeed(Model model) throws Exception {
+    List<ImagesCameraSummaryResult> imagesCameraSummaryResult = surveillanceService.getImagesCameraSummary();
+
+    model.addAttribute("imagesCameraSummaryResult", imagesCameraSummaryResult);
+    model.addAttribute("baseUrl", feedBaseUrl);
+
+    return "feed-cameras";
   }
 
 }

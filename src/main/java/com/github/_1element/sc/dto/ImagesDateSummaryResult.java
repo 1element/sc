@@ -3,15 +3,15 @@ package com.github._1element.sc.dto; //NOSONAR
 import java.util.Date;
 
 /**
- * Summary of surveillance images (count for date).
+ * Summary (count) of surveillance images for each date.
  */
-public class ImagesSummaryResult {
+public class ImagesDateSummaryResult {
 
   private Date date;
 
   private Long count;
 
-  public ImagesSummaryResult(Date date, Long count) {
+  public ImagesDateSummaryResult(Date date, Long count) {
     this.date = date;
     this.count = count;
   }

@@ -2,7 +2,7 @@ package com.github._1element.sc.controller; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
-import com.github._1element.sc.dto.ImagesSummaryResult;
+import com.github._1element.sc.dto.ImagesDateSummaryResult;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.properties.NotifierProperties;
@@ -204,7 +204,7 @@ public class SurveillanceWebController {
 
   @ModelAttribute
   public void populateNavigationModel(Model model) {
-    List<ImagesSummaryResult> imagesSummary = imageRepository.getImagesSummary();
+    List<ImagesDateSummaryResult> imagesSummary = imageRepository.getImagesSummary();
     Long countAllImages = imageRepository.countAllImages();
 
     model.addAttribute("countRecordings", countAllImages);

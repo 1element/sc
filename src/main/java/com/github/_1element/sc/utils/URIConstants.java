@@ -18,6 +18,8 @@ public final class URIConstants {
   public static final String FEED_ROOT = "/feed";
 
   public static final String FEED_STATUS = "/status";
+  
+  public static final String FEED_CAMERAS = "/cameras";
 
   public static final String API_ROOT = "/api/v1";
   
