@@ -98,8 +98,8 @@ public class PushNotificationService {
   }
 
   /**
-   * Handles push notification events.
-   * Will perform checks if notification should be sent or if throttle is applied or disabled by configuration.
+   * Handles push notification events. 
+   * Will perform checks if notification should be sent or not.
    * 
    * @param pushNotificationEvent push notification event
    */
@@ -113,25 +113,15 @@ public class PushNotificationService {
       return;
     }
 
-    // throttle if group time is not reached
-    Instant currentInstant = Instant.now();
-    Instant lastPushNotificationInstant = lastPushNotification.get(camera.getId());
-    if ((lastPushNotificationInstant != null) && (properties.getGroupTime() > 0)) {
-      long minutesBetween = ChronoUnit.MINUTES.between(lastPushNotificationInstant, currentInstant);
-      if (minutesBetween < properties.getGroupTime()) {
-        LOG.debug("Push notification was not sent. Last push notification for camera '{}' was {} minute(s) ago. Group time is {} minute(s).",
-            camera.getId(), minutesBetween, properties.getGroupTime());
-        return;
-      }
+    // check if rate limit is reached
+    if (hasRateLimitReached(camera.getId())) {
+      return;
     }
 
     // send push message
     String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()}, LocaleContextHolder.getLocale());
     String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(), LocalDateTime.now().toString()}, LocaleContextHolder.getLocale());
     sendMessage(title, message, properties.getUrl());
-
-    // save timestamp of this run
-    lastPushNotification.put(camera.getId(), currentInstant);
   }
 
   /**
@@ -153,6 +143,33 @@ public class PushNotificationService {
     }
 
     return result;
+  }
+
+  /**
+   * Perform rate limitation (throttle).
+   * 
+   * Push notification should not be sent if the time period between this
+   * and the last run is less than the configured group time.
+   * 
+   * @param cameraId the camera id to perform check for
+   * @return true if rate limit is reached
+   */
+  private synchronized boolean hasRateLimitReached(String cameraId) {
+    Instant currentInstant = Instant.now();
+    Instant lastPushNotificationInstant = lastPushNotification.get(cameraId);
+    if ((lastPushNotificationInstant != null) && (properties.getGroupTime() > 0)) {
+      long minutesBetween = ChronoUnit.MINUTES.between(lastPushNotificationInstant, currentInstant);
+      if (minutesBetween < properties.getGroupTime()) {
+        LOG.debug("Push notification was not sent. Last push notification for camera '{}' was {} minute(s) ago. Group time is {} minute(s).",
+            cameraId, minutesBetween, properties.getGroupTime());
+        return true;
+      }
+    }
+
+    // save timestamp of this run
+    lastPushNotification.put(cameraId, currentInstant);
+
+    return false;
   }
 
 }

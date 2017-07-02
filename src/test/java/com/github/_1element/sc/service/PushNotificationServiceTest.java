@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -65,7 +66,10 @@ public class PushNotificationServiceTest {
     pushNotificationClientMock = mock(PushNotificationClient.class);
     Mockito.when(pushNotificationClientFactoryMock.getClient(any())).thenReturn(pushNotificationClientMock);
     ReflectionTestUtils.setField(pushNotificationService, "pushNotificationClientFactory", pushNotificationClientFactoryMock);
-    
+
+    ReflectionTestUtils.setField(properties, "enabled", true);
+    ReflectionTestUtils.setField(properties, "groupTime", 0);
+
     if (!fixturesCreated) {
       // test fixtures
       PushNotificationSetting pushNotificationSetting = new PushNotificationSetting("testcamera1", true);
@@ -94,8 +98,6 @@ public class PushNotificationServiceTest {
 
   @Test
   public void testSendMessage() throws Exception {
-    ReflectionTestUtils.setField(properties, "enabled", true);
-
     pushNotificationService.sendMessage("Test title", "Test message", "http://test.local/");
     
     verify(pushNotificationClientMock).sendMessage("Test title", "Test message", "http://test.local/");
@@ -112,8 +114,6 @@ public class PushNotificationServiceTest {
 
   @Test
   public void testHandlePushNotificationEvent() throws Exception {
-    ReflectionTestUtils.setField(properties, "enabled", true);
-
     Camera camera = cameraRepository.findById("testcamera1");
     PushNotificationEvent pushNotificationEvent = new PushNotificationEvent(camera);
 
@@ -124,14 +124,27 @@ public class PushNotificationServiceTest {
 
   @Test
   public void testHandlePushNotificationEventDisabledForCamera() throws Exception {
-    ReflectionTestUtils.setField(properties, "enabled", true);
-    
     Camera camera = cameraRepository.findById("testcamera2");
     PushNotificationEvent pushNotificationEvent = new PushNotificationEvent(camera);
     
     pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
     
     verifyZeroInteractions(pushNotificationClientFactoryMock);
+  }
+  
+  @Test
+  public void testHandlePushNotificationEventGroupTime() throws Exception {
+    ReflectionTestUtils.setField(properties, "groupTime", 2);
+
+    Camera camera = cameraRepository.findById("testcamera1");
+    PushNotificationEvent pushNotificationEvent = new PushNotificationEvent(camera);
+
+    // send two events shortly
+    pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
+    pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
+
+    // sendMessage() should only be invoked once (group time should be applied)
+    verify(pushNotificationClientMock, times(1)).sendMessage(any(), any(), any());
   }
 
 }
