@@ -12,7 +12,7 @@
     </item>
     <item th:each="result : ${imagesCameraSummaryResult}">
       <title th:text="${result.camera.name}">Front door</title>
-      <link th:text="${baseUrl}"></link>
+      <link th:text="@{${baseUrl}(camera=${result.camera.id})}"></link>
       <description th:if="${result.mostRecentDate != null}"
                    th:text="${result.count} + ' (' + ${#temporals.format(result.mostRecentDate, 'yyyy-MM-dd HH:mm:ss')} + ')'">124 (2017-06-25 10:45:33)</description>
       <description th:unless="${result.mostRecentDate != null}" th:text="${result.count}">0</description>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,6 @@ public class SurveillanceFeedController {
 
     model.addAttribute("countRecordings", countAllImages);
     model.addAttribute("mostRecentImageDate", mostRecentImageDate);
-    model.addAttribute("baseUrl", feedBaseUrl);
 
     return "feed-status";
   }
@@ -48,9 +48,13 @@ public class SurveillanceFeedController {
     List<ImagesCameraSummaryResult> imagesCameraSummaryResult = surveillanceService.getImagesCameraSummary();
 
     model.addAttribute("imagesCameraSummaryResult", imagesCameraSummaryResult);
-    model.addAttribute("baseUrl", feedBaseUrl);
 
     return "feed-cameras";
+  }
+  
+  @ModelAttribute
+  public void populateBaseUrl(Model model) {
+    model.addAttribute("baseUrl", feedBaseUrl + URIConstants.RECORDINGS);
   }
 
 }
