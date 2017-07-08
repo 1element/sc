@@ -53,7 +53,7 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
     File file = fileService.createFile(localFullFilepath);
 
     try (InputStream inputStream = fileService.createInputStream(file)) {
-      String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
       String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
 
       if (!sardine.exists(destinationDirectory)) {

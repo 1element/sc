@@ -29,6 +29,7 @@ public abstract class AbstractWebdavRemoteCopy {
 
   protected void setCredentials() {
     sardine.setCredentials(webdavRemoteCopyProperties.getUsername(), webdavRemoteCopyProperties.getPassword());
+    sardine.enablePreemptiveAuthentication(webdavRemoteCopyProperties.getHost());
   }
-  
+
 }

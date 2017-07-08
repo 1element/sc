@@ -112,6 +112,28 @@ public class WebdavRemoteCopyCleanupTest {
   }
 
   @Test
+  public void testCleanupEmptyDirectory() throws Exception {
+    DavResource davDirectory = mock(DavResource.class);
+    Mockito.when(davDirectory.isDirectory()).thenReturn(true);
+    Mockito.when(davDirectory.getName()).thenReturn("2017-06-25");
+   
+    DavResource davSubResource = mock(DavResource.class);
+    Mockito.when(davSubResource.isDirectory()).thenReturn(true);
+
+    List<DavResource> davRootResources = Lists.newArrayList(davDirectory);
+    List<DavResource> davSubResources = Lists.newArrayList(davSubResource);
+
+    // mock behaviour
+    Mockito.when(sardine.list(BASE_LOCATION)).thenReturn(davRootResources);
+    Mockito.when(sardine.list(BASE_LOCATION + "2017-06-25/")).thenReturn(davSubResources);
+    
+    // execute and verify
+    webdavRemoteCopyCleanup.cleanup();
+
+    verify(sardine).delete(BASE_LOCATION + "2017-06-25/");
+  }
+
+  @Test
   @DirtiesContext
   public void testCleanupDisabled() throws Exception {
     WebdavRemoteCopyProperties webdavRemoteCopyProperties = mock(WebdavRemoteCopyProperties.class);
