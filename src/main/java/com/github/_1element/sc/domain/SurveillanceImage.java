@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Surveillance image entity.
@@ -76,6 +77,22 @@ public class SurveillanceImage {
   @Override
   public String toString() {
     return String.valueOf(id);
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (!(other instanceof SurveillanceImage)) {
+      return false;
+    }
+    SurveillanceImage castOther = (SurveillanceImage) other;
+    return Objects.equals(id, castOther.id) && Objects.equals(fileName, castOther.fileName)
+        && Objects.equals(cameraId, castOther.cameraId) && Objects.equals(receivedAt, castOther.receivedAt)
+        && Objects.equals(archived, castOther.archived);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, fileName, cameraId, receivedAt, archived);
   }
 
 }

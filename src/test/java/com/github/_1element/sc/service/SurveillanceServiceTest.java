@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -50,6 +51,14 @@ public class SurveillanceServiceTest {
   
   private static LocalDateTime time3;
   
+  private static SurveillanceImage image1;
+  
+  private static SurveillanceImage image2;
+  
+  private static SurveillanceImage image3;
+  
+  private static PageRequest pageRequest;
+
   private static boolean fixturesCreated = false;
   
   @Before
@@ -58,20 +67,22 @@ public class SurveillanceServiceTest {
       return;
     }
 
+    pageRequest = new PageRequest(0, 10, new Sort(new Sort.Order(Sort.Direction.DESC, "receivedAt")));
+
     // test fixtures for testcamera1
     camera1 = cameraRepository.findById("testcamera1");
     time1 = LocalDateTime.of(2017, Month.JUNE, 2, 11, 18, 42);
-    SurveillanceImage image1 = new SurveillanceImage("test-file1.jpg", camera1.getId(), time1);
+    image1 = new SurveillanceImage("test-file1.jpg", camera1.getId(), time1);
     imageRepository.save(image1);
 
     LocalDateTime time2 = LocalDateTime.of(2017, Month.MAY, 3, 10, 15, 55);
-    SurveillanceImage image2 = new SurveillanceImage("test-file2.jpg", camera1.getId(), time2);
+    image2 = new SurveillanceImage("test-file2.jpg", camera1.getId(), time2);
     imageRepository.save(image2);
 
     // test fixtures for testcamera2
     camera2 = cameraRepository.findById("testcamera2");
     time3 = LocalDateTime.of(2017, Month.JUNE, 1, 8, 18, 44);
-    SurveillanceImage image3 = new SurveillanceImage("test-file3.jpg", camera2.getId(), time3);
+    image3 = new SurveillanceImage("test-file3.jpg", camera2.getId(), time3);
     imageRepository.save(image3);
     
     fixturesCreated = true;
@@ -92,6 +103,42 @@ public class SurveillanceServiceTest {
     assertTrue(result.stream().anyMatch(e -> expectedResultCamera1.equals(e)));
     assertTrue(result.stream().anyMatch(e -> expectedResultCamera2.equals(e)));
     assertTrue(result.stream().anyMatch(e -> expectedResultCamera3.equals(e)));
+  }
+
+  @Test
+  public void testGetImagesPageForCamera() throws Exception {
+    Optional<String> nameCamera1 = Optional.of("testcamera1");
+    Optional<LocalDate> emptyDate = Optional.empty();
+
+    Page<SurveillanceImage> result = surveillanceService.getImagesPage(nameCamera1, emptyDate, false, pageRequest);
+    List<SurveillanceImage> contentResult = result.getContent();
+
+    assertTrue(contentResult.size() == 2);
+    assertTrue(contentResult.stream().anyMatch(e -> image1.equals(e)));
+    assertTrue(contentResult.stream().anyMatch(e -> image2.equals(e)));
+  }
+
+  @Test
+  public void testGetImagesPageForCameraAndDate() throws Exception {
+    Optional<String> nameCamera1 = Optional.of("testcamera1");
+    Optional<LocalDate> date = Optional.of(LocalDate.of(2017, Month.JUNE, 2));
+    
+    Page<SurveillanceImage> result = surveillanceService.getImagesPage(nameCamera1, date, false, pageRequest);
+    List<SurveillanceImage> contentResult = result.getContent();
+
+    assertTrue(contentResult.size() == 1);
+    assertTrue(contentResult.stream().anyMatch(e -> image1.equals(e)));
+  }
+
+  @Test
+  public void testGetImagesPagesWithoutFilter() throws Exception {
+    Page<SurveillanceImage> result = surveillanceService.getImagesPage(Optional.empty(), Optional.empty(), false, pageRequest);
+    List<SurveillanceImage> contentResult = result.getContent();
+    
+    assertTrue(contentResult.size() == 3);
+    assertTrue(contentResult.stream().anyMatch(e -> image1.equals(e)));
+    assertTrue(contentResult.stream().anyMatch(e -> image2.equals(e)));
+    assertTrue(contentResult.stream().anyMatch(e -> image3.equals(e)));
   }
 
   @Test
@@ -119,6 +166,19 @@ public class SurveillanceServiceTest {
     LocalDateTime result = surveillanceService.getMostRecentImageDate(images, Optional.of(LocalDate.now()));
 
     assertNull(result);
+  }
+
+  @Test
+  public void testGetCamera() throws Exception {
+    Optional<String> camera1 = Optional.of("testcamera1");
+    Optional<String> emptyCamera = Optional.empty();
+    Optional<String> emptyCameraString = Optional.of("");
+    Optional<String> invalidCameraName = Optional.of("invalid-camera-name");
+
+    assertEquals("testcamera1", surveillanceService.getCamera(camera1).getId());
+    assertNull(surveillanceService.getCamera(emptyCamera));
+    assertNull(surveillanceService.getCamera(emptyCameraString));
+    assertNull(surveillanceService.getCamera(invalidCameraName));
   }
 
 }
