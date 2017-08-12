@@ -1,5 +1,9 @@
 # Surveillance Center
 
+[![Build Status](https://travis-ci.org/1element/sc.svg?branch=master)](https://travis-ci.org/1element/sc)
+[![Release](https://img.shields.io/github/release/1element/sc.svg?maxAge=3600)](https://github.com/1element/sc/releases/latest)
+[![License](https://img.shields.io/github/license/1element/sc.svg?maxAge=2592000)](https://github.com/1element/sc/blob/master/LICENSE.md)
+
 Surveillance Center is an open source, self-hosted, web-based video surveillance software.
 
 It accepts images using the built-in FTP server and has a nice interface to 
