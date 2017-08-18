@@ -62,16 +62,16 @@ public class CameraRepository {
     List<String> camerasAvailableList = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().omitEmptyStrings().split(camerasAvailable));
 
     for (String cameraId : camerasAvailableList) {
-      Camera camera = new Camera();
-      camera.setId(cameraId);
-      camera.setName(multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId));
-      camera.setRotation(NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION, cameraId, null)));
-      camera.setHost(multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId));
-      camera.setFtpUsername(multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId));
-      camera.setFtpPassword(multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId));
-      camera.setFtpIncomingDirectory(multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId));
-      camera.setSnapshotUrl(multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, null));
-      camera.setStreamUrl(multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId, null));
+      String name = multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId);
+      Integer rotation = NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION, cameraId, null));
+      String host = multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId);
+      String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
+      String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
+      String ftpIncomingDirectory = multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId);
+      String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, null);
+      String streamUrl = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId, null);
+
+      Camera camera = new Camera(cameraId, name, rotation, host, ftpUsername, ftpPassword, ftpIncomingDirectory, snapshotUrl, streamUrl);
       cameras.put(cameraId, camera);
     }
   }

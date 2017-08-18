@@ -74,7 +74,7 @@ public class SurveillanceWebController {
   }
 
   @GetMapping(URIConstants.ROOT)
-  public String home() throws Exception {
+  public String home() {
     return "redirect:" + URIConstants.LIVEVIEW;
   }
 
@@ -133,14 +133,14 @@ public class SurveillanceWebController {
   }
 
   @PostMapping(URIConstants.RECORDINGS)
-  public String recordingsArchive(@RequestParam List<Long> imageIds) throws Exception {
+  public String recordingsArchive(@RequestParam List<Long> imageIds) {
     imageRepository.archiveByIds(imageIds);
 
     return "redirect:" + URIConstants.RECORDINGS;
   }
 
   @GetMapping(URIConstants.LIVEVIEW)
-  public String liveview(Model model, HttpServletRequest request) throws Exception {
+  public String liveview(Model model, HttpServletRequest request) {
     List<Camera> cameras = cameraRepository.findAllWithSnapshotUrl();
 
     model.addAttribute("cameras", cameras);
@@ -154,7 +154,7 @@ public class SurveillanceWebController {
   }
 
   @GetMapping(URIConstants.LIVEVIEW + "/{cameraId}")
-  public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws Exception {
+  public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws CameraNotFoundException {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null || camera.getSnapshotUrl() == null) {
       throw new CameraNotFoundException();
@@ -172,7 +172,7 @@ public class SurveillanceWebController {
   }
 
   @GetMapping(URIConstants.LIVESTREAM)
-  public String livestream(Model model) throws Exception {
+  public String livestream(Model model) {
     List<Camera> cameras = cameraRepository.findAllWithStreamUrl();
 
     model.addAttribute("cameras", cameras);
@@ -182,7 +182,7 @@ public class SurveillanceWebController {
   }
 
   @GetMapping(URIConstants.LIVESTREAM + "/{cameraId}")
-  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws Exception {
+  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws CameraNotFoundException {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null || camera.getStreamUrl() == null) {
       throw new CameraNotFoundException();
@@ -194,7 +194,7 @@ public class SurveillanceWebController {
   }
 
   @GetMapping(URIConstants.SETTINGS)
-  public String settings(Model model) throws Exception {
+  public String settings(Model model) {
     List<CameraPushNotificationSettingResult> cameraPushNotificationSettings = pushNotificationService.getAllSettings();
 
     model.addAttribute("cameraPushNotificationSettings", cameraPushNotificationSettings);

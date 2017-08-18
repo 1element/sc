@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -36,6 +37,7 @@ public class CleanupTasksTest {
   @Mock
   private FileService fileService;
 
+  @Autowired
   @InjectMocks
   private CleanupTasks cleanupTasks;
 
@@ -43,7 +45,6 @@ public class CleanupTasksTest {
   public void setUp() throws Exception {
     // configuration
     ReflectionTestUtils.setField(cleanupTasks, "keepHours", 24);
-    ReflectionTestUtils.setField(cleanupTasks, "imageStorageDirectory", "/invalid/tmp/test/");
 
     // test data
     SurveillanceImage image1 = new SurveillanceImage("file1.jpg", "camera1", LocalDateTime.now());

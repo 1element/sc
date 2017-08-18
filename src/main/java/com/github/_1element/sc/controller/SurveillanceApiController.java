@@ -46,7 +46,7 @@ public class SurveillanceApiController {
    */
   @PostMapping(URIConstants.API_RECORDINGS)
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage) throws Exception {
+  public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage) throws UnsupportedOperationException {
     boolean isArchived = surveillanceImage.isArchived();
     if (!isArchived) {
       throw new UnsupportedOperationException("Archived flag must be true.");
@@ -62,7 +62,7 @@ public class SurveillanceApiController {
    * @throws Exception
    */
   @GetMapping(URIConstants.API_RECORDINGS_COUNT)
-  public ImagesCountResult recordingsCount() throws Exception {
+  public ImagesCountResult recordingsCount() {
     Long imagesCount = imageRepository.countAllImages();
 
     return new ImagesCountResult(imagesCount);
@@ -79,7 +79,7 @@ public class SurveillanceApiController {
    */
   @PutMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
   public PushNotificationSetting updatePushNotificationSetting(@PathVariable String cameraId,
-                                                               @RequestBody PushNotificationSetting pushNotificationSetting) throws Exception {
+                                                               @RequestBody PushNotificationSetting pushNotificationSetting) throws ResourceNotFoundException {
 
     PushNotificationSetting updatePushNotificationSetting = pushNotificationSettingRepository.findByCameraId(cameraId);
     if (updatePushNotificationSetting == null) {

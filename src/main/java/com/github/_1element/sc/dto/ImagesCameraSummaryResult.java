@@ -26,24 +26,12 @@ public class ImagesCameraSummaryResult {
     return camera;
   }
 
-  public void setCamera(Camera camera) {
-    this.camera = camera;
-  }
-
   public Long getCount() {
     return count;
   }
 
-  public void setCount(Long count) {
-    this.count = count;
-  }
-
   public LocalDateTime getMostRecentDate() {
     return mostRecentDate;
-  }
-
-  public void setMostRecentDate(LocalDateTime mostRecentDate) {
-    this.mostRecentDate = mostRecentDate;
   }
 
   @Override

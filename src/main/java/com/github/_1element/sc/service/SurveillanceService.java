@@ -3,29 +3,14 @@ package com.github._1element.sc.service; //NOSONAR
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.dto.ImagesCameraSummaryResult;
-import com.github._1element.sc.events.ImageReceivedEvent;
-import com.github._1element.sc.events.PushNotificationEvent;
-import com.github._1element.sc.events.RemoteCopyEvent;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
-import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.name.Rename;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.metrics.CounterService;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,73 +29,9 @@ public class SurveillanceService {
   private CameraRepository cameraRepository;
 
   @Autowired
-  private FileService fileService;
-
-  @Autowired
-  private ApplicationEventPublisher eventPublisher;
-
-  @Autowired
-  private CounterService counterService;
-
-  @Value("${sc.image.storage-dir}")
-  private String imageStorageDirectory;
-
-  @Value("${sc.image.thumbnail.width:200}")
-  private int thumbnailWidth;
-
-  @Value("${sc.image.thumbnail.height:200}")
-  private int thumbnailHeight;
-
-  @Value("${sc.image.thumbnail.quality:0.8}")
-  private double thumbnailQuality;
-
-  private static final String SEPARATOR = "-";
-
-  private static final Logger LOG = LoggerFactory.getLogger(SurveillanceService.class);
-
-  @Autowired
   public SurveillanceService(SurveillanceImageRepository imageRepository, CameraRepository cameraRepository) {
     this.imageRepository = imageRepository;
     this.cameraRepository = cameraRepository;
-  }
-
-  /**
-   * Event listener for image received events.
-   * Will create thumbnail and database entry.
-   *
-   * @param imageReceivedEvent image received event
-   * @throws IOException
-   */
-  @Async
-  @EventListener
-  public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) throws IOException {
-    // move file from incoming ftp directory to final storage directory
-    File sourceFile = new File(imageReceivedEvent.getFileName());
-    StringBuilder destinationFileName = new StringBuilder(imageStorageDirectory);
-    destinationFileName.append(fileService.getUniquePrefix()).append(SEPARATOR);
-    destinationFileName.append(imageReceivedEvent.getSource().getId()).append(SEPARATOR);
-    destinationFileName.append(sourceFile.getName());
-    File destinationFile = new File(destinationFileName.toString());
-
-    FileUtils.moveFile(sourceFile, destinationFile);
-
-    // generate thumbnail
-    Thumbnails.of(destinationFile)
-      .size(thumbnailWidth, thumbnailHeight)
-      .outputQuality(thumbnailQuality)
-      .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
-
-    // store image information in database
-    SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
-    imageRepository.save(image);
-
-    // actuator metrics
-    LOG.info("New surveillance image '{}' was received.", image.getFileName());
-    counterService.increment("images.received");
-
-    // publish events to invoke remote copy and push notification
-    eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
-    eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
   }
 
   /**

@@ -15,8 +15,4 @@ public class ImagesCountResult {
     return count;
   }
 
-  public void setCount(Long count) {
-    this.count = count;
-  }
-
 }

@@ -1,4 +1,4 @@
-package com.github._1element.sc.properties;
+package com.github._1element.sc.properties; //NOSONAR
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;

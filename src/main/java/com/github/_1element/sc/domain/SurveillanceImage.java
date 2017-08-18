@@ -38,40 +38,20 @@ public class SurveillanceImage {
     return id;
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
   public String getFileName() {
     return fileName;
-  }
-
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
   }
 
   public LocalDateTime getReceivedAt() {
     return receivedAt;
   }
 
-  public void setReceivedAt(LocalDateTime receivedAt) {
-    this.receivedAt = receivedAt;
-  }
-
   public boolean isArchived() {
     return archived;
   }
 
-  public void setArchived(boolean archived) {
-    this.archived = archived;
-  }
-
   public String getCameraId() {
     return cameraId;
-  }
-
-  public void setCameraId(String cameraId) {
-    this.cameraId = cameraId;
   }
 
   @Override

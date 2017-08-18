@@ -1,9 +1,12 @@
 package com.github._1element.sc.service; //NOSONAR
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.github._1element.sc.properties.ImageProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,12 +23,16 @@ import java.util.Date;
 @Service
 public class FileService {
 
-  @Value("${sc.image.valid-extensions}")
-  private String[] validExtensions;
-
+  private ImageProperties imageProperties;
+  
   private static final String DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
 
   private static final String SEPARATOR = "-";
+  
+  @Autowired
+  public FileService(ImageProperties imageProperties) {
+    this.imageProperties = imageProperties;
+  }
 
   /**
    * Returns true if file has valid extension.
@@ -34,11 +41,11 @@ public class FileService {
    * @return true if extension is valid
    */
   public boolean hasValidExtension(String filename) {
-    if (validExtensions == null) {
+    if (imageProperties.getValidExtensions() == null) {
       return true;
     }
 
-    for (String validExtension : validExtensions) {
+    for (String validExtension : imageProperties.getValidExtensions()) {
       if (StringUtils.endsWithIgnoreCase(filename, validExtension)) {
         return true;
       }
@@ -83,6 +90,7 @@ public class FileService {
    * Deletes a file.
    * 
    * @param path the path to the file to delete
+   * @throws IOException
    */
   public void delete(Path path) throws IOException {
     Files.delete(path);
@@ -98,6 +106,18 @@ public class FileService {
    */
   public Path getPath(String first, String... more) {
     return Paths.get(first, more);
+  }
+
+  /**
+   * Moves a file.
+   * This is just a wrapper for the static {@link FileUtils#moveFile(File, File)} method to simplify unit testing.
+   * 
+   * @param sourceFile the file to be moved
+   * @param destinationFile the destination file
+   * @throws IOException
+   */
+  public void moveFile(File sourceFile, File destinationFile) throws IOException {
+    FileUtils.moveFile(sourceFile, destinationFile);
   }
 
 }

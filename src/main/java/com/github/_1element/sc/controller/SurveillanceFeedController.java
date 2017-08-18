@@ -33,7 +33,7 @@ public class SurveillanceFeedController {
   }
 
   @GetMapping(URIConstants.FEED_STATUS)
-  public String statusfeed(Model model) throws Exception {
+  public String statusfeed(Model model) {
     Long countAllImages = imageRepository.countAllImages();
     LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate();
 
@@ -44,7 +44,7 @@ public class SurveillanceFeedController {
   }
 
   @GetMapping(URIConstants.FEED_CAMERAS)
-  public String camerasfeed(Model model) throws Exception {
+  public String camerasfeed(Model model) {
     List<ImagesCameraSummaryResult> imagesCameraSummaryResult = surveillanceService.getImagesCameraSummary();
 
     model.addAttribute("imagesCameraSummaryResult", imagesCameraSummaryResult);
