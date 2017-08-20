@@ -7,43 +7,43 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github._1element.sc.exception.FtpRemoteCopyException;
-import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.exception.FTPRemoteCopyException;
+import com.github._1element.sc.properties.FTPRemoteCopyProperties;
 import com.github._1element.sc.service.FileService;
 
 /**
- * Abstract ftp remote copy class.
+ * Abstract FTP remote copy class.
  */
-public abstract class AbstractFtpRemoteCopy {
+public abstract class AbstractFTPRemoteCopy {
 
-  protected FtpRemoteCopyProperties ftpRemoteCopyProperties;
+  protected FTPRemoteCopyProperties ftpRemoteCopyProperties;
 
   protected FTPClient ftp;
   
   protected FileService fileService;
 
   @Autowired
-  public AbstractFtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+  public AbstractFTPRemoteCopy(FTPRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
     this.ftpRemoteCopyProperties = ftpRemoteCopyProperties;
     this.ftp = ftp;
     this.fileService = fileService;
   }
 
   /**
-   * Connect to ftp server.
+   * Connect to FTP server.
    *
-   * @throws FtpRemoteCopyException
+   * @throws FTPRemoteCopyException
    * @throws IOException
    */
-  protected void connect() throws FtpRemoteCopyException, IOException {
+  protected void connect() throws FTPRemoteCopyException, IOException {
     ftp.connect(ftpRemoteCopyProperties.getHost());
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-      throw new FtpRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
+      throw new FTPRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
     }
 
     if (!ftp.login(ftpRemoteCopyProperties.getUsername(), ftpRemoteCopyProperties.getPassword())) {
-      throw new FtpRemoteCopyException("Could not login to remote ftp server. Invalid username or password.");
+      throw new FTPRemoteCopyException("Could not login to remote ftp server. Invalid username or password.");
     }
 
     ftp.setFileType(FTP.BINARY_FILE_TYPE);
@@ -51,7 +51,7 @@ public abstract class AbstractFtpRemoteCopy {
   }
 
   /**
-   * Disconnect from ftp server.
+   * Disconnect from FTP server.
    */
   protected void disconnect() {
     if (ftp != null && ftp.isConnected()) {

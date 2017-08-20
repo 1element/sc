@@ -25,19 +25,19 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.github._1element.sc.SurveillanceCenterApplication;
-import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.properties.FTPRemoteCopyProperties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-public class FtpRemoteCopyCleanupTest {
+public class FTPRemoteCopyCleanupTest {
 
   @Mock
   private FTPClient ftpClient;
 
   @Autowired
   @InjectMocks
-  private FtpRemoteCopyCleanup ftpRemoteCopyCleanup;
+  private FTPRemoteCopyCleanup ftpRemoteCopyCleanup;
 
   private static final String EXPECTED_FTP_USERNAME = "ftpuser";
 
@@ -115,7 +115,7 @@ public class FtpRemoteCopyCleanupTest {
   @Test
   @DirtiesContext
   public void testCleanupDisabled() throws Exception {
-    FtpRemoteCopyProperties ftpRemoteCopyProperties = mock(FtpRemoteCopyProperties.class);
+    FTPRemoteCopyProperties ftpRemoteCopyProperties = mock(FTPRemoteCopyProperties.class);
     Mockito.when(ftpRemoteCopyProperties.isEnabled()).thenReturn(false);
     ReflectionTestUtils.setField(ftpRemoteCopyCleanup, "ftpRemoteCopyProperties", ftpRemoteCopyProperties);
 

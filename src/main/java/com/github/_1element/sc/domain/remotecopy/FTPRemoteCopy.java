@@ -1,8 +1,8 @@
 package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
 import com.github._1element.sc.events.RemoteCopyEvent;
-import com.github._1element.sc.exception.FtpRemoteCopyException;
-import com.github._1element.sc.properties.FtpRemoteCopyProperties;
+import com.github._1element.sc.exception.FTPRemoteCopyException;
+import com.github._1element.sc.properties.FTPRemoteCopyProperties;
 import com.github._1element.sc.service.FileService;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -18,51 +18,51 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Copy surveillance image to ftp remote server (backup).
+ * Copy surveillance image to FTP remote server (backup).
  */
 @ConditionalOnProperty(name="sc.remotecopy.ftp.enabled", havingValue="true")
 @Component
 @Scope("prototype")
-public class FtpRemoteCopy extends AbstractFtpRemoteCopy implements RemoteCopy {
+public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
 
-  private static final Logger LOG = LoggerFactory.getLogger(FtpRemoteCopy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FTPRemoteCopy.class);
 
   @Autowired
-  public FtpRemoteCopy(FtpRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+  public FTPRemoteCopy(FTPRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
     super(ftpRemoteCopyProperties, ftp, fileService);
   }
 
   @Override
   public void handle(RemoteCopyEvent remoteCopyEvent) {
-    LOG.debug("Ftp remote copy handler for '{}' invoked.", remoteCopyEvent.getFileName());
+    LOG.debug("FTP remote copy handler for '{}' invoked.", remoteCopyEvent.getFileName());
 
     try {
       connect();
       transferFile(remoteCopyEvent.getFileName());
     } catch (Exception e) {
-      LOG.warn("Error during remote ftp copy: {}", e.getMessage());
+      LOG.warn("Error during remote FTP copy: {}", e.getMessage());
     } finally {
       disconnect();
     }
   }
 
   /**
-   * Transfer file to ftp server.
+   * Transfer file to FTP server.
    *
    * @param localFullFilepath full path to local file
-   * @throws FtpRemoteCopyException
+   * @throws FTPRemoteCopyException
    * @throws IOException
    */
-  private void transferFile(String localFullFilepath) throws FtpRemoteCopyException, IOException {
+  private void transferFile(String localFullFilepath) throws FTPRemoteCopyException, IOException {
     File file = fileService.createFile(localFullFilepath);
 
     try (InputStream inputStream = fileService.createInputStream(file)) {
       if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
-        throw new FtpRemoteCopyException("Could not upload file to remote ftp server. Response was: " + ftp.getReplyString());
+        throw new FTPRemoteCopyException("Could not upload file to remote FTP server. Response was: " + ftp.getReplyString());
       }
     }
 
-    LOG.info("File '{}' was successfully uploaded to remote ftp server.", file.getName());
+    LOG.info("File '{}' was successfully uploaded to remote FTP server.", file.getName());
   }
 
 }

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
-public class FtpRemoteCopyTest {
+public class FTPRemoteCopyTest {
 
   @Mock
   private FTPClient ftpClient;
@@ -38,7 +38,7 @@ public class FtpRemoteCopyTest {
 
   @Autowired
   @InjectMocks
-  private FtpRemoteCopy ftpRemoteCopy;
+  private FTPRemoteCopy ftpRemoteCopy;
 
   private static final String EXPECTED_FTP_USERNAME = "ftpuser";
 

@@ -5,11 +5,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Configuration properties for ftp remote copy.
+ * Configuration properties for FTP remote copy.
  */
 @Component
 @ConfigurationProperties("sc.remotecopy.ftp")
-public class FtpRemoteCopyProperties {
+public class FTPRemoteCopyProperties {
 
   private boolean enabled;
 
