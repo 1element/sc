@@ -29,6 +29,8 @@ public final class URIConstants {
 
   public static final String API_PUSH_NOTIFICATION_SETTINGS = "/push-notification-settings";
 
+  public static final String TRANSFORM_MJPEG = "/transform/mjpeg/{id}";
+
   private URIConstants() {
     // hide constructor
   }
