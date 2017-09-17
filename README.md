@@ -16,11 +16,13 @@ browse and manage surveillance snapshots.
 * Built-in FTP server to receive new surveillance images
 * Thumbnail overview of images by date
 * Mobile device friendly layout (responsive design)
-* Ability to archive already seen images
+* Ability to archive already seen images (acknowledge images)
 * Auto removal of old archived images
 * Configurable push notifications (via pushover.net)
-* Optional image copy to remote server (FTP, WebDAV)
+* Optional image copy to remote server (SFTP, FTP, WebDAV)
 * Camera health check
+* Status RSS feeds
+* MJPEG stream transformer/generator
 * Simple livestream and snapshot view of cameras
 
 Surveillance Center doesn't do any kind of motion detection. 
