@@ -26,7 +26,7 @@ browse and manage surveillance snapshots.
 * Simple livestream and snapshot view of cameras
 
 Surveillance Center doesn't do any kind of motion detection. 
-You either have to use the build-in motion detection of your IP camera or 
+You either have to use the built-in motion detection of your IP camera or 
 a third party software like [motion](https://github.com/Motion-Project/motion).
 
 
