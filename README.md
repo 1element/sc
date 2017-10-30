@@ -39,7 +39,7 @@ a third party software like [motion](https://github.com/Motion-Project/motion).
 
 ## Installation
 
-1. Make sure you have the Java 8 Runtime Environment installed on 
+1. Make sure you have the Java Runtime Environment Version 8 (or higher) installed on 
 your system. If not you can [download it at Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html).
 
 2. Download the latest release of Surveillance Center (jar file) from 
@@ -79,6 +79,10 @@ in your browser.
 
 [configuration.md](https://github.com/1element/sc/blob/master/docs/configuration.md): 
 Some notes on how to configure the application (`application.properties`).
+
+[integration.md](https://github.com/1element/sc/blob/master/docs/integration.md): 
+Useful notes if you want to use Surveillance Center with third party software
+like Nginx or Motion.
 
 [developers.md](https://github.com/1element/sc/blob/master/docs/developers.md): 
 For developers only. How to setup a local development environment and build 
