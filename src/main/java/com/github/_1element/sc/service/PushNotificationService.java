@@ -10,7 +10,9 @@ import com.github._1element.sc.exception.PushNotificationClientException;
 import com.github._1element.sc.properties.PushNotificationProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.PushNotificationSettingRepository;
+import com.google.common.annotations.VisibleForTesting;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -48,6 +51,8 @@ public class PushNotificationService {
   private static final String MESSAGE_PROPERTIES_PUSH_TITLE = "push-notification.title";
 
   private static final String MESSAGE_PROPERTIES_PUSH_MESSAGE = "push-notification.message";
+
+  private static final String QUERY_PARAM_CAMERA = "camera";
 
   private static final Logger LOG = LoggerFactory.getLogger(PushNotificationService.class);
 
@@ -121,7 +126,8 @@ public class PushNotificationService {
     // send push message
     String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()}, LocaleContextHolder.getLocale());
     String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(), LocalDateTime.now().toString()}, LocaleContextHolder.getLocale());
-    sendMessage(title, message, properties.getUrl());
+    String url = buildCameraUrl(camera.getId());
+    sendMessage(title, message, url);
   }
 
   /**
@@ -144,6 +150,27 @@ public class PushNotificationService {
 
     return result;
   }
+  
+  /**
+   * Build URL for given cameraId.
+   * This will use the configured base URL for push notifications and
+   * append camera specific parameters.
+   * 
+   * @param cameraId the camera ID to build URL for
+   * @return the camera specific URL
+   */
+  @VisibleForTesting
+  String buildCameraUrl(String cameraId) {
+    String baseUrl = properties.getUrl();
+    if (StringUtils.isBlank(baseUrl)) {
+      return null;
+    }
+
+    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl);
+    uriComponentsBuilder.queryParam(QUERY_PARAM_CAMERA, cameraId);
+
+    return uriComponentsBuilder.build().toUriString();
+  }
 
   /**
    * Perform rate limitation (throttle).
@@ -154,7 +181,8 @@ public class PushNotificationService {
    * @param cameraId the camera id to perform check for
    * @return true if rate limit is reached
    */
-  private synchronized boolean hasRateLimitReached(String cameraId) {
+  @VisibleForTesting
+  synchronized boolean hasRateLimitReached(String cameraId) {
     Instant currentInstant = Instant.now();
     Instant lastPushNotificationInstant = lastPushNotification.get(cameraId);
     if ((lastPushNotificationInstant != null) && (properties.getGroupTime() > 0)) {

@@ -3,6 +3,7 @@ package com.github._1element.sc.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -145,6 +146,40 @@ public class PushNotificationServiceTest {
 
     // sendMessage() should only be invoked once (group time should be applied)
     verify(pushNotificationClientMock, times(1)).sendMessage(any(), any(), any());
+  }
+
+  @Test
+  public void testBuildCameraUrl() throws Exception {
+    assertEquals("http://example.local/sc/recordings?camera=testcamera1", pushNotificationService.buildCameraUrl("testcamera1"));
+  }
+
+  @Test
+  public void testBuildCameraUrlWithNoConfiguration() throws Exception {
+    ReflectionTestUtils.setField(properties, "url", "");
+    assertNull(pushNotificationService.buildCameraUrl("testcamera2"));
+  }
+
+  @Test
+  public void testHasRateLimitReached() throws Exception {
+    PushNotificationProperties propertiesPojo = new PushNotificationProperties();
+    propertiesPojo.setGroupTime(3);
+
+    PushNotificationService pushNotificationServicePojo = 
+        new PushNotificationService(null, null, null, propertiesPojo, null);
+
+    assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));
+    assertTrue(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));
+    assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera4"));
+  }
+
+  @Test
+  public void testHasRateLimitReachedWithNoGroupTime() throws Exception {
+    PushNotificationProperties propertiesPojo = new PushNotificationProperties();
+    PushNotificationService pushNotificationServicePojo = 
+        new PushNotificationService(null, null, null, propertiesPojo, null);
+
+    assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));
+    assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));
   }
 
 }
