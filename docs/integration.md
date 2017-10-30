@@ -82,6 +82,10 @@ SSL configuration: Do not use the snakeoil.conf for a production server.
 You can get a valid SSL certificate for free at [Let's Encrypt](https://letsencrypt.org/).
 Also take a look at [Cipherli.st](https://cipherli.st/) for strong nginx ciphers.
 
+Basic auth: This will restrict access to the whole web server using the 
+HTTP basic authentication protocol. The `.htpasswd` file can be generated 
+using the the `htpasswd` utility (Apache) or the `openssl passwd` command.
+
 SC location block: This will forward all specific requests (`/sc/`) to 
 the Surveillance Center application (Tomcat server) running at localhost 
 on port 8080.
