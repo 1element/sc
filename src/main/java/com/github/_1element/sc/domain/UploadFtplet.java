@@ -40,6 +40,13 @@ public class UploadFtplet extends DefaultFtplet {
 
   private static final Logger LOG = LoggerFactory.getLogger(UploadFtplet.class);
 
+  /**
+   * Constructor.
+   *
+   * @param eventPublisher the event publisher used to distribute events
+   * @param cameraRepository the camera repository
+   * @param fileService the file service
+   */
   @Autowired
   public UploadFtplet(ApplicationEventPublisher eventPublisher, CameraRepository cameraRepository,
                       FileService fileService) {
@@ -54,8 +61,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @param session ftp session
    * @param request ftp request
    * @return ftplet result to skip or process this request
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onUploadStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
@@ -73,8 +80,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @param session ftp session
    * @param request ftp request
    * @return ftplet default result
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
@@ -82,7 +89,8 @@ public class UploadFtplet extends DefaultFtplet {
     String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
     String fileArgument = request.getArgument();
 
-    LOG.debug("File '{}' was uploaded to ftp server by client '{}'", fileArgument, session.getClientAddress().getHostString());
+    LOG.debug("File '{}' was uploaded to ftp server by client '{}'", fileArgument,
+        session.getClientAddress().getHostString());
 
     String fileName = userRoot + currentDirectory + SEPARATOR + fileArgument;
     Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
@@ -98,12 +106,13 @@ public class UploadFtplet extends DefaultFtplet {
    * @param session ftp session
    * @param request ftp request
    * @return ftplet result to skip this request
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onDeleteStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
-    session.write(new DefaultFtpReply(FtpReply.REPLY_450_REQUESTED_FILE_ACTION_NOT_TAKEN, NO_PERMISSION_DELETE_MESSAGE));
+    session.write(new DefaultFtpReply(FtpReply.REPLY_450_REQUESTED_FILE_ACTION_NOT_TAKEN,
+        NO_PERMISSION_DELETE_MESSAGE));
     return FtpletResult.SKIP;
   }
 
@@ -113,8 +122,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @param session ftp session
    * @param request ftp request
    * @return ftplet result to skip this request
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onDownloadStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
@@ -127,8 +136,8 @@ public class UploadFtplet extends DefaultFtplet {
    *
    * @param session ftp session
    * @return default ftplet result
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onConnect(FtpSession session) throws FtpException, IOException {
@@ -141,8 +150,8 @@ public class UploadFtplet extends DefaultFtplet {
    *
    * @param session ftp session
    * @return default ftplet result
-   * @throws FtpException
-   * @throws IOException
+   * @throws FtpException exception if a FTP error occurs
+   * @throws IOException exception if an I/O error occurs
    */
   @Override
   public FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {

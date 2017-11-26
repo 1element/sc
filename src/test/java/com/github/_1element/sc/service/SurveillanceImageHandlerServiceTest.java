@@ -52,6 +52,11 @@ public class SurveillanceImageHandlerServiceTest {
 
   private static final String DESTINATION_TESTFILE_PATH = "/tmp/sc-storage/null-testcamera1-incoming-testfile.jpg";
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error
+   */
   @Before
   public void setUp() throws Exception {
     testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, null);
@@ -59,7 +64,8 @@ public class SurveillanceImageHandlerServiceTest {
     ImageProperties imageProperties = new ImageProperties();
     imageProperties.setStorageDir("/tmp/sc-storage/");
 
-    surveillanceImageHandlerService = new SurveillanceImageHandlerService(imageRepository, fileService, thumbnailService, imageProperties);
+    surveillanceImageHandlerService = new SurveillanceImageHandlerService(imageRepository, fileService,
+        thumbnailService, imageProperties);
 
     MockitoAnnotations.initMocks(this);
   }

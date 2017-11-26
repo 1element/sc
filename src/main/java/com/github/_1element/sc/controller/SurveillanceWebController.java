@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.format.annotation.DateTimeFormat.*;
-
 @Controller
 public class SurveillanceWebController {
 
@@ -64,6 +62,14 @@ public class SurveillanceWebController {
 
   private static final String MESSAGE_PROPERTIES_CAMERAS_ALL = "cameras.all";
 
+  /**
+   * Constructor for the primary surveillance web controller.
+   *
+   * @param surveillanceService the surveillance service
+   * @param imageRepository the image repository
+   * @param cameraRepository the camera repository
+   * @param pushNotificationService the push notification service
+   */
   @Autowired
   public SurveillanceWebController(SurveillanceService surveillanceService, SurveillanceImageRepository imageRepository,
                                    CameraRepository cameraRepository, PushNotificationService pushNotificationService) {
@@ -78,8 +84,20 @@ public class SurveillanceWebController {
     return "redirect:" + URIConstants.LIVEVIEW;
   }
 
+  /**
+   * Renders the recordings page.
+   *
+   * @param date optional date parameter
+   * @param camera optional camera identifier
+   * @param archive optional archive flag identifier
+   * @param page optional paging parameter
+   * @param model the spring model
+   *
+   * @return rendered recordings page
+   * @throws Exception exception in case of an error
+   */
   @GetMapping(value = {URIConstants.RECORDINGS, URIConstants.RECORDINGS + "/{date}"})
-  public String recordingsList(@PathVariable @DateTimeFormat(iso = ISO.DATE) Optional<LocalDate> date,
+  public String recordingsList(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> date,
                                @RequestParam Optional<String> camera, @RequestParam Optional<Boolean> archive,
                                @RequestParam Optional<Integer> page, Model model) throws Exception {
 
@@ -94,13 +112,14 @@ public class SurveillanceWebController {
     }
 
     PageRequest pageRequest = new PageRequest(
-      zeroBasedPageNumber,
-      pageSize,
-      new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD))
+        zeroBasedPageNumber,
+        pageSize,
+        new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD))
     );
 
     String currentCameraId = null;
-    String currentCameraName = messageSource.getMessage(MESSAGE_PROPERTIES_CAMERAS_ALL, null, LocaleContextHolder.getLocale());
+    String currentCameraName = messageSource.getMessage(MESSAGE_PROPERTIES_CAMERAS_ALL, null,
+        LocaleContextHolder.getLocale());
     Camera currentCamera = surveillanceService.getCamera(camera);
     if (currentCamera != null) {
       currentCameraName = currentCamera.getName();
@@ -109,7 +128,8 @@ public class SurveillanceWebController {
 
     Page<SurveillanceImage> images = surveillanceService.getImagesPage(camera, date, isArchive, pageRequest);
     final LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate(images, date);
-    final String visibleImageIds = images.getContent().stream().map(image -> String.valueOf(image.getId())).collect(Collectors.joining(","));
+    final String visibleImageIds = images.getContent().stream().map(image -> String.valueOf(image.getId()))
+        .collect(Collectors.joining(","));
 
     List<Camera> cameras = cameraRepository.findAll();
 
@@ -132,6 +152,13 @@ public class SurveillanceWebController {
     return "recordings";
   }
 
+  /**
+   * Set given image ids to archived status.
+   *
+   * @param imageIds a list of image ids to archive
+   *
+   * @return redirect to recordings page
+   */
   @PostMapping(URIConstants.RECORDINGS)
   public String recordingsArchive(@RequestParam List<Long> imageIds) {
     imageRepository.archiveByIds(imageIds);
@@ -139,6 +166,14 @@ public class SurveillanceWebController {
     return "redirect:" + URIConstants.RECORDINGS;
   }
 
+  /**
+   * Renders the liveview overview page.
+   *
+   * @param model the spring model
+   * @param request the HTTP request
+   *
+   * @return rendered liveview page
+   */
   @GetMapping(URIConstants.LIVEVIEW)
   public String liveview(Model model, HttpServletRequest request) {
     List<Camera> cameras = cameraRepository.findAllWithSnapshotUrl();
@@ -153,8 +188,19 @@ public class SurveillanceWebController {
     return "liveview";
   }
 
+  /**
+   * Renders the live view page for a specific camera.
+   *
+   * @param cameraId the camera to use
+   * @param model the spring model
+   * @param request the HTTP request
+   *
+   * @return rendered live view page
+   * @throws CameraNotFoundException exception if camera was not found
+   */
   @GetMapping(URIConstants.LIVEVIEW + "/{cameraId}")
-  public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request) throws CameraNotFoundException {
+  public String liveviewSingleCamera(@PathVariable Optional<String> cameraId, Model model, HttpServletRequest request)
+      throws CameraNotFoundException {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null || camera.getSnapshotUrl() == null) {
       throw new CameraNotFoundException();
@@ -171,6 +217,13 @@ public class SurveillanceWebController {
     return "liveview-single";
   }
 
+  /**
+   * Renders the live stream overview page.
+   *
+   * @param model the spring model
+   *
+   * @return rendered live stream page
+   */
   @GetMapping(URIConstants.LIVESTREAM)
   public String livestream(Model model) {
     List<Camera> cameras = cameraRepository.findAllWithStreamUrl();
@@ -181,8 +234,18 @@ public class SurveillanceWebController {
     return "livestream";
   }
 
+  /**
+   * Renders the live stream page for a specific camera.
+   *
+   * @param cameraId the camera to use
+   * @param model the spring model
+   *
+   * @return rendered live stream page
+   * @throws CameraNotFoundException exception if camera was not found
+   */
   @GetMapping(URIConstants.LIVESTREAM + "/{cameraId}")
-  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model) throws CameraNotFoundException {
+  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model)
+      throws CameraNotFoundException {
     Camera camera = surveillanceService.getCamera(cameraId);
     if (camera == null || camera.getStreamUrl() == null) {
       throw new CameraNotFoundException();
@@ -193,6 +256,12 @@ public class SurveillanceWebController {
     return "livestream-single";
   }
 
+  /**
+   * Renders the settings page.
+   *
+   * @param model the spring model
+   * @return rendered settings page
+   */
   @GetMapping(URIConstants.SETTINGS)
   public String settings(Model model) {
     List<CameraPushNotificationSettingResult> cameraPushNotificationSettings = pushNotificationService.getAllSettings();
@@ -202,6 +271,11 @@ public class SurveillanceWebController {
     return "settings";
   }
 
+  /**
+   * Model attribute to populates the navigation model.
+   *
+   * @param model the spring model
+   */
   @ModelAttribute
   public void populateNavigationModel(Model model) {
     List<ImagesDateSummaryResult> imagesSummary = imageRepository.getImagesSummary();

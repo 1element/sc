@@ -36,15 +36,20 @@ public class CameraRepository {
 
   private static final String PROPERTY_HOST = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "host";
 
-  private static final String PROPERTY_FTP_USERNAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.username";
+  private static final String PROPERTY_FTP_USERNAME =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.username";
 
-  private static final String PROPERTY_FTP_PASSWORD = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.password";
+  private static final String PROPERTY_FTP_PASSWORD =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.password";
 
-  private static final String PROPERTY_FTP_INCOMING_DIR = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.incoming-dir";
+  private static final String PROPERTY_FTP_INCOMING_DIR =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.incoming-dir";
 
-  private static final String PROPERTY_SNAPSHOT_URL = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.snapshot";
+  private static final String PROPERTY_SNAPSHOT_URL =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.snapshot";
 
-  private static final String PROPERTY_STREAM_URL = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.stream";
+  private static final String PROPERTY_STREAM_URL =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.stream";
 
   private static final String SEPARATOR = ",";
 
@@ -56,15 +61,17 @@ public class CameraRepository {
   /**
    * Initialize repository. Read properties configuration.
    *
-   * @throws PropertyNotFoundException
+   * @throws PropertyNotFoundException exception if property was not found
    */
   @PostConstruct
   private void initialize() throws PropertyNotFoundException {
-    List<String> camerasAvailableList = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().omitEmptyStrings().split(camerasAvailable));
+    List<String> camerasAvailableList = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().omitEmptyStrings()
+        .split(camerasAvailable));
 
     for (String cameraId : camerasAvailableList) {
       String name = multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId);
-      Integer rotation = NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION, cameraId, null));
+      Integer rotation = NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION,
+          cameraId, null));
       String host = multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId);
       String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
       String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
@@ -72,7 +79,8 @@ public class CameraRepository {
       String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, null);
       String streamUrl = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId, null);
 
-      Camera camera = new Camera(cameraId, name, rotation, host, ftpUsername, ftpPassword, ftpIncomingDirectory, snapshotUrl, streamUrl);
+      Camera camera = new Camera(cameraId, name, rotation, host, ftpUsername, ftpPassword, ftpIncomingDirectory,
+          snapshotUrl, streamUrl);
       cameras.put(cameraId, camera);
     }
   }
@@ -81,7 +89,7 @@ public class CameraRepository {
    * Find camera by given id.
    *
    * @param cameraId camera identifier
-   * @return
+   * @return the camera
    */
   public Camera findById(String cameraId) {
     return cameras.get(cameraId);
@@ -90,7 +98,7 @@ public class CameraRepository {
   /**
    * Returns all available cameras.
    *
-   * @return
+   * @return the list of all available cameras
    */
   public List<Camera> findAll() {
     return cameras.values().stream().collect(Collectors.toList());
@@ -118,7 +126,7 @@ public class CameraRepository {
    * Find camera by given ftp username.
    *
    * @param ftpUsername ftp username
-   * @return
+   * @return the camera
    */
   public Camera findByFtpUsername(String ftpUsername) {
     return cameras.values().stream()

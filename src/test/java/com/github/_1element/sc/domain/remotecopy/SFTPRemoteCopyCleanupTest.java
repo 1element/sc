@@ -48,13 +48,19 @@ public class SFTPRemoteCopyCleanupTest {
   @InjectMocks
   private SFTPRemoteCopyCleanup sftpRemoteCopyCleanup;
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     Session session = mock(Session.class);
 
     Mockito.when(session.openChannel(any())).thenReturn(sftpChannel);
-    Mockito.when(jsch.getSession(sftpRemoteCopyProperties.getUsername(), sftpRemoteCopyProperties.getHost())).thenReturn(session);
+    Mockito.when(jsch.getSession(sftpRemoteCopyProperties.getUsername(), sftpRemoteCopyProperties.getHost()))
+        .thenReturn(session);
   }
 
   @Test
@@ -72,7 +78,8 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file2Attributes = mock(SftpATTRS.class);
     Mockito.when(file2Attributes.isDir()).thenReturn(false);
     Mockito.when(file2Attributes.getSize()).thenReturn((long) 2097152);
-    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(10).toEpochSecond(ZoneOffset.UTC));
+    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(10)
+        .toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file2.getAttrs()).thenReturn(file2Attributes);
     Mockito.when(file2.getFilename()).thenReturn("2mb-very-old-testfile.jpg");
 
@@ -102,7 +109,8 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file2Attributes = mock(SftpATTRS.class);
     Mockito.when(file2Attributes.isDir()).thenReturn(false);
     Mockito.when(file2Attributes.getSize()).thenReturn((long) 6291456);
-    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(1).toEpochSecond(ZoneOffset.UTC));
+    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(1)
+        .toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file2.getAttrs()).thenReturn(file2Attributes);
     Mockito.when(file2.getFilename()).thenReturn("6mb-testfile.jpg");
 

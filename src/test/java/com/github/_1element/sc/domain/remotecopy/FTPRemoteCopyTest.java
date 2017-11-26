@@ -49,6 +49,11 @@ public class FTPRemoteCopyTest {
 
   private static final String EXPECTED_LOCAL_FILE_PATH = "/tmp/test/local-file.jpg";
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error.
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);

@@ -22,7 +22,7 @@ import com.jcraft.jsch.SftpException;
 /**
  * Copy surveillance image to SFTP remote server (backup).
  */
-@ConditionalOnProperty(name="sc.remotecopy.sftp.enabled", havingValue="true")
+@ConditionalOnProperty(name = "sc.remotecopy.sftp.enabled", havingValue = "true")
 @Component
 @Scope("prototype")
 public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy {
@@ -30,8 +30,8 @@ public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy
   private static final Logger LOG = LoggerFactory.getLogger(SFTPRemoteCopy.class);
 
   @Autowired
-  public SFTPRemoteCopy(SFTPRemoteCopyProperties sFtpRemoteCopyProperties, JSch jsch, FileService fileService) {
-    super(sFtpRemoteCopyProperties, jsch, fileService);
+  public SFTPRemoteCopy(SFTPRemoteCopyProperties sftpRemoteCopyProperties, JSch jsch, FileService fileService) {
+    super(sftpRemoteCopyProperties, jsch, fileService);
   }
 
   @Override
@@ -42,8 +42,8 @@ public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy
     try {
       sftpChannel = createSFTPChannel();
       transferFile(remoteCopyEvent.getFileName(), sftpChannel);
-    } catch (SFTPRemoteCopyException e) {
-      LOG.warn("Error during remote SFTP copy: '{}'", e.getMessage());
+    } catch (SFTPRemoteCopyException exception) {
+      LOG.warn("Error during remote SFTP copy: '{}'", exception.getMessage());
     } finally {
       if (sftpChannel != null) {
         sftpChannel.disconnect();
@@ -57,7 +57,7 @@ public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy
    *
    * @param completeLocalFilePath the full path to the local file to upload
    * @param sftpChannel the SFTP channel that will be used for the transfer
-   * @throws SFTPRemoteCopyException
+   * @throws SFTPRemoteCopyException exception in case of an error
    */
   private void transferFile(String completeLocalFilePath, ChannelSftp sftpChannel) throws SFTPRemoteCopyException {
     Path path = fileService.getPath(completeLocalFilePath);
@@ -66,7 +66,8 @@ public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy
       sftpChannel.cd(sftpRemoteCopyProperties.getDir());
       sftpChannel.put(inputStream, path.getFileName().toString());
     } catch (SftpException | IOException exception) {
-      throw new SFTPRemoteCopyException("Could not upload file to remote SFTP server: " + exception.getMessage(), exception);
+      throw new SFTPRemoteCopyException("Could not upload file to remote SFTP server: " + exception.getMessage(),
+          exception);
     }
 
     LOG.info("File '{}' was successfully uploaded to remote SFTP server.", path.getFileName().toString());

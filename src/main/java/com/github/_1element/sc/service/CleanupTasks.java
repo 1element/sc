@@ -24,7 +24,7 @@ public class CleanupTasks {
   private SurveillanceImageRepository imageRepository;
 
   private FileService fileService;
-  
+
   private ImageProperties imageProperties;
 
   @Value("${sc.archive.cleanup.enabled:false}")
@@ -36,11 +36,18 @@ public class CleanupTasks {
   private static final String THUMBNAIL_PREFIX = "thumbnail.";
 
   private static final String CRON_EVERY_DAY_AT_4_AM = "0 0 4 * * *";
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(CleanupTasks.class);
 
+  /**
+   * Constructor.
+   *
+   * @param imageRepository the surveillance image repository
+   * @param fileService the file service dependency
+   * @param imageProperties the configured image properties
+   */
   @Autowired
-  public CleanupTasks(SurveillanceImageRepository imageRepository, FileService fileService, 
+  public CleanupTasks(SurveillanceImageRepository imageRepository, FileService fileService,
                       ImageProperties imageProperties) {
     this.imageRepository = imageRepository;
     this.fileService = fileService;
@@ -50,7 +57,7 @@ public class CleanupTasks {
   /**
    * Remove archived images older than X hours.
    */
-  @Scheduled(cron=CRON_EVERY_DAY_AT_4_AM)
+  @Scheduled(cron = CRON_EVERY_DAY_AT_4_AM)
   public void cleanupArchive() {
     if (!Boolean.TRUE.equals(isCleanupEnabled)) {
       LOG.info("Task to remove old archived images not enabled in configuration. Do nothing.");
@@ -63,14 +70,15 @@ public class CleanupTasks {
     int numberOfImages = 0;
     for (SurveillanceImage image : images) {
       Path imageFilePath = fileService.getPath(imageProperties.getStorageDir() + image.getFileName());
-      Path thumbnailFilePath = fileService.getPath(imageProperties.getStorageDir() + THUMBNAIL_PREFIX + image.getFileName());
+      Path thumbnailFilePath = fileService.getPath(imageProperties.getStorageDir() + THUMBNAIL_PREFIX
+          + image.getFileName());
       try {
         fileService.delete(imageFilePath);
         fileService.delete(thumbnailFilePath);
         numberOfImages++;
-      } catch (IOException e) {
+      } catch (IOException exception) {
         LOG.warn("Exception occurred while removing old archived image/thumbnail '{}'/'{}', cause '{}'",
-            imageFilePath.toString(), thumbnailFilePath.toString(), e.getMessage());
+            imageFilePath.toString(), thumbnailFilePath.toString(), exception.getMessage());
       }
       imageRepository.delete(image);
     }

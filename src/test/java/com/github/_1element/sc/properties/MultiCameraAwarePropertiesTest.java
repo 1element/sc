@@ -22,25 +22,25 @@ public class MultiCameraAwarePropertiesTest {
   @Test
   public void testGetProperty() throws Exception {
     assertEquals("Front door", multiCameraAwareProperties.getProperty(
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "testcamera1"));
+        MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "testcamera1"));
   }
 
   @Test(expected = PropertyNotFoundException.class)
   public void testGetPropertyNotFound() throws Exception {
     multiCameraAwareProperties.getProperty(
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "invalidKey", "invalidCameraId");
+        MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "invalidKey", "invalidCameraId");
   }
 
   @Test
   public void testGetPropertyWithDefault() throws Exception {
     assertEquals("Backyard", multiCameraAwareProperties.getProperty(
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "testcamera2", "DefaultWillNotBeUsed"));
+        MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "testcamera2", "DefaultWillNotBeUsed"));
 
     assertEquals("PassedDefault", multiCameraAwareProperties.getProperty(
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "invalidKey", "testcamera2", "PassedDefault"));
+        MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "invalidKey", "testcamera2", "PassedDefault"));
 
     assertEquals("PassedDefaultCameraValue", multiCameraAwareProperties.getProperty(
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "invalidCamera", "PassedDefaultCameraValue"));
+        MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name", "invalidCamera", "PassedDefaultCameraValue"));
   }
 
 }

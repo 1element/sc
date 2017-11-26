@@ -41,9 +41,10 @@ public class SurveillanceService {
    * @param date        optional date
    * @param isArchive   archive flag
    * @param pageRequest page request
-   * @return
+   * @return the page of surveillance images
    */
-  public Page<SurveillanceImage> getImagesPage(Optional<String> camera, Optional<LocalDate> date, boolean isArchive, PageRequest pageRequest) {
+  public Page<SurveillanceImage> getImagesPage(Optional<String> camera, Optional<LocalDate> date, boolean isArchive,
+                                               PageRequest pageRequest) {
     LocalDateTime startOfDay = null;
     LocalDateTime endOfDay = null;
 
@@ -54,7 +55,8 @@ public class SurveillanceService {
 
     if (camera.isPresent() && StringUtils.isNotBlank(camera.get())) {
       if (date.isPresent()) {
-        return imageRepository.findAllForDateRangeAndCameraId(startOfDay, endOfDay, camera.get(), isArchive, pageRequest);
+        return imageRepository.findAllForDateRangeAndCameraId(startOfDay, endOfDay, camera.get(), isArchive,
+            pageRequest);
       }
 
       return imageRepository.findAllByCameraIdAndArchived(camera.get(), isArchive, pageRequest);
@@ -73,7 +75,7 @@ public class SurveillanceService {
    *
    * @param images page of surveillance images
    * @param date   optional date filter
-   * @return
+   * @return the most recent image date
    */
   public LocalDateTime getMostRecentImageDate(Page<SurveillanceImage> images, Optional<LocalDate> date) {
     if (!date.isPresent()) {
@@ -85,7 +87,7 @@ public class SurveillanceService {
 
   /**
    * Returns most recent image date by querying database.
-   * 
+   *
    * @return most recent image date
    */
   public LocalDateTime getMostRecentImageDate() {
@@ -96,7 +98,7 @@ public class SurveillanceService {
 
   /**
    * Returns images summary for each camera.
-   * 
+   *
    * @return the images camera summary result
    */
   public List<ImagesCameraSummaryResult> getImagesCameraSummary() {
@@ -109,7 +111,8 @@ public class SurveillanceService {
       Long count = imageRepository.countImagesForCamera(camera.getId());
       LocalDateTime mostRecentDate = null;
       if (count > 0) {
-        List<LocalDateTime> mostRecentDateList = imageRepository.getMostRecentImageDateForCamera(camera.getId(), limitPageRequest);
+        List<LocalDateTime> mostRecentDateList = imageRepository.getMostRecentImageDateForCamera(
+            camera.getId(), limitPageRequest);
         mostRecentDate = mostRecentDateList.stream().findFirst().orElse(null);
       }
       result.add(new ImagesCameraSummaryResult(camera, count, mostRecentDate));
@@ -122,7 +125,7 @@ public class SurveillanceService {
    * Returns camera for given identifier, if found.
    *
    * @param camera optional camera identifier
-   * @return
+   * @return the camera
    */
   public Camera getCamera(Optional<String> camera) {
     if (camera.isPresent() && StringUtils.isNotBlank(camera.get())) {

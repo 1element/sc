@@ -19,11 +19,19 @@ public abstract class AbstractFTPRemoteCopy {
   protected FTPRemoteCopyProperties ftpRemoteCopyProperties;
 
   protected FTPClient ftp;
-  
+
   protected FileService fileService;
 
+  /**
+   * Constructor.
+   *
+   * @param ftpRemoteCopyProperties the properties to use for remote copying
+   * @param ftp the ftp client dependency
+   * @param fileService the file service dependency
+   */
   @Autowired
-  public AbstractFTPRemoteCopy(FTPRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp, FileService fileService) {
+  public AbstractFTPRemoteCopy(FTPRemoteCopyProperties ftpRemoteCopyProperties, FTPClient ftp,
+                               FileService fileService) {
     this.ftpRemoteCopyProperties = ftpRemoteCopyProperties;
     this.ftp = ftp;
     this.fileService = fileService;
@@ -32,14 +40,15 @@ public abstract class AbstractFTPRemoteCopy {
   /**
    * Connect to FTP server.
    *
-   * @throws FTPRemoteCopyException
-   * @throws IOException
+   * @throws FTPRemoteCopyException exception if connection or login to remote was not successful
+   * @throws IOException exception if IO error occurred during connection
    */
   protected void connect() throws FTPRemoteCopyException, IOException {
     ftp.connect(ftpRemoteCopyProperties.getHost());
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-      throw new FTPRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost() + "'. Response was: " + ftp.getReplyString());
+      throw new FTPRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost()
+          + "'. Response was: " + ftp.getReplyString());
     }
 
     if (!ftp.login(ftpRemoteCopyProperties.getUsername(), ftpRemoteCopyProperties.getPassword())) {
@@ -58,7 +67,7 @@ public abstract class AbstractFTPRemoteCopy {
       try {
         ftp.logout();
         ftp.disconnect();
-      } catch (IOException e) {
+      } catch (IOException exception) {
         // silently ignore disconnect exceptions
       }
     }

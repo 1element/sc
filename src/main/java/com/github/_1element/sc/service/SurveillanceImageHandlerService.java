@@ -44,6 +44,14 @@ public class SurveillanceImageHandlerService {
 
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceImageHandlerService.class);
 
+  /**
+   * Constructor.
+   *
+   * @param imageRepository the image repository
+   * @param fileService the file service
+   * @param thumbnailService the thumbnail service
+   * @param imageProperties the image properties
+   */
   @Autowired
   public SurveillanceImageHandlerService(SurveillanceImageRepository imageRepository, FileService fileService,
                                          ThumbnailService thumbnailService, ImageProperties imageProperties) {
@@ -78,7 +86,8 @@ public class SurveillanceImageHandlerService {
       thumbnailService.createThumbnail(destinationPath);
 
       // store image information in database
-      SurveillanceImage image = new SurveillanceImage(destinationPath.getFileName().toString(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
+      SurveillanceImage image = new SurveillanceImage(destinationPath.getFileName().toString(),
+          imageReceivedEvent.getSource().getId(), LocalDateTime.now());
       imageRepository.save(image);
 
       // actuator metrics
@@ -89,7 +98,8 @@ public class SurveillanceImageHandlerService {
       eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
       eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
     } catch (IOException exception) {
-      LOG.error("Error while moving file from incoming ftp directory to final storage directory: '{}'", exception.getMessage());
+      LOG.error("Error while moving file from incoming ftp directory to final storage directory: '{}'",
+          exception.getMessage());
     }
   }
 

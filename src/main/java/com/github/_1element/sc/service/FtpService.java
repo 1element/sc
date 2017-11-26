@@ -54,7 +54,7 @@ public class FtpService {
   /**
    * Start ftp server.
    *
-   * @throws FtpException
+   * @throws FtpException exception in case of an error
    */
   @PostConstruct
   public void start() throws FtpException {
@@ -96,7 +96,7 @@ public class FtpService {
    * Populate ftp credentials and home directories.
    *
    * @return user manager
-   * @throws FtpException
+   * @throws FtpException exception in case of an error
    */
   private UserManager populateUserManager() throws FtpException {
     UserManager userManager = userManagerFactory.createUserManager();

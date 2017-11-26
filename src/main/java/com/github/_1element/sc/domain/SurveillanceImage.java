@@ -28,6 +28,13 @@ public class SurveillanceImage {
   protected SurveillanceImage() {
   }
 
+  /**
+   * Constructs a new surveillance image.
+   *
+   * @param fileName the image file name
+   * @param cameraId the camera identifier
+   * @param receivedAt the received at time
+   */
   public SurveillanceImage(String fileName, String cameraId, LocalDateTime receivedAt) {
     this.fileName = fileName;
     this.cameraId = cameraId;

@@ -23,6 +23,19 @@ public class Camera {
 
   private String streamUrl;
 
+  /**
+   * Constructs a new camera.
+   *
+   * @param id the unique id of the camera
+   * @param name the camera name
+   * @param rotation optional rotation property
+   * @param host the (internal) host the camera is running on
+   * @param ftpUsername the ftp username for incoming files
+   * @param ftpPassword the ftp password for incoming files
+   * @param ftpIncomingDirectory the ftp incoming directory
+   * @param snapshotUrl optional url to retrieve snapshots
+   * @param streamUrl optional url to the camera stream
+   */
   public Camera(String id, String name, Integer rotation, String host, String ftpUsername, String ftpPassword,
       String ftpIncomingDirectory, String snapshotUrl, String streamUrl) {
     this.id = id;

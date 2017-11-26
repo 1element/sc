@@ -26,15 +26,25 @@ public class SurveillanceTransformationController {
   private MJPEGTransformProperties mjpegProperties;
 
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceTransformationController.class);
-  
+
   @Autowired
-  public SurveillanceTransformationController(MJPEGTransformationService mjpegTransformationService, MJPEGTransformProperties mjpegProperties) {
+  public SurveillanceTransformationController(MJPEGTransformationService mjpegTransformationService,
+                                              MJPEGTransformProperties mjpegProperties) {
     this.mjpegTransformationService = mjpegTransformationService;
     this.mjpegProperties = mjpegProperties;
   }
 
+  /**
+   * Create a simple MJPEG stream by requesting a camera snapshot JPG URL periodically.
+   *
+   * @param id the camera id to create stream for
+   * @param response the streaming HTTP response
+   * @throws ForbiddenException exception if MJPEG transformation is disabled by configuration
+   * @throws ResourceNotFoundException exception if the given camera id is invalid
+   */
   @GetMapping(URIConstants.TRANSFORM_MJPEG)
-  public void transformMJPEG(@PathVariable int id, HttpServletResponse response) throws ForbiddenException, ResourceNotFoundException {
+  public void transformMJPEG(@PathVariable int id, HttpServletResponse response)
+      throws ForbiddenException, ResourceNotFoundException {
     if (!mjpegProperties.isEnabled()) {
       throw new ForbiddenException("MJPEG transformation is disabled. Check your configuration.");
     }
@@ -49,8 +59,8 @@ public class SurveillanceTransformationController {
 
     try {
       mjpegTransformationService.writeSnapshotToOutputStream(snapshotUrl, response);
-    } catch (IOException | RestClientException e) {
-      LOG.debug("MJPEG streaming terminated: {}", e.getMessage());
+    } catch (IOException | RestClientException exception) {
+      LOG.debug("MJPEG streaming terminated: {}", exception.getMessage());
     }
   }
 

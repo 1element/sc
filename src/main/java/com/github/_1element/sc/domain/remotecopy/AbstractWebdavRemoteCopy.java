@@ -12,15 +12,23 @@ import com.github.sardine.Sardine;
 public abstract class AbstractWebdavRemoteCopy {
 
   protected static final String SEPARATOR = "/";
-  
+
   protected Sardine sardine;
 
   protected WebdavRemoteCopyProperties webdavRemoteCopyProperties;
-  
+
   protected FileService fileService;
 
+  /**
+   * Constructor.
+   *
+   * @param sardine the sardine webdav dependency
+   * @param webdavRemoteCopyProperties the properties to use for remote copying
+   * @param fileService the file service dependency
+   */
   @Autowired
-  public AbstractWebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties, FileService fileService) {
+  public AbstractWebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties,
+                                  FileService fileService) {
     this.sardine = sardine;
     this.webdavRemoteCopyProperties = webdavRemoteCopyProperties;
     this.fileService = fileService;

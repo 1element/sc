@@ -11,11 +11,18 @@ import java.util.Objects;
 public class ImagesCameraSummaryResult {
 
   private Camera camera;
-  
+
   private Long count;
 
   private LocalDateTime mostRecentDate;
 
+  /**
+   * Constructs a new summary of surveillance images for each camera.
+   *
+   * @param camera the camera
+   * @param count the count of images
+   * @param mostRecentDate the most recent image date
+   */
   public ImagesCameraSummaryResult(Camera camera, Long count, LocalDateTime mostRecentDate) {
     this.camera = camera;
     this.count = count;

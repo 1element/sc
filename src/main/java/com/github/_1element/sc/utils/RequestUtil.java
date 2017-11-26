@@ -19,7 +19,7 @@ public final class RequestUtil {
    * Returns true if it is an ajax request.
    *
    * @param request request to check
-   * @return
+   * @return true if request is an ajax/xhr request
    */
   public static boolean isAjax(HttpServletRequest request) {
     String requestedWithHeader = request.getHeader(HEADER_REQUESTED_WITH);

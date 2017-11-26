@@ -72,7 +72,7 @@ public class FileService {
    *
    * @param path the path to the file to open
    * @return a new input stream
-   * @throws IOException
+   * @throws IOException IO exception in case of an error
    */
   public InputStream createInputStream(Path path) throws IOException {
     return Files.newInputStream(path);
@@ -82,7 +82,7 @@ public class FileService {
    * Deletes a file.
    *
    * @param path the path to the file to delete
-   * @throws IOException
+   * @throws IOException IO exception in case of an error
    */
   public void delete(Path path) throws IOException {
     Files.delete(path);
@@ -102,11 +102,12 @@ public class FileService {
 
   /**
    * Moves a file.
-   * This is just a wrapper for the static {@link Files#move(Path, Path, CopyOption...)} method to simplify unit testing.
+   * This is just a wrapper for the static {@link Files#move(Path, Path, CopyOption...)} method
+   * to simplify unit testing.
    *
    * @param sourcePath the source to be moved
    * @param destinationPath the destination path
-   * @throws IOException
+   * @throws IOException IO exception in case of an error
    */
   public void moveFile(Path sourcePath, Path destinationPath) throws IOException {
     Files.move(sourcePath, destinationPath);

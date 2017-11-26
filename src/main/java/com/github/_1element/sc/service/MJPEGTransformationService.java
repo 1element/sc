@@ -22,7 +22,7 @@ public class MJPEGTransformationService {
   private final RestTemplate restTemplate;
 
   private MJPEGTransformProperties mjpegProperties;
-  
+
   private static final String NL = "\r\n";
 
   private static final String MJPEG_BOUNDARY = "--BoundaryString";
@@ -35,9 +35,9 @@ public class MJPEGTransformationService {
   }
 
   /**
-   * Continuously retrieve JPEG image from given camera snapshotUrl and 
+   * Continuously retrieve JPEG image from given camera snapshotUrl and
    * output result as MJPEG stream to the provided HttpServlet response.
-   * 
+   *
    * @param snapshotUrl the camera snapshot URL to retrieve image from
    * @param response the HTTP response to write to
    * @throws IOException if output stream could not be written (e.g. client disconnects)
@@ -56,7 +56,7 @@ public class MJPEGTransformationService {
 
       try {
         TimeUnit.MILLISECONDS.sleep(mjpegProperties.getDelay());
-      } catch (InterruptedException e) {
+      } catch (InterruptedException exception) {
         Thread.currentThread().interrupt();
       }
     }
@@ -64,7 +64,7 @@ public class MJPEGTransformationService {
 
   /**
    * Set response content type.
-   * 
+   *
    * @param response HTTP response to set header
    */
   public void setContentType(HttpServletResponse response) {
@@ -73,7 +73,7 @@ public class MJPEGTransformationService {
 
   /**
    * Set response cache control header.
-   * 
+   *
    * @param response HTTP response to set header
    */
   public void setCacheControlHeader(HttpServletResponse response) {
@@ -82,7 +82,7 @@ public class MJPEGTransformationService {
 
   /**
    * Return configured snapshot URL for given ID. Null if not found.
-   * 
+   *
    * @param id ID to retrieve URL for
    * @return snapshot URL
    */

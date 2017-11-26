@@ -37,7 +37,7 @@ public class WebdavRemoteCopyCleanupTest {
   @Autowired
   @InjectMocks
   private WebdavRemoteCopyCleanup webdavRemoteCopyCleanup;
-  
+
   private static final String BASE_LOCATION = "https://test-webdav.local/remote-copy-directory/";
 
   @Test
@@ -46,7 +46,7 @@ public class WebdavRemoteCopyCleanupTest {
     DavResource davDirectory1 = mock(DavResource.class);
     Mockito.when(davDirectory1.isDirectory()).thenReturn(true);
     Mockito.when(davDirectory1.getName()).thenReturn("2017-06-15");
-    
+
     DavResource davResource1 = mock(DavResource.class);
     Mockito.when(davResource1.isDirectory()).thenReturn(false);
     Mockito.when(davResource1.getName()).thenReturn("3mb-testfile.jpg");
@@ -57,7 +57,8 @@ public class WebdavRemoteCopyCleanupTest {
     DavResource davResource2 = mock(DavResource.class);
     Mockito.when(davResource1.isDirectory()).thenReturn(false);
     Mockito.when(davResource1.getName()).thenReturn("2mb-very-old-testfile.jpg");
-    Mockito.when(davResource1.getHref()).thenReturn(new URI("/remote-copy-directory/2017-06-15/2mb-very-old-testfile.jpg"));
+    Mockito.when(davResource1.getHref()).thenReturn(
+        new URI("/remote-copy-directory/2017-06-15/2mb-very-old-testfile.jpg"));
     Mockito.when(davResource1.getContentLength()).thenReturn(2097152L);
     Date oldDate = new Date(1483225200000L);
     Mockito.when(davResource1.getCreation()).thenReturn(oldDate);
@@ -93,7 +94,7 @@ public class WebdavRemoteCopyCleanupTest {
     Mockito.when(davResource1.isDirectory()).thenReturn(false);
     Mockito.when(davResource1.getName()).thenReturn("6mb-testfile.jpg");
     Mockito.when(davResource1.getHref()).thenReturn(new URI("/remote-copy-directory/2017-06-10/6mb-testfile.jpg"));
-    
+
     Mockito.when(davResource1.getContentLength()).thenReturn(6291456L);
     Date oldDate = new Date(1483225200000L);
     Mockito.when(davResource1.getCreation()).thenReturn(oldDate);
@@ -116,7 +117,7 @@ public class WebdavRemoteCopyCleanupTest {
     DavResource davDirectory = mock(DavResource.class);
     Mockito.when(davDirectory.isDirectory()).thenReturn(true);
     Mockito.when(davDirectory.getName()).thenReturn("2017-06-25");
-   
+
     DavResource davSubResource = mock(DavResource.class);
     Mockito.when(davSubResource.isDirectory()).thenReturn(true);
 
@@ -126,7 +127,7 @@ public class WebdavRemoteCopyCleanupTest {
     // mock behaviour
     Mockito.when(sardine.list(BASE_LOCATION)).thenReturn(davRootResources);
     Mockito.when(sardine.list(BASE_LOCATION + "2017-06-25/")).thenReturn(davSubResources);
-    
+
     // execute and verify
     webdavRemoteCopyCleanup.cleanup();
 

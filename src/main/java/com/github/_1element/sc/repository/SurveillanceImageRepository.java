@@ -23,12 +23,19 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   Page<SurveillanceImage> findAllByCameraIdAndArchived(String cameraId, boolean archived, Pageable pageable);
 
   @Query("select s from SurveillanceImage s where (s.receivedAt between :start and :end) and s.archived = :archived")
-  Page<SurveillanceImage> findAllForDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("archived") boolean archived, Pageable pageable);
+  Page<SurveillanceImage> findAllForDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
+                                              @Param("archived") boolean archived, Pageable pageable);
 
-  @Query("select s from SurveillanceImage s where s.cameraId = :cameraId and (s.receivedAt between :start and :end) and s.archived = :archived")
-  Page<SurveillanceImage> findAllForDateRangeAndCameraId(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("cameraId") String cameraId, @Param("archived") boolean archived, Pageable pageable);
+  @Query("select s from SurveillanceImage s where s.cameraId = :cameraId and (s.receivedAt between :start and :end) "
+      + "and s.archived = :archived")
+  Page<SurveillanceImage> findAllForDateRangeAndCameraId(@Param("start") LocalDateTime start,
+                                                         @Param("end") LocalDateTime end,
+                                                         @Param("cameraId") String cameraId,
+                                                         @Param("archived") boolean archived, Pageable pageable);
 
-  @Query("select new com.github._1element.sc.dto.ImagesDateSummaryResult(cast(receivedAt as date), count(*)) from SurveillanceImage s where s.archived = false group by cast(receivedAt as date) order by cast(receivedAt as date) desc")
+  @Query("select new com.github._1element.sc.dto.ImagesDateSummaryResult(cast(receivedAt as date), count(*)) "
+      + "from SurveillanceImage s where s.archived = false group by cast(receivedAt as date) "
+      + "order by cast(receivedAt as date) desc")
   List<ImagesDateSummaryResult> getImagesSummary();
 
   @Query("select count(*) from SurveillanceImage s where s.archived = false")
@@ -40,7 +47,8 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   @Query("select s.receivedAt from SurveillanceImage s where s.archived = false order by s.receivedAt desc")
   List<LocalDateTime> getMostRecentImageDate(Pageable pageable);
 
-  @Query("select s.receivedAt from SurveillanceImage s where s.cameraId = :cameraId and s.archived = false order by s.receivedAt desc")
+  @Query("select s.receivedAt from SurveillanceImage s where s.cameraId = :cameraId and s.archived = false "
+      + "order by s.receivedAt desc")
   List<LocalDateTime> getMostRecentImageDateForCamera(@Param("cameraId") String cameraId, Pageable pageable);
 
   @Query("select s from SurveillanceImage s where s.archived = true and s.receivedAt <= :dateBefore")

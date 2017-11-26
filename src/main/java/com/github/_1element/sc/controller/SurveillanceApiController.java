@@ -36,17 +36,18 @@ public class SurveillanceApiController {
     this.imageRepository = imageRepository;
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
   }
-  
+
   /**
    * Bulk update all recordings.
    * Currently only archived flag set to true is supported.
-   * 
+   *
    * @param surveillanceImage surveillance image with archived flag set to true
-   * @throws Exception
+   * @throws UnsupportedOperationException exception if unsupported operation is requested
    */
   @PostMapping(URIConstants.API_RECORDINGS)
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage) throws UnsupportedOperationException {
+  public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage)
+      throws UnsupportedOperationException {
     boolean isArchived = surveillanceImage.isArchived();
     if (!isArchived) {
       throw new UnsupportedOperationException("Archived flag must be true.");
@@ -57,9 +58,8 @@ public class SurveillanceApiController {
 
   /**
    * Returns the total amount of (non-archived) recordings.
-   * 
+   *
    * @return images count
-   * @throws Exception
    */
   @GetMapping(URIConstants.API_RECORDINGS_COUNT)
   public ImagesCountResult recordingsCount() {
@@ -70,16 +70,17 @@ public class SurveillanceApiController {
 
   /**
    * Set push notification settings (enable/disable) for a given camera.
-   * 
+   *
    * @param cameraId the camera id to modify the setting for
    * @param pushNotificationSetting the push notification setting
-   * 
+   *
    * @return the updated push notification setting
-   * @throws Exception
    */
   @PutMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
   public PushNotificationSetting updatePushNotificationSetting(@PathVariable String cameraId,
-                                                               @RequestBody PushNotificationSetting pushNotificationSetting) throws ResourceNotFoundException {
+                                                               @RequestBody PushNotificationSetting
+                                                                 pushNotificationSetting)
+      throws ResourceNotFoundException {
 
     PushNotificationSetting updatePushNotificationSetting = pushNotificationSettingRepository.findByCameraId(cameraId);
     if (updatePushNotificationSetting == null) {

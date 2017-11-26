@@ -33,6 +33,11 @@ public class PushoverClientTest {
 
   private static final String EXPECTED_ENDPOINT = "https://api.pushover.net/1/messages.json";
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error
+   */
   @Before
   public void setUp() throws Exception {
     RestTemplate restTemplate = new RestTemplate();
@@ -54,9 +59,9 @@ public class PushoverClientTest {
   @Test(expected = PushNotificationClientException.class)
   public void testSendMessageErrorResponse() throws Exception {
     mockServer.expect(requestTo(EXPECTED_ENDPOINT))
-    .andExpect(method(HttpMethod.POST))
-    .andRespond(withBadRequest());
-    
+      .andExpect(method(HttpMethod.POST))
+      .andRespond(withBadRequest());
+
     pushoverClient.sendMessage("Title", "Message text", "https://service.local/");
 
     mockServer.verify();

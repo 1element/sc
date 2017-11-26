@@ -20,7 +20,7 @@ import java.nio.file.Path;
 /**
  * Copy surveillance image to FTP remote server (backup).
  */
-@ConditionalOnProperty(name="sc.remotecopy.ftp.enabled", havingValue="true")
+@ConditionalOnProperty(name = "sc.remotecopy.ftp.enabled", havingValue = "true")
 @Component
 @Scope("prototype")
 public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
@@ -39,8 +39,8 @@ public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
     try {
       connect();
       transferFile(remoteCopyEvent.getFileName());
-    } catch (Exception e) {
-      LOG.warn("Error during remote FTP copy: {}", e.getMessage());
+    } catch (Exception exception) {
+      LOG.warn("Error during remote FTP copy: {}", exception.getMessage());
     } finally {
       disconnect();
     }
@@ -50,15 +50,16 @@ public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
    * Transfer file to FTP server.
    *
    * @param completeLocalFilePath complete path to the local file
-   * @throws FTPRemoteCopyException
-   * @throws IOException
+   * @throws FTPRemoteCopyException exception if file could not be uploaded
+   * @throws IOException exception in case of an IO error
    */
   private void transferFile(String completeLocalFilePath) throws FTPRemoteCopyException, IOException {
     Path path = fileService.getPath(completeLocalFilePath);
 
     try (InputStream inputStream = fileService.createInputStream(path)) {
       if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + path.getFileName().toString(), inputStream)) {
-        throw new FTPRemoteCopyException("Could not upload file to remote FTP server. Response was: " + ftp.getReplyString());
+        throw new FTPRemoteCopyException("Could not upload file to remote FTP server. Response was: "
+            + ftp.getReplyString());
       }
     }
 

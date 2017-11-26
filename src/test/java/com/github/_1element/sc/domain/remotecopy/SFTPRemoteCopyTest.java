@@ -62,7 +62,8 @@ public class SFTPRemoteCopyTest {
     ChannelSftp channelMock = mock(ChannelSftp.class);
 
     Mockito.when(sessionMock.openChannel(any())).thenReturn(channelMock);
-    Mockito.when(jsch.getSession(sftpRemoteCopyProperties.getUsername(), sftpRemoteCopyProperties.getHost())).thenReturn(sessionMock);
+    Mockito.when(jsch.getSession(sftpRemoteCopyProperties.getUsername(), sftpRemoteCopyProperties.getHost()))
+        .thenReturn(sessionMock);
 
     Path pathMock = mock(Path.class);
     Mockito.when(pathMock.getFileName()).thenReturn(Paths.get(EXPECTED_FILE_NAME));

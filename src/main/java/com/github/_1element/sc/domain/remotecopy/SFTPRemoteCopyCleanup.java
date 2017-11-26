@@ -25,7 +25,7 @@ import com.jcraft.jsch.SftpException;
 /**
  * Cleanup old surveillance images on remote SFTP server.
  */
-@ConditionalOnProperty(name="sc.remotecopy.sftp.cleanup-enabled", havingValue="true")
+@ConditionalOnProperty(name = "sc.remotecopy.sftp.cleanup-enabled", havingValue = "true")
 @Component
 public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements RemoteCopyCleanup {
 
@@ -45,7 +45,7 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
   }
 
   @Override
-  @Scheduled(cron=CRON_EVERY_DAY_AT_4_AM)
+  @Scheduled(cron = CRON_EVERY_DAY_AT_4_AM)
   public void cleanup() {
     if (!sftpRemoteCopyProperties.isCleanupEnabled()) {
       LOG.info("SFTP remote copy cleanup task is disabled in configuration.");
@@ -56,8 +56,8 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
     try {
       sftpChannel = createSFTPChannel();
       removeOldFiles(sftpChannel);
-    } catch (SFTPRemoteCopyException e) {
-      LOG.warn("Error during cleanup remote SFTP images: {}", e.getMessage());
+    } catch (SFTPRemoteCopyException exception) {
+      LOG.warn("Error during cleanup remote SFTP images: {}", exception.getMessage());
     } finally {
       if (sftpChannel != null) {
         sftpChannel.disconnect();
@@ -69,9 +69,9 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
   /**
    * Delete old files.
    * Files are deleted either if timestamp is too old or if quota is reached.
-   * 
+   *
    * @param sftpChannel the SFTP channel to use for retrieval and deletion
-   * @throws SFTPRemoteCopyException
+   * @throws SFTPRemoteCopyException exception if remote copy failed
    */
   private void removeOldFiles(ChannelSftp sftpChannel) throws SFTPRemoteCopyException {
     sizeRemoved = 0;
@@ -81,42 +81,47 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
     Map<LocalDateTime, ChannelSftp.LsEntry> sftpFileMap = removeFilesByDate(sftpChannel);
     removeFilesByQuota(sftpChannel, sftpFileMap);
 
-    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved, FileUtils.byteCountToDisplaySize(sizeRemoved));
+    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved,
+        FileUtils.byteCountToDisplaySize(sizeRemoved));
   }
 
   /**
    * Remove files that are older than the configured number of days.
    * Returns map of still existing files on SFTP after deletion.
-   * 
+   *
    * @param sftpChannel the SFTP channel to use for retrieval and deletion
    * @return map of all SFTP files left
-   * @throws SFTPRemoteCopyException
+   * @throws SFTPRemoteCopyException exception if remote copy failed
    */
   @SuppressWarnings("unchecked")
-  private Map<LocalDateTime, ChannelSftp.LsEntry> removeFilesByDate(ChannelSftp sftpChannel) throws SFTPRemoteCopyException {
+  private Map<LocalDateTime, ChannelSftp.LsEntry> removeFilesByDate(ChannelSftp sftpChannel)
+      throws SFTPRemoteCopyException {
     Map<LocalDateTime, ChannelSftp.LsEntry> resultFileMap = new TreeMap<>();
     LocalDateTime removeBefore = LocalDateTime.now().minusDays(sftpRemoteCopyProperties.getCleanupKeep());
 
     Vector<ChannelSftp.LsEntry> fileList;
     try {
       fileList = sftpChannel.ls(sftpRemoteCopyProperties.getDir());
-    } catch (SftpException e) {
-      throw new SFTPRemoteCopyException("Could not get remote directory listing for: " + sftpRemoteCopyProperties.getDir(), e);
+    } catch (SftpException exception) {
+      throw new SFTPRemoteCopyException("Could not get remote directory listing for: "
+          + sftpRemoteCopyProperties.getDir(), exception);
     }
 
     for (ChannelSftp.LsEntry entry : fileList) {
       if (!entry.getAttrs().isDir() && fileService.hasValidExtension(entry.getFilename())) {
-        LocalDateTime sftpFileTimestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(entry.getAttrs().getMTime()), ZoneId.systemDefault());
+        LocalDateTime sftpFileTimestamp = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(entry.getAttrs().getMTime()), ZoneId.systemDefault());
         if (sftpFileTimestamp.isBefore(removeBefore)) {
           // delete straight if file is too old
           String filePath = sftpRemoteCopyProperties.getDir() + entry.getFilename();
           try {
             sftpChannel.rm(filePath);
-            LOG.debug("Successfully removed file '{}' on remote SFTP server, was older than {} days.", filePath, sftpRemoteCopyProperties.getCleanupKeep());
+            LOG.debug("Successfully removed file '{}' on remote SFTP server, was older than {} days.",
+                filePath, sftpRemoteCopyProperties.getCleanupKeep());
             sizeRemoved += entry.getAttrs().getSize();
             filesRemoved++;
-          } catch (SftpException e) {
-            LOG.warn("Could not delete file '{}' on remote SFTP server: '{}'", filePath, e.getMessage());
+          } catch (SftpException exception) {
+            LOG.warn("Could not delete file '{}' on remote SFTP server: '{}'", filePath, exception.getMessage());
           }
         } else {
           // put to result map for deletion by quota
@@ -131,7 +136,7 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
 
   /**
    * Removes files if configured quota has been reached.
-   * 
+   *
    * @param sftpChannel the SFTP channel to use for deletion
    * @param sftpFileMap map of SFTP files to consider for deletion
    */
@@ -148,13 +153,14 @@ public class SFTPRemoteCopyCleanup extends AbstractSFTPRemoteCopy implements Rem
       String filePath = sftpRemoteCopyProperties.getDir() + sftpLsEntry.getFilename();
       try {
         sftpChannel.rm(filePath);
-        LOG.debug("Successfully removed file '{}' on remote SFTP server, quota was reached.", sftpLsEntry.getFilename());
+        LOG.debug("Successfully removed file '{}' on remote SFTP server, quota was reached.",
+            sftpLsEntry.getFilename());
         sizeRemoved += sftpLsEntry.getAttrs().getSize();
         filesRemoved++;
-      } catch (SftpException e) {
-        LOG.warn("Could not delete file '{}' on remote SFTP server: '{}'", filePath, e.getMessage());
+      } catch (SftpException exception) {
+        LOG.warn("Could not delete file '{}' on remote SFTP server: '{}'", filePath, exception.getMessage());
       }
-      
+
       if (sizeRemoved >= sizeToBeRemoved) {
         break;
       }

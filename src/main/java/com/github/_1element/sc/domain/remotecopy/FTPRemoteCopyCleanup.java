@@ -24,7 +24,7 @@ import com.github._1element.sc.service.FileService;
 /**
  * Cleanup old surveillance images on remote FTP server.
  */
-@ConditionalOnProperty(name="sc.remotecopy.ftp.cleanup-enabled", havingValue="true")
+@ConditionalOnProperty(name = "sc.remotecopy.ftp.cleanup-enabled", havingValue = "true")
 @Component
 public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements RemoteCopyCleanup {
 
@@ -44,7 +44,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
   }
 
   @Override
-  @Scheduled(cron=CRON_EVERY_DAY_AT_5_AM)
+  @Scheduled(cron = CRON_EVERY_DAY_AT_5_AM)
   public void cleanup() {
     if (!ftpRemoteCopyProperties.isCleanupEnabled()) {
       LOG.info("FTP remote copy cleanup task is disabled in configuration.");
@@ -54,23 +54,24 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
     try {
       connect();
       removeOldFiles();
-    } catch (Exception e) {
-      LOG.warn("Error during cleanup remote FTP images: {}", e.getMessage());
+    } catch (Exception exception) {
+      LOG.warn("Error during cleanup remote FTP images: {}", exception.getMessage());
     } finally {
       disconnect();
     }
   }
-  
+
   /**
    * Delete old files from FTP server.
    * Files are deleted either if timestamp is too old or if quota is reached.
    *
-   * @throws FTPRemoteCopyException
-   * @throws IOException
+   * @throws FTPRemoteCopyException exception if remote copy failed
+   * @throws IOException exception in case of an IO error
    */
   private void removeOldFiles() throws FTPRemoteCopyException, IOException {
     if (!ftp.changeWorkingDirectory(ftpRemoteCopyProperties.getDir())) {
-      throw new FTPRemoteCopyException("Could not change to directory '" + ftpRemoteCopyProperties.getDir() + "' on remote FTP server. Response was: " + ftp.getReplyString());
+      throw new FTPRemoteCopyException("Could not change to directory '" + ftpRemoteCopyProperties.getDir()
+          + "' on remote FTP server. Response was: " + ftp.getReplyString());
     }
 
     sizeRemoved = 0;
@@ -80,7 +81,8 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
     Map<Instant, FTPFile> ftpFileMap = removeFilesByDate();
     removeFilesByQuota(ftpFileMap);
 
-    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved, FileUtils.byteCountToDisplaySize(sizeRemoved));
+    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved,
+        FileUtils.byteCountToDisplaySize(sizeRemoved));
   }
 
   /**
@@ -88,7 +90,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
    * Returns map of still existing files on FTP after deletion.
    *
    * @return map of all FTP files left
-   * @throws IOException
+   * @throws IOException IO exception
    */
   private Map<Instant, FTPFile> removeFilesByDate() throws IOException {
     Map<Instant, FTPFile> ftpFileMap = new TreeMap<>();
@@ -97,10 +99,12 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
     for (FTPFile ftpFile : ftpFiles) {
       if (ftpFile.isFile() && fileService.hasValidExtension(ftpFile.getName())) {
         LocalDateTime removeBefore = LocalDateTime.now().minusDays(ftpRemoteCopyProperties.getCleanupKeep());
-        LocalDateTime ftpFileTimestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(ftpFile.getTimestamp().getTimeInMillis()), ZoneId.systemDefault());
+        LocalDateTime ftpFileTimestamp = LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(ftpFile.getTimestamp().getTimeInMillis()), ZoneId.systemDefault());
         if (ftpFileTimestamp.isBefore(removeBefore) && ftp.deleteFile(ftpFile.getName())) {
           // delete straight if file is too old
-          LOG.debug("Successfully removed file '{}' on remote FTP server, was older than {} days.", ftpFile.getName(), ftpRemoteCopyProperties.getCleanupKeep());
+          LOG.debug("Successfully removed file '{}' on remote FTP server, was older than {} days.",
+              ftpFile.getName(), ftpRemoteCopyProperties.getCleanupKeep());
           sizeRemoved += ftpFile.getSize();
           filesRemoved++;
         } else {
@@ -118,7 +122,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
    * Removes files from FTP server if configured quota has been reached.
    *
    * @param ftpFileMap map of FTP files to consider for deletion
-   * @throws IOException
+   * @throws IOException IO exception
    */
   private void removeFilesByQuota(Map<Instant, FTPFile> ftpFileMap) throws IOException {
     if (totalSize < ftpRemoteCopyProperties.getCleanupMaxDiskSpace()) {
@@ -140,5 +144,5 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
       }
     }
   }
-  
+
 }

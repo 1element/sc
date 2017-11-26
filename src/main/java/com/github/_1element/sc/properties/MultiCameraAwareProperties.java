@@ -27,12 +27,12 @@ public class MultiCameraAwareProperties {
    * @param propertyKey  property key
    * @param cameraId     camera identifier
    * @param defaultValue default value
-   * @return
+   * @return the property value
    */
   public String getProperty(String propertyKey, String cameraId, String defaultValue) {
     try {
       return getProperty(propertyKey, cameraId);
-    } catch (Exception e) {
+    } catch (Exception exception) {
       return defaultValue;
     }
   }
@@ -42,8 +42,8 @@ public class MultiCameraAwareProperties {
    *
    * @param propertyKey property key
    * @param cameraId    camera identifier
-   * @return
-   * @throws PropertyNotFoundException
+   * @return the property value
+   * @throws PropertyNotFoundException exception if property was not found
    */
   public String getProperty(String propertyKey, String cameraId) throws PropertyNotFoundException {
     if (StringUtils.isBlank(cameraId)) {

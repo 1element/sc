@@ -21,15 +21,16 @@ import com.github.sardine.Sardine;
 /**
  * Copy surveillance image to remote webdav server (backup).
  */
-@ConditionalOnProperty(name="sc.remotecopy.webdav.enabled", havingValue="true")
+@ConditionalOnProperty(name = "sc.remotecopy.webdav.enabled", havingValue = "true")
 @Component
 @Scope("prototype")
 public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements RemoteCopy {
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(WebdavRemoteCopy.class);
 
   @Autowired
-  public WebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties, FileService fileService) {
+  public WebdavRemoteCopy(Sardine sardine, WebdavRemoteCopyProperties webdavRemoteCopyProperties,
+                          FileService fileService) {
     super(sardine, webdavRemoteCopyProperties, fileService);
   }
 
@@ -39,8 +40,8 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
 
     try {
       transferFile(remoteCopyEvent.getFileName());
-    } catch (IOException e) {
-      LOG.warn("Error during copy to remote webdav server: {}", e.getMessage());
+    } catch (IOException exception) {
+      LOG.warn("Error during copy to remote webdav server: {}", exception.getMessage());
     }
   }
 
@@ -54,7 +55,8 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
 
     try (InputStream inputStream = fileService.createInputStream(path)) {
       String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
-      String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
+      String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir()
+          + dateSubdirectory + SEPARATOR;
 
       if (!sardine.exists(destinationDirectory)) {
         sardine.createDirectory(destinationDirectory);

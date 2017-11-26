@@ -43,6 +43,11 @@ public class FTPRemoteCopyCleanupTest {
 
   private static final String EXPECTED_FTP_PASSWORD = "secret";
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error.
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -123,5 +128,5 @@ public class FTPRemoteCopyCleanupTest {
 
     verifyZeroInteractions(ftpClient);
   }
-  
+
 }

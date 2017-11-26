@@ -28,15 +28,15 @@ public class PushoverClient implements PushNotificationClient {
   private static final String ENDPOINT = "https://api.pushover.net/1/messages.json";
 
   private static final String PARAM_API_TOKEN = "token";
-  
+
   private static final String PARAM_USER_TOKEN = "user";
-  
+
   private static final String PARAM_TITLE = "title";
-  
+
   private static final String PARAM_MESSAGE = "message";
-  
+
   private static final String PARAM_URL = "url";
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(PushoverClient.class);
 
   @Autowired
@@ -60,9 +60,9 @@ public class PushoverClient implements PushNotificationClient {
 
     try {
       restTemplate.postForObject(ENDPOINT, requestParams, Void.class);
-    } catch (RestClientException e) {
-      LOG.error("Error while sending push notification: {}", e.getMessage());
-      throw new PushNotificationClientException(e);
+    } catch (RestClientException exception) {
+      LOG.error("Error while sending push notification: {}", exception.getMessage());
+      throw new PushNotificationClientException(exception);
     }
   }
 

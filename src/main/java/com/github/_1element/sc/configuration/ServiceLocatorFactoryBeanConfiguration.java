@@ -13,6 +13,11 @@ import com.github._1element.sc.domain.pushnotification.PushNotificationClientFac
 @Configuration
 public class ServiceLocatorFactoryBeanConfiguration {
 
+  /**
+   * Service locator for factory beans.
+   *
+   * @return the factory bean
+   */
   @Bean
   public FactoryBean serviceLocatorFactoryBean() {
     ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();

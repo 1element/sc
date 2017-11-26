@@ -58,7 +58,8 @@ public class WebdavRemoteCopyTest {
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent(EXPECTED_LOCAL_FILE_PATH);
     webdavRemoteCopy.handle(remoteCopyEvent);
 
-    verify(sardine).put(matches("https\\:\\/\\/test-webdav\\.local\\/remote-copy-directory\\/\\d{4}-\\d{2}-\\d{2}-\\d{2}\\/local-file\\.jpg"), eq(inputStreamMock));
+    verify(sardine).put(matches("https\\:\\/\\/test-webdav\\.local\\/remote-copy-directory\\/"
+        + "\\d{4}-\\d{2}-\\d{2}-\\d{2}\\/local-file\\.jpg"), eq(inputStreamMock));
   }
 
 }

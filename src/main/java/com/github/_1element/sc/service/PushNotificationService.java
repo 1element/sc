@@ -45,7 +45,7 @@ public class PushNotificationService {
   private PushNotificationProperties properties;
 
   private MessageSource messageSource;
-  
+
   private static Map<String, Instant> lastPushNotification = new HashMap<>();
 
   private static final String MESSAGE_PROPERTIES_PUSH_TITLE = "push-notification.title";
@@ -56,9 +56,18 @@ public class PushNotificationService {
 
   private static final Logger LOG = LoggerFactory.getLogger(PushNotificationService.class);
 
+  /**
+   * Constructs a push notification service.
+   *
+   * @param pushNotificationClientFactory the factory to create a specific push notification client
+   * @param pushNotificationSettingRepository the setting repository
+   * @param cameraRepository the camera repository
+   * @param properties the configured push notification specific properties
+   * @param messageSource the message source for localization
+   */
   @Autowired
   public PushNotificationService(PushNotificationClientFactory pushNotificationClientFactory,
-                                 PushNotificationSettingRepository pushNotificationSettingRepository, 
+                                 PushNotificationSettingRepository pushNotificationSettingRepository,
                                  CameraRepository cameraRepository,
                                  PushNotificationProperties properties,
                                  MessageSource messageSource) {
@@ -71,7 +80,7 @@ public class PushNotificationService {
 
   /**
    * Send push message.
-   * 
+   *
    * @param title message title
    * @param text message text
    */
@@ -97,15 +106,15 @@ public class PushNotificationService {
     try {
       pushNotificationClient.sendMessage(title, text, url);
       LOG.debug("Push notification with title '{}' was sent.", title);
-    } catch (PushNotificationClientException e) {
-      LOG.error("Push notification with title '{}' was not sent. {}", title, e.getMessage());
+    } catch (PushNotificationClientException exception) {
+      LOG.error("Push notification with title '{}' was not sent. {}", title, exception.getMessage());
     }
   }
 
   /**
-   * Handles push notification events. 
+   * Handles push notification events.
    * Will perform checks if notification should be sent or not.
-   * 
+   *
    * @param pushNotificationEvent push notification event
    */
   @EventListener
@@ -124,15 +133,17 @@ public class PushNotificationService {
     }
 
     // send push message
-    String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()}, LocaleContextHolder.getLocale());
-    String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(), LocalDateTime.now().toString()}, LocaleContextHolder.getLocale());
+    String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()},
+        LocaleContextHolder.getLocale());
+    String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(),
+        LocalDateTime.now().toString()}, LocaleContextHolder.getLocale());
     String url = buildCameraUrl(camera.getId());
     sendMessage(title, message, url);
   }
 
   /**
    * Retrieve push notification configuration for each camera.
-   * 
+   *
    * @return camera push notification settings
    */
   public List<CameraPushNotificationSettingResult> getAllSettings() {
@@ -140,7 +151,8 @@ public class PushNotificationService {
     List<Camera> allCameras = cameraRepository.findAll();
 
     for (Camera camera : allCameras) {
-      PushNotificationSetting pushNotificationSetting = pushNotificationSettingRepository.findByCameraId(camera.getId());
+      PushNotificationSetting pushNotificationSetting =
+          pushNotificationSettingRepository.findByCameraId(camera.getId());
       if (pushNotificationSetting == null) {
         pushNotificationSetting = new PushNotificationSetting(camera.getId(), false);
         pushNotificationSettingRepository.save(pushNotificationSetting);
@@ -150,12 +162,12 @@ public class PushNotificationService {
 
     return result;
   }
-  
+
   /**
    * Build URL for given cameraId.
    * This will use the configured base URL for push notifications and
    * append camera specific parameters.
-   * 
+   *
    * @param cameraId the camera ID to build URL for
    * @return the camera specific URL
    */
@@ -174,10 +186,9 @@ public class PushNotificationService {
 
   /**
    * Perform rate limitation (throttle).
-   * 
    * Push notification should not be sent if the time period between this
    * and the last run is less than the configured group time.
-   * 
+   *
    * @param cameraId the camera id to perform check for
    * @return true if rate limit is reached
    */
@@ -188,8 +199,8 @@ public class PushNotificationService {
     if ((lastPushNotificationInstant != null) && (properties.getGroupTime() > 0)) {
       long minutesBetween = ChronoUnit.MINUTES.between(lastPushNotificationInstant, currentInstant);
       if (minutesBetween < properties.getGroupTime()) {
-        LOG.debug("Push notification was not sent. Last push notification for camera '{}' was {} minute(s) ago. Group time is {} minute(s).",
-            cameraId, minutesBetween, properties.getGroupTime());
+        LOG.debug("Push notification was not sent. Last push notification for camera '{}' was {} minute(s) ago. "
+            + "Group time is {} minute(s).", cameraId, minutesBetween, properties.getGroupTime());
         return true;
       }
     }

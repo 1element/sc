@@ -17,19 +17,26 @@ import com.jcraft.jsch.Session;
 public class AbstractSFTPRemoteCopy {
 
   protected SFTPRemoteCopyProperties sftpRemoteCopyProperties;
-  
+
   protected FileService fileService;
 
   private JSch jsch;
-  
+
   private Session session;
 
   private static final String SFTP_CHANNEL_NAME = "sftp";
-  
+
   private static final String CONFIG_STRICT_HOST_KEY_CHECKING = "StrictHostKeyChecking";
-  
+
   private static final String CONFIG_DISABLED = "no";
 
+  /**
+   * Constructor.
+   *
+   * @param sftpRemoteCopyProperties the properties to use for remote copying
+   * @param jsch the Jsch dependency used for SSH connections
+   * @param fileService the file service dependency
+   */
   @Autowired
   public AbstractSFTPRemoteCopy(SFTPRemoteCopyProperties sftpRemoteCopyProperties, JSch jsch, FileService fileService) {
     this.sftpRemoteCopyProperties = sftpRemoteCopyProperties;
@@ -39,9 +46,9 @@ public class AbstractSFTPRemoteCopy {
 
   /**
    * Creates a SFTP channel.
-   * 
+   *
    * @return SFTP channel
-   * @throws SFTPRemoteCopyException
+   * @throws SFTPRemoteCopyException exception in case of an error
    */
   protected ChannelSftp createSFTPChannel() throws SFTPRemoteCopyException {
     Channel channel;
@@ -51,9 +58,9 @@ public class AbstractSFTPRemoteCopy {
       session.setPassword(sftpRemoteCopyProperties.getPassword());
       session.connect();
       channel = session.openChannel(SFTP_CHANNEL_NAME);
-    } catch (JSchException e) {
+    } catch (JSchException exception) {
       session.disconnect();
-      throw new SFTPRemoteCopyException("Could not establish SSH connection: " + e.getMessage(), e);
+      throw new SFTPRemoteCopyException("Could not establish SSH connection: " + exception.getMessage(), exception);
     }
 
     if (channel == null) {
@@ -63,9 +70,9 @@ public class AbstractSFTPRemoteCopy {
 
     try {
       channel.connect();
-    } catch (JSchException e) {
+    } catch (JSchException exception) {
       session.disconnect();
-      throw new SFTPRemoteCopyException("Could not establish SFTP channel: " + e.getMessage(), e);
+      throw new SFTPRemoteCopyException("Could not establish SFTP channel: " + exception.getMessage(), exception);
     }
 
     if (!(channel instanceof ChannelSftp)) {

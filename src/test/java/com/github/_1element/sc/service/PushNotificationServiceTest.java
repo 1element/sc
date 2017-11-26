@@ -40,33 +40,39 @@ import com.github._1element.sc.repository.PushNotificationSettingRepository;
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
 @WebAppConfiguration
 public class PushNotificationServiceTest {
-  
+
   @Autowired
   private PushNotificationSettingRepository pushNotificationSettingRepository;
-  
+
   @Autowired
   private CameraRepository cameraRepository;
-  
+
   @Autowired
   private PushNotificationProperties properties;
 
   @Autowired
   private PushNotificationService pushNotificationService;
-  
+
   @Mock
   private PushNotificationClientFactory pushNotificationClientFactoryMock;
 
   private PushNotificationClient pushNotificationClientMock;
-  
+
   private static boolean fixturesCreated = false;
- 
+
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error
+   */
   @Before
   public void setUp() throws Exception {
     // mocks
     MockitoAnnotations.initMocks(this);
     pushNotificationClientMock = mock(PushNotificationClient.class);
     Mockito.when(pushNotificationClientFactoryMock.getClient(any())).thenReturn(pushNotificationClientMock);
-    ReflectionTestUtils.setField(pushNotificationService, "pushNotificationClientFactory", pushNotificationClientFactoryMock);
+    ReflectionTestUtils.setField(pushNotificationService, "pushNotificationClientFactory",
+        pushNotificationClientFactoryMock);
 
     ReflectionTestUtils.setField(properties, "enabled", true);
     ReflectionTestUtils.setField(properties, "groupTime", 0);
@@ -75,7 +81,7 @@ public class PushNotificationServiceTest {
       // test fixtures
       PushNotificationSetting pushNotificationSetting = new PushNotificationSetting("testcamera1", true);
       pushNotificationSettingRepository.save(pushNotificationSetting);
-      
+
       fixturesCreated = true;
     }
   }
@@ -100,10 +106,10 @@ public class PushNotificationServiceTest {
   @Test
   public void testSendMessage() throws Exception {
     pushNotificationService.sendMessage("Test title", "Test message", "http://test.local/");
-    
+
     verify(pushNotificationClientMock).sendMessage("Test title", "Test message", "http://test.local/");
   }
-  
+
   @Test
   public void testSendMessageDisabled() throws Exception {
     ReflectionTestUtils.setField(properties, "enabled", false);
@@ -127,12 +133,12 @@ public class PushNotificationServiceTest {
   public void testHandlePushNotificationEventDisabledForCamera() throws Exception {
     Camera camera = cameraRepository.findById("testcamera2");
     PushNotificationEvent pushNotificationEvent = new PushNotificationEvent(camera);
-    
+
     pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
-    
+
     verifyZeroInteractions(pushNotificationClientFactoryMock);
   }
-  
+
   @Test
   public void testHandlePushNotificationEventGroupTime() throws Exception {
     ReflectionTestUtils.setField(properties, "groupTime", 2);
@@ -164,7 +170,7 @@ public class PushNotificationServiceTest {
     PushNotificationProperties propertiesPojo = new PushNotificationProperties();
     propertiesPojo.setGroupTime(3);
 
-    PushNotificationService pushNotificationServicePojo = 
+    PushNotificationService pushNotificationServicePojo =
         new PushNotificationService(null, null, null, propertiesPojo, null);
 
     assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));
@@ -175,7 +181,7 @@ public class PushNotificationServiceTest {
   @Test
   public void testHasRateLimitReachedWithNoGroupTime() throws Exception {
     PushNotificationProperties propertiesPojo = new PushNotificationProperties();
-    PushNotificationService pushNotificationServicePojo = 
+    PushNotificationService pushNotificationServicePojo =
         new PushNotificationService(null, null, null, propertiesPojo, null);
 
     assertFalse(pushNotificationServicePojo.hasRateLimitReached("testcamera3"));

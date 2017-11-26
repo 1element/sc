@@ -44,6 +44,13 @@ public class HealthCheckTasks {
 
   private static final Logger LOG = LoggerFactory.getLogger(HealthCheckTasks.class);
 
+  /**
+   * Constructs the health check component.
+   *
+   * @param cameraRepository the camera repository
+   * @param pushNotificationService the push notification service
+   * @param messageSource the message source used for localization
+   */
   @Autowired
   public HealthCheckTasks(CameraRepository cameraRepository, PushNotificationService pushNotificationService,
                           MessageSource messageSource) {
@@ -67,16 +74,19 @@ public class HealthCheckTasks {
         InetAddress inetAddress = InetAddress.getByName(camera.getHost());
         currentStatus = inetAddress.isReachable(timeout) ? Status.UP : Status.DOWN;
         LOG.debug("Health status for host '{}' is: {}", camera.getHost(), currentStatus);
-      } catch (Exception e) {
-        LOG.debug("Could not determine health status for host '{}', exception was: '{}'", camera.getHost(), e.getMessage());
+      } catch (Exception exception) {
+        LOG.debug("Could not determine health status for host '{}', exception was: '{}'",
+            camera.getHost(), exception.getMessage());
         currentStatus = Status.DOWN;
       }
 
       Status previousStatus = statusTrackingMap.get(camera);
       if ((previousStatus != null) && (previousStatus != currentStatus)) {
         LOG.info("Camera health check. Host {} has new status: {}", camera.getHost(), currentStatus);
-        String title = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_TITLE, null, LocaleContextHolder.getLocale());
-        String message = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE, new Object[]{camera.getName(), camera.getHost(), currentStatus}, LocaleContextHolder.getLocale());
+        String title = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_TITLE, null,
+            LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE,
+            new Object[]{camera.getName(), camera.getHost(), currentStatus}, LocaleContextHolder.getLocale());
         pushNotificationService.sendMessage(title, message);
       }
 

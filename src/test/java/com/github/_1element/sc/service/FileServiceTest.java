@@ -6,7 +6,10 @@ import org.junit.runners.JUnit4;
 
 import com.github._1element.sc.properties.ImageProperties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(JUnit4.class)
 public class FileServiceTest {

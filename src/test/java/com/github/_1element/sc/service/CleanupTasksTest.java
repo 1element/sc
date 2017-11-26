@@ -41,6 +41,11 @@ public class CleanupTasksTest {
   @InjectMocks
   private CleanupTasks cleanupTasks;
 
+  /**
+   * Setup for all tests.
+   *
+   * @throws Exception exception in case of an error
+   */
   @Before
   public void setUp() throws Exception {
     // configuration
