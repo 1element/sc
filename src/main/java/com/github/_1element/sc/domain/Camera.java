@@ -22,7 +22,7 @@ public class Camera {
   private String snapshotUrl;
 
   private String streamUrl;
-  
+
   public Camera(String id, String name, Integer rotation, String host, String ftpUsername, String ftpPassword,
       String ftpIncomingDirectory, String snapshotUrl, String streamUrl) {
     this.id = id;
@@ -64,8 +64,16 @@ public class Camera {
     return ftpIncomingDirectory;
   }
 
+  public boolean hasSnapshotUrl() {
+    return snapshotUrl != null;
+  }
+
   public String getSnapshotUrl() {
     return snapshotUrl;
+  }
+
+  public boolean hasStreamUrl() {
+    return streamUrl != null;
   }
 
   public String getStreamUrl() {

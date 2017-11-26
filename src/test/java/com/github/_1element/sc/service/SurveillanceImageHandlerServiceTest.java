@@ -5,7 +5,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,28 +30,28 @@ public class SurveillanceImageHandlerServiceTest {
 
   @Mock
   private FileService fileService;
-  
+
   @Mock
   private ThumbnailService thumbnailService;
-  
+
   @Mock
   private SurveillanceImageRepository imageRepository;
-  
+
   @Mock
   private CounterService counterService;
 
   @Mock
   private ApplicationEventPublisher eventPublisher;
- 
+
   @InjectMocks
   private SurveillanceImageHandlerService surveillanceImageHandlerService;
 
   private static Camera testcamera1;
-  
+
   private static final String SOURCE_TESTFILE_NAME = "incoming-testfile.jpg";
-  
+
   private static final String DESTINATION_TESTFILE_PATH = "/tmp/sc-storage/null-testcamera1-incoming-testfile.jpg";
-  
+
   @Before
   public void setUp() throws Exception {
     testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, null);
@@ -66,23 +67,23 @@ public class SurveillanceImageHandlerServiceTest {
   @Test
   public void testHandleImageReceivedEvent() throws Exception {
     // prepare mocks
-    File sourceFileMock = mock(File.class);
-    Mockito.when(sourceFileMock.getName()).thenReturn(SOURCE_TESTFILE_NAME);
+    Path sourcePathMock = mock(Path.class);
+    Mockito.when(sourcePathMock.getFileName()).thenReturn(Paths.get(SOURCE_TESTFILE_NAME));
 
-    File destinationFileMock = mock(File.class);
-    Mockito.when(destinationFileMock.getName()).thenReturn("filename.jpg");
+    Path destinationPathMock = mock(Path.class);
+    Mockito.when(destinationPathMock.getFileName()).thenReturn(Paths.get(DESTINATION_TESTFILE_PATH));
 
-    Mockito.when(fileService.createFile(SOURCE_TESTFILE_NAME)).thenReturn(sourceFileMock);
-    Mockito.when(fileService.createFile(DESTINATION_TESTFILE_PATH)).thenReturn(destinationFileMock);
+    Mockito.when(fileService.getPath(SOURCE_TESTFILE_NAME)).thenReturn(sourcePathMock);
+    Mockito.when(fileService.getPath(DESTINATION_TESTFILE_PATH)).thenReturn(destinationPathMock);
 
     // execute
     ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(SOURCE_TESTFILE_NAME, testcamera1);
     surveillanceImageHandlerService.handleImageReceivedEvent(imageReceivedEvent);
 
     // verify behaviour
-    verify(fileService).createFile(eq(SOURCE_TESTFILE_NAME));
-    verify(fileService).createFile(eq(DESTINATION_TESTFILE_PATH));
-    verify(fileService).moveFile(eq(sourceFileMock), eq(destinationFileMock));
+    verify(fileService).getPath(eq(SOURCE_TESTFILE_NAME));
+    verify(fileService).getPath(eq(DESTINATION_TESTFILE_PATH));
+    verify(fileService).moveFile(eq(sourcePathMock), eq(destinationPathMock));
     verify(imageRepository).save(any(SurveillanceImage.class));
   }
 

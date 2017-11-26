@@ -17,8 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -45,7 +46,7 @@ public class FTPRemoteCopyTest {
   private static final String EXPECTED_FTP_PASSWORD = "secret";
 
   private static final String EXPECTED_REMOTE_FILENAME = "/remote-copy-directory/local-file.jpg";
-  
+
   private static final String EXPECTED_LOCAL_FILE_PATH = "/tmp/test/local-file.jpg";
 
   @Before
@@ -60,12 +61,12 @@ public class FTPRemoteCopyTest {
     // mocking
     Mockito.when(ftpClient.storeFile(eq(EXPECTED_REMOTE_FILENAME), any())).thenReturn(true);
 
-    File fileMock = mock(File.class);
-    Mockito.when(fileMock.getName()).thenReturn("local-file.jpg");
-    Mockito.when(fileService.createFile(EXPECTED_LOCAL_FILE_PATH)).thenReturn(fileMock);
+    Path pathMock = mock(Path.class);
+    Mockito.when(pathMock.getFileName()).thenReturn(Paths.get("local-file.jpg"));
+    Mockito.when(fileService.getPath(EXPECTED_LOCAL_FILE_PATH)).thenReturn(pathMock);
 
-    FileInputStream fileInputStreamMock = mock(FileInputStream.class);
-    Mockito.when(fileService.createInputStream(any(File.class))).thenReturn(fileInputStreamMock);
+    InputStream inputStreamMock = mock(InputStream.class);
+    Mockito.when(fileService.createInputStream(any(Path.class))).thenReturn(inputStreamMock);
 
     // execute and verify
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent(EXPECTED_LOCAL_FILE_PATH);

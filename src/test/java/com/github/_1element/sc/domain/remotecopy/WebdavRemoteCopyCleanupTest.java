@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.github._1element.sc.SurveillanceCenterApplication;
 import com.github._1element.sc.properties.WebdavRemoteCopyProperties;
 import com.github.sardine.Sardine;
-import com.google.common.collect.Lists;
 import com.github.sardine.DavResource;
 
 @RunWith(SpringRunner.class)
@@ -62,8 +62,8 @@ public class WebdavRemoteCopyCleanupTest {
     Date oldDate = new Date(1483225200000L);
     Mockito.when(davResource1.getCreation()).thenReturn(oldDate);
 
-    List<DavResource> davRootResources = Lists.newArrayList(davDirectory1);
-    List<DavResource> davSubResources = Lists.newArrayList(davResource1, davResource2);
+    List<DavResource> davRootResources = Arrays.asList(davDirectory1);
+    List<DavResource> davSubResources = Arrays.asList(davResource1, davResource2);
 
     // mock behaviour
     Mockito.when(sardine.list(BASE_LOCATION)).thenReturn(davRootResources);
@@ -98,8 +98,8 @@ public class WebdavRemoteCopyCleanupTest {
     Date oldDate = new Date(1483225200000L);
     Mockito.when(davResource1.getCreation()).thenReturn(oldDate);
 
-    List<DavResource> davRootResources = Lists.newArrayList(davDirectory1);
-    List<DavResource> davSubResources = Lists.newArrayList(davResource1, davResource2);
+    List<DavResource> davRootResources = Arrays.asList(davDirectory1);
+    List<DavResource> davSubResources = Arrays.asList(davResource1, davResource2);
 
     // mock behaviour
     Mockito.when(sardine.list(BASE_LOCATION)).thenReturn(davRootResources);
@@ -120,8 +120,8 @@ public class WebdavRemoteCopyCleanupTest {
     DavResource davSubResource = mock(DavResource.class);
     Mockito.when(davSubResource.isDirectory()).thenReturn(true);
 
-    List<DavResource> davRootResources = Lists.newArrayList(davDirectory);
-    List<DavResource> davSubResources = Lists.newArrayList(davSubResource);
+    List<DavResource> davRootResources = Arrays.asList(davDirectory);
+    List<DavResource> davSubResources = Arrays.asList(davSubResource);
 
     // mock behaviour
     Mockito.when(sardine.list(BASE_LOCATION)).thenReturn(davRootResources);

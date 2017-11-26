@@ -1,9 +1,9 @@
 package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,31 +57,32 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
     totalSize = 0;
 
     try {
-      Map<Date, DavResource> remoteFileMap = removeFilesByDate();
+      Map<Instant, DavResource> remoteFileMap = removeFilesByDate();
       removeFilesByQuota(remoteFileMap);
-    } catch (IOException e) {
-      LOG.warn("Major error during cleanup remote webdav images: {}", e.getMessage());
+    } catch (IOException exception) {
+      LOG.warn("Major error during cleanup remote webdav images: {}", exception.getMessage());
     }
 
-    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved, FileUtils.byteCountToDisplaySize(sizeRemoved));
+    LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved,
+      FileUtils.byteCountToDisplaySize(sizeRemoved));
   }
-  
+
   /**
    * Remove files from webdav server that are older than the configured number of days.
    * Returns map of still existing files on webdav after deletion.
-   * 
+   *
    * @return map of files left
-   * @throws IOException
+   * @throws IOException IO Exception in case of failure
    */
-  private Map<Date, DavResource> removeFilesByDate() throws IOException {
-    Map<Date, DavResource> remoteFileMap = new TreeMap<>();
+  private Map<Instant, DavResource> removeFilesByDate() throws IOException {
+    Map<Instant, DavResource> remoteFileMap = new TreeMap<>();
 
     String baseLocation = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir();
     List<DavResource> baseResources = sardine.list(baseLocation);
     for (DavResource baseResource : baseResources) {
       if (baseResource.isDirectory() && !isParentResource(baseResource)) {
         String location = baseLocation + baseResource.getName() + SEPARATOR;
-        Map<Date, DavResource> remoteFileMapForSubdirectory = removeFilesByDateForLocation(location);
+        Map<Instant, DavResource> remoteFileMapForSubdirectory = removeFilesByDateForLocation(location);
         remoteFileMap.putAll(remoteFileMapForSubdirectory);
       }
     }
@@ -91,12 +92,12 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
 
   /**
    * Remove files for given location by age.
-   * 
+   *
    * @param location the webdav location to operate on
    * @return map of files left after deletion
    */
-  private Map<Date, DavResource> removeFilesByDateForLocation(String location) {
-    Map<Date, DavResource> remoteFileMap = new TreeMap<>();
+  private Map<Instant, DavResource> removeFilesByDateForLocation(String location) {
+    Map<Instant, DavResource> remoteFileMap = new TreeMap<>();
 
     try {
       List<DavResource> resources = sardine.list(location);
@@ -107,22 +108,22 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
       for (DavResource resource : resources) {
         if (fileService.hasValidExtension(resource.getName()) && (!removeResourceIfOutDated(resource))) {
           // put to return map for possible deletion by quota
-          remoteFileMap.put(resource.getCreation(), resource);
+          remoteFileMap.put(resource.getCreation().toInstant(), resource);
           totalSize += resource.getContentLength();
         }
       }
-    } catch (IOException e) {
-      LOG.warn("Could not read remote webdav directory '{}', error message: '{}'", location, e.getMessage());
+    } catch (IOException exception) {
+      LOG.warn("Could not read remote webdav directory '{}', error message: '{}'", location, exception.getMessage());
     }
-  
+
     return remoteFileMap;
   }
 
   /**
    * Delete webdav resource if it's older than the configured days.
-   * 
+   *
    * @param resource the webdav resource to delete
-   * 
+   *
    * @return true if file has been deleted
    */
   private boolean removeResourceIfOutDated(DavResource resource) {
@@ -171,10 +172,10 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
 
   /**
    * Removes files from webdav server if configured quota has been reached.
-   * 
+   *
    * @param remoteFileMap map of webdav files to consider for deletion
    */
-  private void removeFilesByQuota(Map<Date, DavResource> remoteFileMap) {
+  private void removeFilesByQuota(Map<Instant, DavResource> remoteFileMap) {
     if (totalSize < webdavRemoteCopyProperties.getCleanupMaxDiskSpace()) {
       // do nothing if max disk space/quota has not been reached
       return;
@@ -182,7 +183,7 @@ public class WebdavRemoteCopyCleanup extends AbstractWebdavRemoteCopy implements
 
     long sizeToBeRemoved = totalSize - webdavRemoteCopyProperties.getCleanupMaxDiskSpace();
 
-    for (Map.Entry<Date, DavResource> entry: remoteFileMap.entrySet()) {
+    for (Map.Entry<Instant, DavResource> entry: remoteFileMap.entrySet()) {
       DavResource davResource = entry.getValue();
       String location = webdavRemoteCopyProperties.getHost() + davResource.getHref().toString();
       try {

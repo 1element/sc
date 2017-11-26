@@ -60,18 +60,31 @@ public class CameraRepositoryTest {
   }
 
   @Test
-  public void testFindByFtpUsername() throws Exception {
+  public void testFindByFtpUsernameCamera1() throws Exception {
     Camera camera1 = cameraRepository.findByFtpUsername("username");
 
     assertEquals("testcamera1", camera1.getId());
     assertEquals("password", camera1.getFtpPassword());
     assertEquals("/tmp/camera1/", camera1.getFtpIncomingDirectory());
+  }
 
+  @Test
+  public void testFindByFtpUsernameCamera2() throws Exception {
     Camera camera2 = cameraRepository.findByFtpUsername("user2");
 
     assertEquals("testcamera2", camera2.getId());
     assertEquals("password2", camera2.getFtpPassword());
     assertEquals("/tmp/camera2/", camera2.getFtpIncomingDirectory());
+  }
+
+  @Test
+  public void testFindByFtpUsernameInvalid() throws Exception {
+    assertNull(cameraRepository.findByFtpUsername("invalid-username"));
+  }
+
+  @Test
+  public void testFindByFtpUsernameNull() throws Exception {
+    assertNull(cameraRepository.findByFtpUsername(null));
   }
 
   @Test
@@ -85,7 +98,7 @@ public class CameraRepositoryTest {
   @Test
   public void testFindAllWithSnapshotUrl() throws Exception {
     List<Camera> result = cameraRepository.findAllWithSnapshotUrl();
-    
+
     assertEquals(3, result.size());
     assertTrue(result.stream().noneMatch(e -> "Camera without snapshot url".equals(e.getName())));
   }

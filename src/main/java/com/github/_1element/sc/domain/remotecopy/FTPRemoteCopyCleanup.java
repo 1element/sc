@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -78,7 +77,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
     filesRemoved = 0;
     totalSize = 0;
 
-    Map<Calendar, FTPFile> ftpFileMap = removeFilesByDate();
+    Map<Instant, FTPFile> ftpFileMap = removeFilesByDate();
     removeFilesByQuota(ftpFileMap);
 
     LOG.info("Cleanup job deleted {} files with {} disk space.", filesRemoved, FileUtils.byteCountToDisplaySize(sizeRemoved));
@@ -91,8 +90,8 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
    * @return map of all FTP files left
    * @throws IOException
    */
-  private Map<Calendar, FTPFile> removeFilesByDate() throws IOException {
-    Map<Calendar, FTPFile> ftpFileMap = new TreeMap<>();
+  private Map<Instant, FTPFile> removeFilesByDate() throws IOException {
+    Map<Instant, FTPFile> ftpFileMap = new TreeMap<>();
 
     FTPFile[] ftpFiles = ftp.listFiles();
     for (FTPFile ftpFile : ftpFiles) {
@@ -106,7 +105,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
           filesRemoved++;
         } else {
           // put to return map for deletion by quota
-          ftpFileMap.put(ftpFile.getTimestamp(), ftpFile);
+          ftpFileMap.put(ftpFile.getTimestamp().toInstant(), ftpFile);
           totalSize += ftpFile.getSize();
         }
       }
@@ -121,7 +120,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
    * @param ftpFileMap map of FTP files to consider for deletion
    * @throws IOException
    */
-  private void removeFilesByQuota(Map<Calendar, FTPFile> ftpFileMap) throws IOException {
+  private void removeFilesByQuota(Map<Instant, FTPFile> ftpFileMap) throws IOException {
     if (totalSize < ftpRemoteCopyProperties.getCleanupMaxDiskSpace()) {
       // do nothing if max disk space/quota has not been reached
       return;
@@ -129,7 +128,7 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
 
     long sizeToBeRemoved = totalSize - ftpRemoteCopyProperties.getCleanupMaxDiskSpace();
 
-    for (Map.Entry<Calendar, FTPFile> entry: ftpFileMap.entrySet()) {
+    for (Map.Entry<Instant, FTPFile> entry: ftpFileMap.entrySet()) {
       FTPFile ftpFile = entry.getValue();
       if (ftp.deleteFile(ftpFile.getName())) {
         LOG.debug("Successfully removed file '{}' on remote FTP server, quota was reached.", ftpFile.getName());

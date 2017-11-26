@@ -1,8 +1,8 @@
 package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -47,12 +47,12 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
   /**
    * Transfer file to webdav server.
    *
-   * @param localFullFilepath full path to local file
+   * @param completeLocalFilePath full path to local file
    */
-  private void transferFile(String localFullFilepath) throws IOException {
-    File file = fileService.createFile(localFullFilepath);
+  private void transferFile(String completeLocalFilePath) throws IOException {
+    Path path = fileService.getPath(completeLocalFilePath);
 
-    try (InputStream inputStream = fileService.createInputStream(file)) {
+    try (InputStream inputStream = fileService.createInputStream(path)) {
       String dateSubdirectory = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
       String destinationDirectory = webdavRemoteCopyProperties.getHost() + webdavRemoteCopyProperties.getDir() + dateSubdirectory + SEPARATOR;
 
@@ -60,11 +60,11 @@ public class WebdavRemoteCopy extends AbstractWebdavRemoteCopy implements Remote
         sardine.createDirectory(destinationDirectory);
       }
 
-      String fullDestinationPath = destinationDirectory + file.getName();
+      String fullDestinationPath = destinationDirectory + path.getFileName().toString();
       sardine.put(fullDestinationPath, inputStream);
     }
 
-    LOG.info("File '{}' was successfully uploaded to remote webdav server.", file.getName());
+    LOG.info("File '{}' was successfully uploaded to remote webdav server.", path.getFileName().toString());
   }
 
 }

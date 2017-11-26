@@ -5,7 +5,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -63,7 +64,7 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file1Attributes = mock(SftpATTRS.class);
     Mockito.when(file1Attributes.isDir()).thenReturn(false);
     Mockito.when(file1Attributes.getSize()).thenReturn((long) 3145728);
-    Mockito.when(file1Attributes.getMTime()).thenReturn((int) Calendar.getInstance().getTimeInMillis() / 1000);
+    Mockito.when(file1Attributes.getMTime()).thenReturn((int) LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file1.getAttrs()).thenReturn(file1Attributes);
     Mockito.when(file1.getFilename()).thenReturn("3mb-testfile.jpg");
 
@@ -71,12 +72,10 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file2Attributes = mock(SftpATTRS.class);
     Mockito.when(file2Attributes.isDir()).thenReturn(false);
     Mockito.when(file2Attributes.getSize()).thenReturn((long) 2097152);
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_MONTH, -10);
-    Mockito.when(file2Attributes.getMTime()).thenReturn((int) calendar.getTimeInMillis() / 1000);
+    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(10).toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file2.getAttrs()).thenReturn(file2Attributes);
     Mockito.when(file2.getFilename()).thenReturn("2mb-very-old-testfile.jpg");
-    
+
     Vector<ChannelSftp.LsEntry> fileList = new Vector<>();
     fileList.add(file1);
     fileList.add(file2);
@@ -95,7 +94,7 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file1Attributes = mock(SftpATTRS.class);
     Mockito.when(file1Attributes.isDir()).thenReturn(false);
     Mockito.when(file1Attributes.getSize()).thenReturn((long) 5242880);
-    Mockito.when(file1Attributes.getMTime()).thenReturn((int) Calendar.getInstance().getTimeInMillis() / 1000);
+    Mockito.when(file1Attributes.getMTime()).thenReturn((int) LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file1.getAttrs()).thenReturn(file1Attributes);
     Mockito.when(file1.getFilename()).thenReturn("5mb-testfile.jpg");
 
@@ -103,9 +102,7 @@ public class SFTPRemoteCopyCleanupTest {
     SftpATTRS file2Attributes = mock(SftpATTRS.class);
     Mockito.when(file2Attributes.isDir()).thenReturn(false);
     Mockito.when(file2Attributes.getSize()).thenReturn((long) 6291456);
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_MONTH, -1);
-    Mockito.when(file2Attributes.getMTime()).thenReturn((int)calendar.getTimeInMillis() / 1000);
+    Mockito.when(file2Attributes.getMTime()).thenReturn((int) LocalDateTime.now().minusDays(1).toEpochSecond(ZoneOffset.UTC));
     Mockito.when(file2.getAttrs()).thenReturn(file2Attributes);
     Mockito.when(file2.getFilename()).thenReturn("6mb-testfile.jpg");
 

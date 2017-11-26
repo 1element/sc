@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Camera repository.
@@ -92,41 +93,25 @@ public class CameraRepository {
    * @return
    */
   public List<Camera> findAll() {
-    return new ArrayList<>(cameras.values());
+    return cameras.values().stream().collect(Collectors.toList());
   }
 
   /**
    * Find all cameras which have a stream url configured.
-   * 
+   *
    * @return list of cameras with stream url
    */
   public List<Camera> findAllWithStreamUrl() {
-    List<Camera> resultList = new ArrayList<>();
-
-    for (Camera camera : cameras.values()) {
-      if (camera.getStreamUrl() != null) {
-        resultList.add(camera);
-      }
-    }
-
-    return resultList;
+    return cameras.values().stream().filter(Camera::hasStreamUrl).collect(Collectors.toList());
   }
 
   /**
    * Find all cameras which have a snapshot url configured.
-   * 
+   *
    * @return list of cameras with snapshot url
    */
   public List<Camera> findAllWithSnapshotUrl() {
-    List<Camera> resultList = new ArrayList<>();
-
-    for (Camera camera : cameras.values()) {
-      if (camera.getSnapshotUrl() != null) {
-        resultList.add(camera);
-      }
-    }
-
-    return resultList;
+    return cameras.values().stream().filter(Camera::hasSnapshotUrl).collect(Collectors.toList());
   }
 
   /**
@@ -136,17 +121,10 @@ public class CameraRepository {
    * @return
    */
   public Camera findByFtpUsername(String ftpUsername) {
-    if (ftpUsername == null) {
-      return null;
-    }
-
-    for (Camera camera : cameras.values()) {
-      if (ftpUsername.equals(camera.getFtpUsername())) {
-        return camera;
-      }
-    }
-
-    return null;
+    return cameras.values().stream()
+      .filter(camera -> Objects.nonNull(camera.getFtpUsername()))
+      .filter(camera -> camera.getFtpUsername().equals(ftpUsername))
+      .findFirst().orElse(null);
   }
 
 }

@@ -108,8 +108,8 @@ public class SurveillanceWebController {
     }
 
     Page<SurveillanceImage> images = surveillanceService.getImagesPage(camera, date, isArchive, pageRequest);
-    LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate(images, date);
-    String visibleImageIds = images.getContent().stream().map(i -> String.valueOf(i.getId())).collect(Collectors.joining(","));
+    final LocalDateTime mostRecentImageDate = surveillanceService.getMostRecentImageDate(images, date);
+    final String visibleImageIds = images.getContent().stream().map(image -> String.valueOf(image.getId())).collect(Collectors.joining(","));
 
     List<Camera> cameras = cameraRepository.findAll();
 

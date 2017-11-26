@@ -3,7 +3,6 @@ package com.github._1element.sc.service;
 import com.github._1element.sc.SurveillanceCenterApplication;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.repository.SurveillanceImageRepository;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -49,7 +49,7 @@ public class CleanupTasksTest {
     // test data
     SurveillanceImage image1 = new SurveillanceImage("file1.jpg", "camera1", LocalDateTime.now());
     SurveillanceImage image2 = new SurveillanceImage("file2.jpg", "camera2", LocalDateTime.now());
-    List<SurveillanceImage> images = Lists.newArrayList(image1, image2);
+    List<SurveillanceImage> images = Arrays.asList(image1, image2);
 
     // mocking
     MockitoAnnotations.initMocks(this);

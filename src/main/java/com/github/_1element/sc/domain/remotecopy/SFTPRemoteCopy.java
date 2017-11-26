@@ -1,8 +1,8 @@
 package com.github._1element.sc.domain.remotecopy; //NOSONAR
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,21 +55,21 @@ public class SFTPRemoteCopy extends AbstractSFTPRemoteCopy implements RemoteCopy
   /**
    * Uploads a file using the given SFTP channel.
    *
-   * @param localFullFilepath the full path to the local file to upload
+   * @param completeLocalFilePath the full path to the local file to upload
    * @param sftpChannel the SFTP channel that will be used for the transfer
-   * @throws SFTPRemoteCopyException 
+   * @throws SFTPRemoteCopyException
    */
-  private void transferFile(String localFullFilepath, ChannelSftp sftpChannel) throws SFTPRemoteCopyException {
-    File file = fileService.createFile(localFullFilepath);
+  private void transferFile(String completeLocalFilePath, ChannelSftp sftpChannel) throws SFTPRemoteCopyException {
+    Path path = fileService.getPath(completeLocalFilePath);
 
-    try (InputStream inputStream = fileService.createInputStream(file)) {
+    try (InputStream inputStream = fileService.createInputStream(path)) {
       sftpChannel.cd(sftpRemoteCopyProperties.getDir());
-      sftpChannel.put(inputStream, file.getName());
-    } catch (SftpException | IOException e) {
-      throw new SFTPRemoteCopyException("Could not upload file to remote SFTP server: " + e.getMessage(), e);
+      sftpChannel.put(inputStream, path.getFileName().toString());
+    } catch (SftpException | IOException exception) {
+      throw new SFTPRemoteCopyException("Could not upload file to remote SFTP server: " + exception.getMessage(), exception);
     }
 
-    LOG.info("File '{}' was successfully uploaded to remote SFTP server.", file.getName());
+    LOG.info("File '{}' was successfully uploaded to remote SFTP server.", path.getFileName().toString());
   }
 
 }

@@ -76,8 +76,8 @@ public class SurveillanceService {
    * @return
    */
   public LocalDateTime getMostRecentImageDate(Page<SurveillanceImage> images, Optional<LocalDate> date) {
-    if (!date.isPresent() && images != null && images.getContent() != null && !images.getContent().isEmpty()) {
-      return images.getContent().get(0).getReceivedAt();
+    if (!date.isPresent()) {
+      return images.getContent().stream().map(SurveillanceImage::getReceivedAt).findFirst().orElse(null);
     }
 
     return null;

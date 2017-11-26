@@ -1,7 +1,7 @@
 package com.github._1element.sc.service; //NOSONAR
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +29,18 @@ public class ThumbnailService {
   }
 
   /**
-   * Generates a thumbnail for the given file.
-   * 
-   * @param file the file to create a thumbnail for
-   * @throws IOException 
+   * Generates a thumbnail for the given path.
+   *
+   * @param path the file path to create a thumbnail for
    */
-  public void createThumbnail(File file) {
+  public void createThumbnail(Path path) {
     try {
-      Thumbnails.of(file)
-      .size(imageThumbnailProperties.getWidth(), imageThumbnailProperties.getHeight())
-      .outputQuality(imageThumbnailProperties.getQuality())
-      .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
-    } catch (IOException e) {
-      LOG.warn("Unable to generate thumbnail: {}", e.getMessage());
+      Thumbnails.of(path.toFile())
+        .size(imageThumbnailProperties.getWidth(), imageThumbnailProperties.getHeight())
+        .outputQuality(imageThumbnailProperties.getQuality())
+        .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+    } catch (IOException exception) {
+      LOG.warn("Unable to generate thumbnail: {}", exception.getMessage());
     }
   }
 

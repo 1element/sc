@@ -13,9 +13,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * Copy surveillance image to FTP remote server (backup).
@@ -49,20 +49,20 @@ public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
   /**
    * Transfer file to FTP server.
    *
-   * @param localFullFilepath full path to local file
+   * @param completeLocalFilePath complete path to the local file
    * @throws FTPRemoteCopyException
    * @throws IOException
    */
-  private void transferFile(String localFullFilepath) throws FTPRemoteCopyException, IOException {
-    File file = fileService.createFile(localFullFilepath);
+  private void transferFile(String completeLocalFilePath) throws FTPRemoteCopyException, IOException {
+    Path path = fileService.getPath(completeLocalFilePath);
 
-    try (InputStream inputStream = fileService.createInputStream(file)) {
-      if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + file.getName(), inputStream)) {
+    try (InputStream inputStream = fileService.createInputStream(path)) {
+      if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + path.getFileName().toString(), inputStream)) {
         throw new FTPRemoteCopyException("Could not upload file to remote FTP server. Response was: " + ftp.getReplyString());
       }
     }
 
-    LOG.info("File '{}' was successfully uploaded to remote FTP server.", file.getName());
+    LOG.info("File '{}' was successfully uploaded to remote FTP server.", path.getFileName().toString());
   }
 
 }

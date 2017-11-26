@@ -6,8 +6,9 @@ import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,18 +47,18 @@ public class WebdavRemoteCopyTest {
   public void testHandle() throws Exception {
     // mocking
     MockitoAnnotations.initMocks(this);
-    File fileMock = mock(File.class);
-    Mockito.when(fileMock.getName()).thenReturn("local-file.jpg");
-    Mockito.when(fileService.createFile(EXPECTED_LOCAL_FILE_PATH)).thenReturn(fileMock);
+    Path pathMock = mock(Path.class);
+    Mockito.when(pathMock.getFileName()).thenReturn(Paths.get("local-file.jpg"));
+    Mockito.when(fileService.getPath(EXPECTED_LOCAL_FILE_PATH)).thenReturn(pathMock);
 
-    FileInputStream fileInputStreamMock = mock(FileInputStream.class);
-    Mockito.when(fileService.createInputStream(any(File.class))).thenReturn(fileInputStreamMock);
+    InputStream inputStreamMock = mock(InputStream.class);
+    Mockito.when(fileService.createInputStream(any(Path.class))).thenReturn(inputStreamMock);
 
     // execute and verify
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent(EXPECTED_LOCAL_FILE_PATH);
     webdavRemoteCopy.handle(remoteCopyEvent);
 
-    verify(sardine).put(matches("https\\:\\/\\/test-webdav\\.local\\/remote-copy-directory\\/\\d{4}-\\d{2}-\\d{2}-\\d{2}\\/local-file\\.jpg"), eq(fileInputStreamMock));
+    verify(sardine).put(matches("https\\:\\/\\/test-webdav\\.local\\/remote-copy-directory\\/\\d{4}-\\d{2}-\\d{2}-\\d{2}\\/local-file\\.jpg"), eq(inputStreamMock));
   }
 
 }

@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -30,6 +29,8 @@ public class UploadFtplet extends DefaultFtplet {
   private CameraRepository cameraRepository;
 
   private FileService fileService;
+
+  private static final String SEPARATOR = "/";
 
   private static final String INVALID_EXTENSION_MESSAGE = "Permission denied. Invalid file extension.";
 
@@ -83,7 +84,7 @@ public class UploadFtplet extends DefaultFtplet {
 
     LOG.debug("File '{}' was uploaded to ftp server by client '{}'", fileArgument, session.getClientAddress().getHostString());
 
-    String fileName = userRoot + currentDirectory + File.separator + fileArgument;
+    String fileName = userRoot + currentDirectory + SEPARATOR + fileArgument;
     Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
 
     eventPublisher.publishEvent(new ImageReceivedEvent(fileName, camera));

@@ -1,7 +1,7 @@
 package com.github._1element.sc.service; //NOSONAR
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class SurveillanceImageHandlerService {
   private FileService fileService;
 
   private ThumbnailService thumbnailService;
-  
+
   private ImageProperties imageProperties;
 
   @Autowired
@@ -58,39 +58,38 @@ public class SurveillanceImageHandlerService {
    * Will create thumbnail and database entry.
    *
    * @param imageReceivedEvent image received event
-   * @throws IOException
    */
   @Async
   @EventListener
   public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) {
     // source and destination files
-    File sourceFile = fileService.createFile(imageReceivedEvent.getFileName());
+    Path sourcePath = fileService.getPath(imageReceivedEvent.getFileName());
     StringBuilder destinationFileName = new StringBuilder(imageProperties.getStorageDir());
     destinationFileName.append(fileService.getUniquePrefix()).append(SEPARATOR);
     destinationFileName.append(imageReceivedEvent.getSource().getId()).append(SEPARATOR);
-    destinationFileName.append(sourceFile.getName());
-    File destinationFile = fileService.createFile(destinationFileName.toString());
+    destinationFileName.append(sourcePath.getFileName().toString());
+    Path destinationPath = fileService.getPath(destinationFileName.toString());
 
     try {
       // move file from incoming ftp directory to final storage directory
-      fileService.moveFile(sourceFile, destinationFile);
+      fileService.moveFile(sourcePath, destinationPath);
 
       // generate thumbnail
-      thumbnailService.createThumbnail(destinationFile);
+      thumbnailService.createThumbnail(destinationPath);
 
       // store image information in database
-      SurveillanceImage image = new SurveillanceImage(destinationFile.getName(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
+      SurveillanceImage image = new SurveillanceImage(destinationPath.getFileName().toString(), imageReceivedEvent.getSource().getId(), LocalDateTime.now());
       imageRepository.save(image);
-  
+
       // actuator metrics
       LOG.info("New surveillance image '{}' was received.", image.getFileName());
       counterService.increment("images.received");
-  
+
       // publish events to invoke remote copy and push notification
       eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
       eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
-    } catch (IOException e) {
-      LOG.error("Error while moving file from incoming ftp directory to final storage directory: '{}'", e.getMessage());
+    } catch (IOException exception) {
+      LOG.error("Error while moving file from incoming ftp directory to final storage directory: '{}'", exception.getMessage());
     }
   }
 

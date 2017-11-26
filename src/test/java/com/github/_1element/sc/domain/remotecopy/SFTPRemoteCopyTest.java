@@ -4,8 +4,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class SFTPRemoteCopyTest {
 
   @Autowired
   private SFTPRemoteCopyProperties sftpRemoteCopyProperties;
-  
+
   @Mock
   private JSch jsch;
 
@@ -63,12 +64,12 @@ public class SFTPRemoteCopyTest {
     Mockito.when(sessionMock.openChannel(any())).thenReturn(channelMock);
     Mockito.when(jsch.getSession(sftpRemoteCopyProperties.getUsername(), sftpRemoteCopyProperties.getHost())).thenReturn(sessionMock);
 
-    File fileMock = mock(File.class);
-    Mockito.when(fileMock.getName()).thenReturn(EXPECTED_FILE_NAME);
-    Mockito.when(fileService.createFile(EXPECTED_LOCAL_FILE_PATH)).thenReturn(fileMock);
+    Path pathMock = mock(Path.class);
+    Mockito.when(pathMock.getFileName()).thenReturn(Paths.get(EXPECTED_FILE_NAME));
+    Mockito.when(fileService.getPath(EXPECTED_LOCAL_FILE_PATH)).thenReturn(pathMock);
 
-    FileInputStream fileInputStreamMock = mock(FileInputStream.class);
-    Mockito.when(fileService.createInputStream(any(File.class))).thenReturn(fileInputStreamMock);
+    InputStream inputStreamMock = mock(InputStream.class);
+    Mockito.when(fileService.createInputStream(any(Path.class))).thenReturn(inputStreamMock);
 
     // execute
     RemoteCopyEvent remoteCopyEvent = new RemoteCopyEvent(EXPECTED_LOCAL_FILE_PATH);
@@ -76,7 +77,7 @@ public class SFTPRemoteCopyTest {
 
     // verify
     verify(channelMock).cd(sftpRemoteCopyProperties.getDir());
-    verify(channelMock).put(fileInputStreamMock, EXPECTED_FILE_NAME);
+    verify(channelMock).put(inputStreamMock, EXPECTED_FILE_NAME);
   }
 
 }
