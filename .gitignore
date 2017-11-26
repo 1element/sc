@@ -7,4 +7,5 @@
 build/
 logs/
 bin/
+out/
 src/main/resources/application.properties
