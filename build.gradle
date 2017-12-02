@@ -22,7 +22,7 @@ apply plugin: 'checkstyle'
 
 jar {
   baseName = 'surveillancecenter'
-  version = '1.4.0-SNAPSHOT'
+  version = '1.4.0'
   exclude('application.properties')
 }
 sourceCompatibility = 1.8
