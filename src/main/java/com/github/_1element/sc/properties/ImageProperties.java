@@ -11,9 +11,11 @@ import org.springframework.stereotype.Component;
 public class ImageProperties {
 
   private String storageDir;
-  
+
   private String[] validExtensions;
-  
+
+  private int pageSize = 100;
+
   public String getStorageDir() {
     return storageDir;
   }
@@ -28,6 +30,14 @@ public class ImageProperties {
 
   public void setValidExtensions(String[] validExtensions) {
     this.validExtensions = validExtensions;
+  }
+
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
   }
 
 }

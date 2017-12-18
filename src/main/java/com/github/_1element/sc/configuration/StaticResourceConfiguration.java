@@ -13,6 +13,8 @@ import com.github._1element.sc.properties.ImageProperties;
 @Configuration
 public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
 
+  public static final String IMAGES_PATH = "/images/";
+
   private ImageProperties imageProperties;
 
   @Autowired
@@ -22,7 +24,7 @@ public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/images/**").addResourceLocations("file:" + imageProperties.getStorageDir());
+    registry.addResourceHandler(IMAGES_PATH + "**").addResourceLocations("file:" + imageProperties.getStorageDir());
   }
 
 }

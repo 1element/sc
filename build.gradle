@@ -37,6 +37,7 @@ dependencies {
   compile('org.springframework.boot:spring-boot-starter-data-jpa')
   compile('org.springframework.boot:spring-boot-devtools')
   compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-hateoas')
   compile('org.apache.ftpserver:ftpserver-core:1.0.6')
   compile('commons-net:commons-net:3.5')
   compile('net.coobird:thumbnailator:0.4.8')

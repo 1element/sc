@@ -1,5 +1,7 @@
 package com.github._1element.sc.domain; //NOSONAR
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Surveillance camera POJO.
  */
@@ -11,12 +13,16 @@ public class Camera {
 
   private Integer rotation;
 
+  @JsonIgnore
   private String host;
 
+  @JsonIgnore
   private String ftpUsername;
 
+  @JsonIgnore
   private String ftpPassword;
 
+  @JsonIgnore
   private String ftpIncomingDirectory;
 
   private String snapshotUrl;

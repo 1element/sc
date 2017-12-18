@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,11 +41,11 @@ public class SurveillanceService {
    * @param camera      optional camera identifier
    * @param date        optional date
    * @param isArchive   archive flag
-   * @param pageRequest page request
+   * @param pageable    page request
    * @return the page of surveillance images
    */
   public Page<SurveillanceImage> getImagesPage(Optional<String> camera, Optional<LocalDate> date, boolean isArchive,
-                                               PageRequest pageRequest) {
+                                               Pageable pageable) {
     LocalDateTime startOfDay = null;
     LocalDateTime endOfDay = null;
 
@@ -56,17 +57,17 @@ public class SurveillanceService {
     if (camera.isPresent() && StringUtils.isNotBlank(camera.get())) {
       if (date.isPresent()) {
         return imageRepository.findAllForDateRangeAndCameraId(startOfDay, endOfDay, camera.get(), isArchive,
-            pageRequest);
+            pageable);
       }
 
-      return imageRepository.findAllByCameraIdAndArchived(camera.get(), isArchive, pageRequest);
+      return imageRepository.findAllByCameraIdAndArchived(camera.get(), isArchive, pageable);
     }
 
     if (date.isPresent()) {
-      return imageRepository.findAllForDateRange(startOfDay, endOfDay, isArchive, pageRequest);
+      return imageRepository.findAllForDateRange(startOfDay, endOfDay, isArchive, pageable);
     }
 
-    return imageRepository.findAllByArchived(isArchive, pageRequest);
+    return imageRepository.findAllByArchived(isArchive, pageable);
   }
 
   /**

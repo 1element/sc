@@ -53,7 +53,7 @@ public class SurveillanceWebController {
   @Autowired
   private MessageSource messageSource;
 
-  @Value("${sc.view.images-per-page:50}")
+  @Value("${sc.image.page-size:100}")
   private Integer pageSize;
 
   private static final String PATH_SEPARATOR = "/";
