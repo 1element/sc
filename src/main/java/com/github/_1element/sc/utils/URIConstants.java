@@ -38,6 +38,8 @@ public final class URIConstants {
 
   public static final String API_PROPERTIES = "/properties";
 
+  public static final String API_AUTH = "/auth";
+
   private URIConstants() {
     // hide constructor
   }
