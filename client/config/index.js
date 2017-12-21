@@ -35,6 +35,14 @@ module.exports = {
     // (https://github.com/webpack/css-loader#sourcemaps)
     // In our experience, they generally work as expected,
     // just be aware of this issue when enabling this option.
-    cssSourceMap: false
+    cssSourceMap: false,
+    proxyTable: {
+      // Proxy all requests starting with /api to the spring boot tomcat server on port 8080.
+      // This ensures that there is no same origin policy violation for development.
+      '/api': {
+        target: 'http://localhost:8080/sc',
+        changeOrigin: true,
+      }
+    }
   }
 }

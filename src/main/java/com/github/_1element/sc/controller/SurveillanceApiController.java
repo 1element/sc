@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
  * RESTful API controller.
  */
 @RestController
-@CrossOrigin
 @RequestMapping(URIConstants.API_ROOT)
 public class SurveillanceApiController {
 
