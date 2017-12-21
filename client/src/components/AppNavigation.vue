@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+  <nav v-if="showNavigation" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
@@ -49,6 +49,29 @@
 <script>
 export default {
   name: 'AppNavigation',
+
+  data() {
+    return {
+      showNavigation: true,
+    };
+  },
+
+  created() {
+    if (this.$route.name === 'login') {
+      this.showNavigation = false;
+    }
+  },
+
+  watch: {
+    $route(value) {
+      if (value.name === 'login') {
+        this.showNavigation = false;
+      } else {
+        this.showNavigation = true;
+      }
+    },
+  },
+
 };
 </script>
 

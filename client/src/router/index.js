@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Login from '@/pages/Login';
 import Recordings from '@/pages/Recordings';
 import Liveview from '@/pages/Liveview';
 import LiveviewDetail from '@/pages/LiveviewDetail';
@@ -16,6 +17,11 @@ export default new Router({
       path: '/',
       name: 'root',
       redirect: '/liveview',
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
     },
     {
       path: '/recordings',
