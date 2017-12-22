@@ -1,8 +1,9 @@
 <template>
-  <button type="button" class="btn btn-primary has-spinner"
+  <b-button size="sm"
+    variant="outline-primary"
     v-bind:disabled="isLoading"
-    v-bind:class="{ active: isLoading }"
-    v-on:click="process">Archive recordings</button>
+    v-bind:active="isLoading"
+    v-on:click="process">Archive recordings</b-button>
 </template>
 
 <script>
@@ -47,14 +48,5 @@ export default {
 </script>
 
 <style lang="scss">
-  .has-spinner {
-    .fa-spinner {
-      opacity: 0;
-      max-width: 0;
-    }
-    &.active .fa-spinner {
-      opacity: 1;
-      max-width: 50px;
-    }
-  }
+
 </style>

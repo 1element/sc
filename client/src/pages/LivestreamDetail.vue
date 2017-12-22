@@ -1,35 +1,35 @@
 <template>
-  <div id="page-wrapper">
+  <div>
     <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Livestream: {{ camera.name }}</h1>
+      <div class="col">
+        <h5>Livestream: {{ camera.name }}</h5>
       </div>
     </div>
     <!-- /.row -->
 
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
-
-    <div class="col-lg-12">
-      <div class="thumbnail">
-        <img class="img-responsive" v-bind:src="camera.streamUrl"/>
-        <div class="caption">
-          <div class="text-center">{{ camera.name }}</div>
-        </div>
+    <div class="row">
+      <div class="col">
+        <b-alert variant="danger" dismissible :show="errorMessage!==''" @dismissed="errorMessage=''">
+          {{ errorMessage }}
+        </b-alert>
       </div>
     </div>
+    <!-- /.row -->
 
+    <div class="row">
+      <div class="col edge-to-edge">
+        <img class="img-fluid" v-bind:src="camera.streamUrl"/>
+      </div>
+    </div>
+    <!-- /.row -->
   </div>
-  <!-- /.page-wrapper -->
 </template>
 
 <script>
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 
 export default {
   name: 'Livestream-Detail',
-
-  components: { AlertMessage },
 
   created() {
     this.fetchData();

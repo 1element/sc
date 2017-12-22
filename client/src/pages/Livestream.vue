@@ -1,36 +1,40 @@
 <template>
-  <div id="page-wrapper">
+  <div>
     <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Livestream</h1>
+      <div class="col">
+        <h5>Livestream</h5>
       </div>
     </div>
     <!-- /.row -->
 
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
+    <div class="row">
+      <div class="col">
+        <b-alert variant="danger" dismissible :show="errorMessage!==''" @dismissed="errorMessage=''">
+          {{ errorMessage }}
+        </b-alert>
+      </div>
+    </div>
+    <!-- /.row -->
 
     <div class="row">
-      <div class="col-lg-6 col-md-6 col-xs-12" v-for="camera in cameras">
-        <router-link :to="{ name: 'livestream-detail', params: { id: camera.id } }" class="thumbnail">
-          <img class="img-responsive" v-bind:src="camera.streamUrl"/>
-          <div class="caption">
-            <div class="text-center">{{ camera.name }}</div>
-          </div>
+      <div class="col-sm edge-to-edge" v-for="camera in cameras">
+        <router-link :to="{ name: 'livestream-detail', params: { id: camera.id } }">
+          <figure class="figure mb-0">
+            <img class="img-fluid" v-bind:src="camera.streamUrl"/>
+            <figcaption class="figure-caption text-center">{{ camera.name }}</figcaption>
+          </figure>
         </router-link>
       </div>
     </div>
-
+    <!-- /.row -->
   </div>
 </template>
 
 <script>
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 
 export default {
   name: 'Livestream',
-
-  components: { AlertMessage },
 
   created() {
     this.fetchData();

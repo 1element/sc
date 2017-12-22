@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div id="wrapper">
-      <app-navigation></app-navigation>
+    <app-navigation></app-navigation>
+    <main role="main" class="container-fluid">
       <router-view></router-view>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -17,15 +17,19 @@ export default {
 </script>
 
 <style lang="scss">
-#page-wrapper {
-  padding-bottom: 20px;
+body {
+  background-color: #fff;
+  padding-top: 4.5rem;
 }
 
-h1.page-header {
-  font-size: 24px;
+.edge-to-edge {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.table-sc > tbody > tr:first-child > td {
-  border-top: none;
+.btn {
+  &.icon {
+    padding-bottom: 0;
+  }
 }
 </style>

@@ -1,15 +1,10 @@
 <template>
-  <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" v-bind:id="id"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span>{{ currentSelectionName }}</span>
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" v-bind:aria-labelledby="id">
-      <li v-for="item in items">
-        <a v-on:click="selected(item.id)">{{ item.name }}</a>
-      </li>
-    </ul>
+  <div>
+    <b-dropdown size="sm" v-bind:text="currentSelectionName">
+      <b-dropdown-item v-for="item in items" :key="item.id" v-on:click="selected(item.id)">
+        {{ item.name }}
+      </b-dropdown-item>
+    </b-dropdown>
   </div>
 </template>
 
@@ -33,10 +28,6 @@ export default {
       currentSelectionId: this.initialSelectionId,
       id: null,
     };
-  },
-
-  mounted() {
-    this.id = this._uid;
   },
 
   computed: {

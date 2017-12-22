@@ -1,27 +1,33 @@
 <template>
-  <div id="page-wrapper">
-
+  <div>
     <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Settings</h1>
+      <div class="col">
+        <h5>Settings</h5>
       </div>
     </div>
     <!-- /.row -->
 
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
+    <div class="row">
+      <div class="col">
+        <b-alert variant="danger" dismissible :show="errorMessage!==''" @dismissed="errorMessage=''">
+          {{ errorMessage }}
+        </b-alert>
+      </div>
+    </div>
+    <!-- /.row -->
 
     <div class="row">
-      <div class="col-lg-12">
-        <h4>Push notifications</h4>
-        <p>You can enable or disable push notifications for each camera here. If enabled, a push notification will be
+      <div class="col">
+        <h6>Push notifications</h6>
+        <p>You can enable or disable push notifications for each camera. If enabled, a push notification will be
           sent as soon as a new image is received via FTP.</p>
       </div>
     </div>
     <!-- /.row -->
 
     <div class="row" v-for="setting in settings">
-      <div class="col-lg-2">{{ setting.camera.name }}</div>
-      <div class="col-lg-10">
+      <div class="col col-lg-2">{{ setting.camera.name }}</div>
+      <div class="col col-lg-10">
         <div class="btn-group">
           <button class="btn btn-sm"
             v-bind:class="{ 'btn-primary active': setting.pushNotificationSetting.enabled, 'btn-default': !setting.pushNotificationSetting.enabled }"
@@ -35,16 +41,13 @@
     <!-- /.row -->
 
   </div>
-  <!-- /#page-wrapper -->
 </template>
 
 <script>
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 
 export default {
   name: 'Settings',
-  components: { AlertMessage },
 
   created() {
     this.fetchSettings();
@@ -54,7 +57,6 @@ export default {
     return {
       settings: [],
       errorMessage: '',
-      successMessage: '',
     };
   },
 

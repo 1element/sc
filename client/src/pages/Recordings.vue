@@ -1,88 +1,103 @@
 <template>
-  <div id="page-wrapper">
+  <div>
     <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Recordings</h1>
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span>{{ page.totalElements }} recordings. Page {{ page.number + 1 }} of {{ page.totalPages }}.</span>
-          </div>
-          <div class="panel-body">
-
-            <div class="row">
-              <div class="col-xs-6">
-                <dropdown v-bind:items="cameras" initial-selection-id="" v-on:selected="cameraDropdownCallback"></dropdown>
-              </div>
-              <div class="col-xs-6">
-                <dropdown v-bind:items="filter" initial-selection-id="false" v-on:selected="filterDropdownCallback"></dropdown>
-              </div>
-            </div>
-
-          </div>
-        </div>
+      <div class="col">
+        <h5>Recordings</h5>
       </div>
-      <!-- /.col-lg-12 -->
-    </div>
-    <!-- /.row -->
-
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
-
-    <div class="row" v-if="currentArchiveFilter !== 'true'">
-      <div class="col-lg-12 margin-bottom-m">
+      <div class="col-auto" v-if="currentArchiveFilter !== 'true'">
         <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
       </div>
     </div>
     <!-- /.row -->
 
     <div class="row">
-      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="recording in recordings">
-        <a class="thumbnail" data-toggle="lightbox" data-gallery="recordings-gallery" v-bind:href="`${properties.imageBaseUrl}${recording.fileName}`">
-          <img class="img-responsive" v-bind:src="`${properties.imageBaseUrl}${properties.imageThumbnailPrefix}${recording.fileName}`"/>
-          <div class="caption text-center">
-            {{ recording.receivedAt.year }}-{{ recording.receivedAt.monthValue }}-{{ recording.receivedAt.dayOfMonth }}
-            {{ recording.receivedAt.hour }}:{{ recording.receivedAt.minute }}:{{ recording.receivedAt.second }}
+      <div class="col">
+        <b-alert variant="danger" dismissible :show="errorMessage!==''" @dismissed="errorMessage=''">
+          {{ errorMessage }}
+        </b-alert>
+      </div>
+    </div>
+    <!-- /.row -->
+
+    <div class="row mt-1 mb-2">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            {{ page.totalElements }} recordings. Page {{ page.number + 1 }} of {{ page.totalPages }}.
           </div>
+          <div class="card-body">
+            <div class="row justify-content-between">
+              <div class="col">
+                <dropdown v-bind:items="cameras" initial-selection-id="" v-on:selected="cameraDropdownCallback"></dropdown>
+              </div>
+              <div class="col-auto">
+                <dropdown v-bind:items="filter" initial-selection-id="false" v-on:selected="filterDropdownCallback"></dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row thumbnails">
+      <div class="col-4 col-xl-1 col-lg-2 col-md-2 col-sm-3 edge-to-edge" v-for="recording in recordings">
+        <a v-bind:href="`${properties.imageBaseUrl}${recording.fileName}`">
+          <figure class="figure">
+            <img class="img-fluid img-thumbnail" v-bind:src="`${properties.imageBaseUrl}${properties.imageThumbnailPrefix}${recording.fileName}`"/>
+            <figcaption class="figure-caption text-center">
+              {{ recording.receivedAt.year }}-{{ recording.receivedAt.monthValue }}-{{ recording.receivedAt.dayOfMonth }}
+              {{ recording.receivedAt.hour }}:{{ recording.receivedAt.minute }}:{{ recording.receivedAt.second }}
+            </figcaption>
+          </figure>
         </a>
       </div>
     </div>
     <!-- /.row -->
 
-    <div class="row" v-if="currentArchiveFilter !== 'true'">
-      <div class="col-lg-12 margin-bottom-m">
+    <div class="row mt-3 text-center" v-if="currentArchiveFilter !== 'true'">
+      <div class="col">
         <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
       </div>
     </div>
     <!-- /.row -->
 
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <paginate
-          :pageCount="totalPages"
-          :clickHandler="paginateClickCallback"
-          :prevText="'Previous'"
-          :nextText="'Next'"
-          :containerClass="'pagination'"
-          ref="paginate">
-        </paginate>
+    <div class="row mt-2 justify-content-center">
+      <div class="col">
+        <nav>
+          <!-- TODO: replace with <b-pagination> component -->
+          <paginate
+            :pageCount="totalPages"
+            :clickHandler="paginateClickCallback"
+            :prevText="'Previous'"
+            :nextText="'Next'"
+            :containerClass="'pagination justify-content-center'"
+            :page-class="'page-item'"
+            :prev-class="'page-item'"
+            :page-link-class="'page-link'"
+            :prev-link-class="'page-link'"
+            :next-class="'page-item'"
+            :next-link-class="'page-link'"
+            ref="paginate">
+          </paginate>
+        </nav>
       </div>
     </div>
     <!-- /.row -->
-
   </div>
-  <!-- /#page-wrapper -->
 </template>
 
 <script>
 import Paginate from 'vuejs-paginate';
 import Dropdown from '../components/Dropdown';
 import ArchiveButton from '../components/ArchiveButton';
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 
 export default {
   name: 'Recordings',
-  components: { Dropdown, ArchiveButton, AlertMessage, Paginate },
+  components: { Dropdown, ArchiveButton, Paginate },
 
   created() {
     this.fetchProperties();
@@ -206,3 +221,19 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.thumbnails {
+  figure {
+    margin: 0;
+  }
+
+  .figure-caption {
+    font-size: 70%;
+  }
+  .img-thumbnail {
+    padding: 0.05rem;
+    border-radius: 0;
+  }
+}
+</style>

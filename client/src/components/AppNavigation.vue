@@ -1,48 +1,33 @@
 <template>
-  <nav v-if="showNavigation" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <router-link :to="{ name: 'recordings' }" class="navbar-brand">
-        <span>Surveillance Center</span>
-        <span id="js-notifier-badge" class="badge"></span>
-      </router-link>
+  <nav v-if="showNavigation" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <router-link :to="{ name: 'recordings' }" class="navbar-brand">Surveillance Center</router-link>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <router-link :to="{ name: 'recordings' }" class="nav-link">
+            <i class="fa fa-th fa-fw"></i> <span>Recordings</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'liveview' }" class="nav-link">
+            <i class="fa fa-camera fa-fw"></i> <span>Liveview</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'livestream' }" class="nav-link">
+            <i class="fa fa-video-camera fa-fw"></i> <span>Livestream</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'settings' }" class="nav-link">
+            <i class="fa fa-gear fa-fw"></i> <span>Settings</span>
+          </router-link>
+        </li>
+      </ul>
     </div>
-    <!-- /.navbar-header -->
-
-    <div class="navbar-default sidebar" role="navigation">
-      <div class="sidebar-nav navbar-collapse">
-        <ul class="nav" id="side-menu">
-          <li>
-            <router-link :to="{ name: 'recordings' }">
-              <i class="fa fa-th fa-fw"></i> <span>Recordings</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'liveview' }">
-              <i class="fa fa-camera fa-fw"></i> <span>Liveview</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'livestream' }">
-              <i class="fa fa-video-camera fa-fw"></i> <span>Livestream</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'settings' }">
-              <i class="fa fa-gear fa-fw"></i> <span>Settings</span>
-            </router-link>
-          </li>
-
-        </ul>
-      </div>
-      <!-- /.sidebar-collapse -->
-    </div>
-    <!-- /.navbar-static-side -->
   </nav>
 </template>
 

@@ -8,19 +8,16 @@
     <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
     <button class="btn btn-lg btn-primary btn-block" v-on:click="login">Login</button>
 
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
   </div>
   <!-- /.container -->
 </template>
 
 <script>
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 
 export default {
   name: 'Login',
 
-  components: { AlertMessage },
 
   data() {
     return {

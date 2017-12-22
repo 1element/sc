@@ -1,42 +1,40 @@
 <template>
-  <div id="page-wrapper">
-    <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Liveview</h1>
+  <div>
+    <div class="row justify-content-between">
+      <div class="col">
+        <h5>Liveview</h5>
+      </div>
+      <div class="col-auto">
+        <b-button variant="primary" size="sm" v-on:click="getNewSnapshots" class="icon"><i class="material-icons">refresh</i></b-button>
       </div>
     </div>
     <!-- /.row -->
 
-    <alert-message v-bind:text="errorMessage" class="alert-danger"></alert-message>
-
     <div class="row">
-      <div class="col-lg-12">
-        <refresh-button v-bind:is-loading="isLoading" v-on:refresh="getNewSnapshots"></refresh-button>
+      <div class="col">
+        <b-alert variant="danger" dismissible :show="errorMessage!==''" @dismissed="errorMessage=''">
+          {{ errorMessage }}
+        </b-alert>
       </div>
     </div>
     <!-- /.row -->
 
-    <div class="row margin-top-s" v-images-loaded:on="getImageLoadingCallback()">
-      <div class="col-lg-6 col-md-6 col-xs-12" v-for="camera in cameras">
-        <router-link :to="{ name: 'liveview-detail', params: { id: camera.id } }" class="thumbnail">
-          <img class="img-responsive" v-bind:src="camera.snapshotUrl"/>
-          <div class="caption">
-            <div class="text-center">{{ camera.name }}</div>
-            <div class="text-center">
-              {{ currentTimestamp }}
-            </div>
-          </div>
+    <div class="row" v-images-loaded:on="getImageLoadingCallback()">
+      <div class="col-sm edge-to-edge" v-for="camera in cameras">
+        <router-link :to="{ name: 'liveview-detail', params: { id: camera.id } }">
+          <figure class="figure mb-0">
+            <img class="img-fluid" v-bind:src="camera.snapshotUrl"/>
+            <figcaption class="figure-caption text-center">{{ camera.name }} - {{ currentTimestamp }}</figcaption>
+          </figure>
         </router-link>
       </div>
     </div>
-
+    <!-- /.row -->
   </div>
 </template>
 
 <script>
 import imagesLoaded from 'vue-images-loaded';
-import RefreshButton from '../components/RefreshButton';
-import AlertMessage from '../components/AlertMessage';
 import api from '../services/api';
 import urlUtils from '../utils/urlUtils';
 
@@ -44,8 +42,6 @@ const cameraOfflineAsset = require('../assets/camera-offline.svg');
 
 export default {
   name: 'Liveview',
-
-  components: { RefreshButton, AlertMessage },
 
   created() {
     this.fetchData();
@@ -56,7 +52,6 @@ export default {
     return {
       cameras: [],
       currentTimestamp: '',
-      isLoading: false,
       errorMessage: '',
     };
   },
@@ -84,7 +79,6 @@ export default {
      * Reload snapshot urls and retrieve new images.
      */
     getNewSnapshots() {
-      this.isLoading = true;
       this.cameras = this.appendHashFragments(this.cameras);
       this.getCurrentTimestamp();
     },
@@ -124,7 +118,6 @@ export default {
           }
         },
         always: () => {
-          this.isLoading = false;
         },
       };
     },
