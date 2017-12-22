@@ -6,7 +6,16 @@ export default function () {
     baseURL: process.env.API_BASE_URL,
   });
 
-  axiosClient.interceptors.response.use(response => response, (error) => {
+  axiosClient.interceptors.request.use((config) => {
+    router.app.$Progress.start();
+    return config;
+  }, error => Promise.reject(error));
+
+  axiosClient.interceptors.response.use((response) => {
+    router.app.$Progress.finish();
+    return response;
+  }, (error) => {
+    router.app.$Progress.fail();
     // if we receive an unauthorized response
     if (error.response.status === 401) {
       // and we are not trying to login

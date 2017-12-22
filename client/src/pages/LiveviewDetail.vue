@@ -77,6 +77,7 @@ export default {
      * Reload snapshot url.
      */
     getNewSnapshot() {
+      this.$Progress.start();
       this.camera.snapshotUrl = urlUtils.appendHashFragment(this.camera.snapshotUrl);
       this.getCurrentTimestamp();
     },
@@ -101,6 +102,7 @@ export default {
           }
         },
         always: () => {
+          this.$Progress.finish();
         },
       };
     },

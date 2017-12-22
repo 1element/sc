@@ -79,6 +79,7 @@ export default {
      * Reload snapshot urls and retrieve new images.
      */
     getNewSnapshots() {
+      this.$Progress.start();
       this.cameras = this.appendHashFragments(this.cameras);
       this.getCurrentTimestamp();
     },
@@ -118,6 +119,7 @@ export default {
           }
         },
         always: () => {
+          this.$Progress.finish();
         },
       };
     },
