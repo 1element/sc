@@ -218,4 +218,12 @@ export default {
     border-radius: 0;
   }
 }
+
+.card {
+  font-size: 0.8rem;
+}
+
+.dropdown-item {
+  font-size: 0.95rem;
+}
 </style>

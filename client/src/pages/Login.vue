@@ -55,12 +55,6 @@ export default {
 </script>
 
 <style lang="scss">
-body {
-  background-color: #eee;
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
 .form-signin {
   max-width: 330px;
   padding: 15px;
