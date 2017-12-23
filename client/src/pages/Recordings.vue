@@ -64,25 +64,9 @@
     </div>
     <!-- /.row -->
 
-    <div class="row mt-2 justify-content-center">
+    <div class="row mt-2">
       <div class="col">
-        <nav>
-          <!-- TODO: replace with <b-pagination> component -->
-          <paginate
-            :pageCount="totalPages"
-            :clickHandler="paginateClickCallback"
-            :prevText="'Previous'"
-            :nextText="'Next'"
-            :containerClass="'pagination justify-content-center'"
-            :page-class="'page-item'"
-            :prev-class="'page-item'"
-            :page-link-class="'page-link'"
-            :prev-link-class="'page-link'"
-            :next-class="'page-item'"
-            :next-link-class="'page-link'"
-            ref="paginate">
-          </paginate>
-        </nav>
+        <b-pagination size="sm" align="center" :total-rows="page.totalElements" :per-page="page.size" v-model="currentPageNumber"></b-pagination>
       </div>
     </div>
     <!-- /.row -->
@@ -90,14 +74,13 @@
 </template>
 
 <script>
-import Paginate from 'vuejs-paginate';
 import Dropdown from '../components/Dropdown';
 import ArchiveButton from '../components/ArchiveButton';
 import api from '../services/api';
 
 export default {
   name: 'Recordings',
-  components: { Dropdown, ArchiveButton, Paginate },
+  components: { Dropdown, ArchiveButton },
 
   created() {
     this.fetchProperties();
@@ -108,9 +91,8 @@ export default {
   data() {
     return {
       currentCameraId: '',
-      currentPageNumber: 0,
+      currentPageNumber: 1,
       currentArchiveFilter: 'false',
-      totalPages: 0,
       cameras: [{ id: '', name: 'all cameras' }],
       filter: [{ id: 'false', name: 'new recordings' }, { id: 'true', name: 'archived recordings' }],
       recordings: [],
@@ -141,11 +123,10 @@ export default {
      * Fetch recordings data from REST API.
      */
     fetchRecordings() {
-      api().get(`recordings?camera=${this.currentCameraId}&page=${this.currentPageNumber}&archive=${this.currentArchiveFilter}`)
+      api().get(`recordings?camera=${this.currentCameraId}&page=${this.currentPageNumber - 1}&archive=${this.currentArchiveFilter}`)
         .then((response) => {
           this.recordings = response.data._embedded.surveillanceImageList;
           this.page = response.data.page;
-          this.totalPages = response.data.page.totalPages;
         })
         .catch((error) => {
           this.errorMessage = error.message;
@@ -203,22 +184,23 @@ export default {
     },
 
     /**
-     * Callback handler for pagination.
-     */
-    paginateClickCallback(pageNumber) {
-      this.currentPageNumber = pageNumber - 1;
-      this.fetchRecordings();
-    },
-
-    /**
      * Resets current page number.
      */
     resetCurrentPageNumber() {
-      this.$refs.paginate.selected = 0;
-      this.currentPageNumber = 0;
+      this.currentPageNumber = 1;
     },
 
   },
+
+  watch: {
+    /**
+     * Watch pagination changes and fetch new recordings.
+     */
+    currentPageNumber() {
+      this.fetchRecordings();
+    },
+  },
+
 };
 </script>
 
