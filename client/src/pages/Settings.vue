@@ -25,16 +25,18 @@
     </div>
     <!-- /.row -->
 
-    <div class="row" v-for="setting in settings">
+    <div class="row pb-1" v-for="setting in settings">
       <div class="col col-lg-2">{{ setting.camera.name }}</div>
       <div class="col col-lg-10">
         <div class="btn-group">
-          <button class="btn btn-sm"
-            v-bind:class="{ 'btn-primary active': setting.pushNotificationSetting.enabled, 'btn-default': !setting.pushNotificationSetting.enabled }"
-            v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">ON</button>
-          <button class="btn btn-sm"
-            v-bind:class="{ 'btn-primary active': !setting.pushNotificationSetting.enabled, 'btn-default': setting.pushNotificationSetting.enabled }"
-            v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">OFF</button>
+          <b-button size="sm"
+             :pressed="setting.pushNotificationSetting.enabled"
+             :variant="setting.pushNotificationSetting.enabled ? 'primary' : 'secondary'"
+             v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">ON</b-button>
+          <b-button size="sm"
+             :pressed="!setting.pushNotificationSetting.enabled"
+             :variant="!setting.pushNotificationSetting.enabled ? 'primary' : 'secondary'"
+             v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">OFF</b-button>
         </div>
       </div>
     </div>
