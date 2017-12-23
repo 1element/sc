@@ -11,6 +11,7 @@ import Settings from '@/pages/Settings';
 Vue.use(Router);
 
 export default new Router({
+  base: process.env.APP_BASE_URL,
   mode: 'history',
   routes: [
     {
