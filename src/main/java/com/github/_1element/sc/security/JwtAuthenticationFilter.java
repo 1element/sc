@@ -1,4 +1,4 @@
-package com.github._1element.sc.security;
+package com.github._1element.sc.security; //NOSONAR
 
 import com.github._1element.sc.service.JwtAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

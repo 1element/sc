@@ -1,4 +1,4 @@
-package com.github._1element.sc.configuration;
+package com.github._1element.sc.configuration; //NOSONAR
 
 import com.github._1element.sc.security.JwtAuthenticationEntryPoint;
 import com.github._1element.sc.security.JwtAuthenticationFilter;

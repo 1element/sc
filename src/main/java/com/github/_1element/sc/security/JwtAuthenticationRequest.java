@@ -1,4 +1,4 @@
-package com.github._1element.sc.security;
+package com.github._1element.sc.security; //NOSONAR
 
 /**
  * Authentication request with username and password.

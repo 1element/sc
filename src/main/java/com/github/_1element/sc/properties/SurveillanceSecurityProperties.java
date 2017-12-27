@@ -1,4 +1,4 @@
-package com.github._1element.sc.properties;
+package com.github._1element.sc.properties; //NOSONAR
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
