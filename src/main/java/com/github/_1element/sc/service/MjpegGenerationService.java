@@ -6,22 +6,22 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.github._1element.sc.properties.StreamGenerationProperties;
+import com.github._1element.sc.utils.RestTemplateUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.github._1element.sc.properties.MJPEGTransformProperties;
-
 /**
- * Transformation service to create MJPEG streams.
+ * Generation service to create MJPEG streams.
  */
 @Service
-public class MJPEGTransformationService {
+public class MjpegGenerationService {
 
-  private final RestTemplate restTemplate;
+  private StreamGenerationProperties streamGenerationProperties;
 
-  private MJPEGTransformProperties mjpegProperties;
+  private final RestTemplateBuilder restTemplateBuilder;
 
   private static final String NL = "\r\n";
 
@@ -29,9 +29,10 @@ public class MJPEGTransformationService {
 
   private static final String MJPEG_HEAD = MJPEG_BOUNDARY + NL + "Content-type: image/jpeg" + NL + "Content-Length: ";
 
-  public MJPEGTransformationService(MJPEGTransformProperties mjpegProperties, RestTemplateBuilder restTemplateBuilder) {
-    this.mjpegProperties = mjpegProperties;
-    this.restTemplate = restTemplateBuilder.build();
+  public MjpegGenerationService(StreamGenerationProperties streamGenerationProperties,
+                                RestTemplateBuilder restTemplateBuilder) {
+    this.streamGenerationProperties = streamGenerationProperties;
+    this.restTemplateBuilder = restTemplateBuilder;
   }
 
   /**
@@ -44,6 +45,8 @@ public class MJPEGTransformationService {
    * @throws RestClientException if an HTTP error occurred while accessing the snapshot URL
    */
   public void writeSnapshotToOutputStream(String snapshotUrl, HttpServletResponse response) throws IOException {
+    RestTemplate restTemplate = RestTemplateUtils.buildWithAuth(restTemplateBuilder, snapshotUrl);
+
     OutputStream outputStream = response.getOutputStream();
 
     while (!Thread.currentThread().isInterrupted()) {
@@ -55,7 +58,7 @@ public class MJPEGTransformationService {
       outputStream.flush();
 
       try {
-        TimeUnit.MILLISECONDS.sleep(mjpegProperties.getDelay());
+        TimeUnit.MILLISECONDS.sleep(streamGenerationProperties.getMjpegDelay());
       } catch (InterruptedException exception) {
         Thread.currentThread().interrupt();
       }
@@ -78,23 +81,6 @@ public class MJPEGTransformationService {
    */
   public void setCacheControlHeader(HttpServletResponse response) {
     response.setHeader("Cache-Control", "no-cache, private");
-  }
-
-  /**
-   * Return configured snapshot URL for given ID. Null if not found.
-   *
-   * @param id ID to retrieve URL for
-   * @return snapshot URL
-   */
-  public String getSnapshotUrl(int id) {
-    String[] urls = mjpegProperties.getUrls();
-
-    int index = id - 1;
-    if ((index >= 0) && (index < urls.length)) {
-      return urls[index];
-    }
-
-    return null;
   }
 
 }

@@ -22,30 +22,16 @@ public class MultiCameraAwareProperties {
   }
 
   /**
-   * Returns property value for given key and camera id. Default value if nothing was found.
+   * Returns property value for the provided key and camera id.
    *
-   * @param propertyKey  property key
-   * @param cameraId     camera identifier
-   * @param defaultValue default value
-   * @return the property value
-   */
-  public String getProperty(String propertyKey, String cameraId, String defaultValue) {
-    try {
-      return getProperty(propertyKey, cameraId);
-    } catch (Exception exception) {
-      return defaultValue;
-    }
-  }
-
-  /**
-   * Returns property value for given key and camera id.
+   * @param propertyKey the property key to resolve
+   * @param cameraId the camera id to use for the property key building
+   * @param targetType the expected type of the property value
    *
-   * @param propertyKey property key
-   * @param cameraId    camera identifier
-   * @return the property value
+   * @return property value
    * @throws PropertyNotFoundException exception if property was not found
    */
-  public String getProperty(String propertyKey, String cameraId) throws PropertyNotFoundException {
+  public <T> T getProperty(String propertyKey, String cameraId, Class<T> targetType) throws PropertyNotFoundException {
     if (StringUtils.isBlank(cameraId)) {
       throw new PropertyNotFoundException("Property '" + propertyKey + "' not found. Empty camera id was given.");
     }
@@ -56,7 +42,38 @@ public class MultiCameraAwareProperties {
       throw new PropertyNotFoundException("Property not found for key '" + formattedPropertyKey + "'.");
     }
 
-    return environment.getProperty(formattedPropertyKey);
+    return environment.getProperty(formattedPropertyKey, targetType);
+  }
+
+  /**
+   * Returns property value for the provided key and camera id. Default value if none found.
+   *
+   * @param propertyKey the property key to resolve
+   * @param cameraId the camera id to use for the property key building
+   * @param targetType the expected type of the property value
+   * @param defaultValue the default value if none found
+   *
+   * @return property value
+   */
+  public <T> T getProperty(String propertyKey, String cameraId, Class<T> targetType, T defaultValue) {
+    try {
+      return getProperty(propertyKey, cameraId, targetType);
+    } catch (Exception exception) {
+      return defaultValue;
+    }
+  }
+
+  /**
+   * Returns string property value for given key and camera id.
+   *
+   * @param propertyKey the property key to resolve
+   * @param cameraId the camera id to use for the property key building
+   *
+   * @return property value
+   * @throws PropertyNotFoundException exception if property was not found
+   */
+  public String getProperty(String propertyKey, String cameraId) throws PropertyNotFoundException {
+    return getProperty(propertyKey, cameraId, String.class);
   }
 
 }

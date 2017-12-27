@@ -218,45 +218,6 @@ public class SurveillanceWebController {
   }
 
   /**
-   * Renders the live stream overview page.
-   *
-   * @param model the spring model
-   *
-   * @return rendered live stream page
-   */
-  @GetMapping(URIConstants.LIVESTREAM)
-  public String livestream(Model model) {
-    List<Camera> cameras = cameraRepository.findAllWithStreamUrl();
-
-    model.addAttribute("cameras", cameras);
-    model.addAttribute("livestreamUrl", URIConstants.LIVESTREAM);
-
-    return "livestream";
-  }
-
-  /**
-   * Renders the live stream page for a specific camera.
-   *
-   * @param cameraId the camera to use
-   * @param model the spring model
-   *
-   * @return rendered live stream page
-   * @throws CameraNotFoundException exception if camera was not found
-   */
-  @GetMapping(URIConstants.LIVESTREAM + "/{cameraId}")
-  public String livestreamSingleCamera(@PathVariable Optional<String> cameraId, Model model)
-      throws CameraNotFoundException {
-    Camera camera = surveillanceService.getCamera(cameraId);
-    if (camera == null || camera.getStreamUrl() == null) {
-      throw new CameraNotFoundException();
-    }
-
-    model.addAttribute("camera", camera);
-
-    return "livestream-single";
-  }
-
-  /**
    * Renders the settings page.
    *
    * @param model the spring model

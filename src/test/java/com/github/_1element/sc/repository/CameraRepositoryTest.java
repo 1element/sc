@@ -12,6 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,24 +40,24 @@ public class CameraRepositoryTest {
     Camera camera1 = cameraRepository.findById("testcamera1");
 
     assertEquals("Front door", camera1.getName());
-    assertEquals((Integer)270, camera1.getRotation());
     assertEquals("192.168.1.50", camera1.getHost());
     assertEquals("username", camera1.getFtpUsername());
     assertEquals("password", camera1.getFtpPassword());
     assertEquals("https://localhost/cam1/snapshot", camera1.getSnapshotUrl());
-    assertEquals("https://localhost/cam1/videostream", camera1.getStreamUrl());
     assertEquals("/tmp/camera1/", camera1.getFtpIncomingDirectory());
+    assertTrue(camera1.isStreamEnabled());
+    assertTrue(camera1.isSnapshotEnabled());
 
     Camera camera2 = cameraRepository.findById("testcamera2");
 
     assertEquals("Backyard", camera2.getName());
-    assertNull(camera2.getRotation());
     assertEquals("192.168.1.51", camera2.getHost());
     assertEquals("user2", camera2.getFtpUsername());
     assertEquals("password2", camera2.getFtpPassword());
     assertEquals("https://localhost/cam2/snapshot", camera2.getSnapshotUrl());
-    assertEquals("https://localhost/cam2/videostream", camera2.getStreamUrl());
     assertEquals("/tmp/camera2/", camera2.getFtpIncomingDirectory());
+    assertTrue(camera2.isSnapshotEnabled());
+    assertFalse(camera2.isStreamEnabled());
   }
 
   @Test
@@ -85,14 +86,6 @@ public class CameraRepositoryTest {
   @Test
   public void testFindByFtpUsernameNull() throws Exception {
     assertNull(cameraRepository.findByFtpUsername(null));
-  }
-
-  @Test
-  public void testFindAllWithStreamUrl() throws Exception {
-    List<Camera> result = cameraRepository.findAllWithStreamUrl();
-
-    assertEquals(3, result.size());
-    assertTrue(result.stream().noneMatch(e -> "Camera without stream url".equals(e.getName())));
   }
 
   @Test

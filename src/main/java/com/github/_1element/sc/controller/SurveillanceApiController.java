@@ -5,7 +5,10 @@ import com.github._1element.sc.domain.PushNotificationSetting;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.domain.SurveillanceProperties;
 import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
+import com.github._1element.sc.dto.CameraResource;
 import com.github._1element.sc.dto.ImagesCountResult;
+import com.github._1element.sc.exception.CameraNotFoundException;
+import com.github._1element.sc.exception.ProxyException;
 import com.github._1element.sc.exception.ResourceNotFoundException;
 import com.github._1element.sc.exception.UnsupportedOperationException;
 import com.github._1element.sc.properties.ImageProperties;
@@ -15,6 +18,9 @@ import com.github._1element.sc.repository.SurveillanceImageRepository;
 import com.github._1element.sc.service.PushNotificationService;
 import com.github._1element.sc.service.SurveillanceService;
 import com.github._1element.sc.utils.URIConstants;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +33,6 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,7 +72,11 @@ public class SurveillanceApiController {
 
   private ImageProperties imageProperties;
 
+  private ModelMapper modelMapper;
+
   private static final String SORT_FIELD = "receivedAt";
+
+  private static final Logger LOG = LoggerFactory.getLogger(SurveillanceApiController.class);
 
   /**
    * Constructor.
@@ -79,6 +88,7 @@ public class SurveillanceApiController {
    * @param cameraRepository the camera repository
    * @param surveillanceProperties the surveillance configuration properties
    * @param imageProperties the image configuration properties
+   * @param modelMapper the model mapper to use for entity to dto projection
    */
   @Autowired
   public SurveillanceApiController(SurveillanceImageRepository imageRepository,
@@ -87,7 +97,8 @@ public class SurveillanceApiController {
                                    SurveillanceService surveillanceService,
                                    CameraRepository cameraRepository,
                                    SurveillanceProperties surveillanceProperties,
-                                   ImageProperties imageProperties) {
+                                   ImageProperties imageProperties,
+                                   ModelMapper modelMapper) {
     this.imageRepository = imageRepository;
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
     this.pushNotificationService = pushNotificationService;
@@ -95,6 +106,7 @@ public class SurveillanceApiController {
     this.cameraRepository = cameraRepository;
     this.surveillanceProperties = surveillanceProperties;
     this.imageProperties = imageProperties;
+    this.modelMapper = modelMapper;
   }
 
   /**
@@ -163,21 +175,22 @@ public class SurveillanceApiController {
    *
    * @param surveillanceImageList the list of surveillance images with attributes to modify
    */
-  @PatchMapping(value = URIConstants.API_RECORDINGS)
-  @ResponseStatus(value = HttpStatus.NO_CONTENT)
+  @PatchMapping(URIConstants.API_RECORDINGS)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void recordingsUpdate(@RequestBody List<SurveillanceImage> surveillanceImageList) {
-    List<Long> imageIds = surveillanceImageList.stream().map(image -> image.getId()).collect(Collectors.toList());
+    List<Long> imageIds = surveillanceImageList.stream().map(SurveillanceImage::getId).collect(Collectors.toList());
     imageRepository.archiveByIds(imageIds);
   }
 
   /**
    * Returns a list of all cameras.
    *
-   * @return list of cameras
+   * @return list of camera resources
    */
   @GetMapping(value = URIConstants.API_CAMERAS, produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Camera> camerasList() {
-    return cameraRepository.findAll();
+  public List<CameraResource> camerasList() {
+    List<Camera> cameras = cameraRepository.findAll();
+    return cameras.stream().map(this::convertCameraToResource).collect(Collectors.toList());
   }
 
   /**
@@ -188,14 +201,14 @@ public class SurveillanceApiController {
    * @throws ResourceNotFoundException exception in case of invalid id
    */
   @GetMapping(value = URIConstants.API_CAMERAS + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Resource<Camera> camera(@PathVariable String id) throws ResourceNotFoundException {
+  public CameraResource camera(@PathVariable String id) throws CameraNotFoundException {
     Camera camera = cameraRepository.findById(id);
 
     if (camera == null) {
-      throw new ResourceNotFoundException("Camera " + id + " was not found.");
+      throw new CameraNotFoundException();
     }
 
-    return new Resource(camera);
+    return convertCameraToResource(camera);
   }
 
   /**
@@ -218,7 +231,7 @@ public class SurveillanceApiController {
    * @throws UnsupportedOperationException exception if unsupported operation is requested
    */
   @PostMapping(URIConstants.API_RECORDINGS)
-  @ResponseStatus(value = HttpStatus.NO_CONTENT)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage)
       throws UnsupportedOperationException {
     boolean isArchived = surveillanceImage.isArchived();
@@ -271,6 +284,33 @@ public class SurveillanceApiController {
   @GetMapping(value = URIConstants.API_PROPERTIES, produces = MediaType.APPLICATION_JSON_VALUE)
   public SurveillanceProperties properties() {
     return surveillanceProperties;
+  }
+
+  /**
+   * Converts the provided {@link Camera} to a {@link CameraResource} with additional attributes.
+   * This way we do not expose our internal domain object/entity.
+   *
+   * @param camera the camera to convert
+   * @return converted camera resource
+   */
+  private CameraResource convertCameraToResource(Camera camera) {
+    CameraResource cameraResource = modelMapper.map(camera, CameraResource.class);
+
+    String snapshotProxyUrl = null;
+    try {
+      snapshotProxyUrl = ControllerLinkBuilder.linkTo(ControllerLinkBuilder
+        .methodOn(SurveillanceProxyController.class).retrieveSnapshot(camera.getId())).toString();
+    } catch (CameraNotFoundException | ProxyException exception) {
+      LOG.debug("Exception occurred during link building: '{}'", exception.getMessage());
+    }
+    // methodOn() does not work because of void return type
+    String streamGeneratorUrl = ControllerLinkBuilder.linkTo(SurveillanceStreamGenerationController.class)
+        .slash(URIConstants.GENERATE_MJPEG.replace("{id}", camera.getId())).toString();
+
+    cameraResource.setSnapshotProxyUrl(snapshotProxyUrl);
+    cameraResource.setStreamGeneratorUrl(streamGeneratorUrl);
+
+    return cameraResource;
   }
 
 }

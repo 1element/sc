@@ -59,7 +59,7 @@ public class SurveillanceImageHandlerServiceTest {
    */
   @Before
   public void setUp() throws Exception {
-    testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, null);
+    testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, false, false);
 
     ImageProperties imageProperties = new ImageProperties();
     imageProperties.setStorageDir("/tmp/sc-storage/");

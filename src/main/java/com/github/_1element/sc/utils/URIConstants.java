@@ -12,11 +12,17 @@ public final class URIConstants {
 
   public static final String LIVEVIEW = "/liveview";
 
-  public static final String LIVESTREAM = "/livestream";
-
   public static final String SETTINGS = "/settings";
 
-  public static final String TRANSFORM_MJPEG = "/transform/mjpeg/{id}";
+  // Generation
+  public static final String GENERATE_ROOT = "/generate";
+
+  public static final String GENERATE_MJPEG = "/mjpeg/{id}";
+
+  // Proxy
+  public static final String PROXY_ROOT = "/proxy";
+
+  public static final String PROXY_SNAPSHOT = "/snapshot/{id}";
 
   // Feed
   public static final String FEED_ROOT = "/feed";

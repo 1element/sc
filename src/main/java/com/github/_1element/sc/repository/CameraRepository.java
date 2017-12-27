@@ -5,7 +5,6 @@ import com.github._1element.sc.exception.PropertyNotFoundException;
 import com.github._1element.sc.properties.MultiCameraAwareProperties;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,8 +31,6 @@ public class CameraRepository {
 
   private static final String PROPERTY_NAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name";
 
-  private static final String PROPERTY_ROTATION = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "rotation";
-
   private static final String PROPERTY_HOST = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "host";
 
   private static final String PROPERTY_FTP_USERNAME =
@@ -46,10 +43,13 @@ public class CameraRepository {
       MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.incoming-dir";
 
   private static final String PROPERTY_SNAPSHOT_URL =
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.snapshot";
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "snapshot-url";
 
-  private static final String PROPERTY_STREAM_URL =
-      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "url.stream";
+  private static final String PROPERTY_SNAPSHOT_ENABLED =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "snapshot-enabled";
+
+  private static final String PROPERTY_STREAM_ENABLED =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "stream-enabled";
 
   private static final String SEPARATOR = ",";
 
@@ -70,17 +70,18 @@ public class CameraRepository {
 
     for (String cameraId : camerasAvailableList) {
       String name = multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId);
-      Integer rotation = NumberUtils.createInteger(multiCameraAwareProperties.getProperty(PROPERTY_ROTATION,
-          cameraId, null));
       String host = multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId);
       String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
       String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
       String ftpIncomingDirectory = multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId);
-      String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, null);
-      String streamUrl = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_URL, cameraId, null);
+      String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, String.class, null);
+      boolean snapshotEnabled = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_ENABLED, cameraId,
+          boolean.class, true);
+      boolean streamEnabled = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_ENABLED, cameraId,
+          boolean.class, true);
 
-      Camera camera = new Camera(cameraId, name, rotation, host, ftpUsername, ftpPassword, ftpIncomingDirectory,
-          snapshotUrl, streamUrl);
+      Camera camera = new Camera(cameraId, name, host, ftpUsername, ftpPassword, ftpIncomingDirectory,
+          snapshotUrl, snapshotEnabled, streamEnabled);
       cameras.put(cameraId, camera);
     }
   }
@@ -102,15 +103,6 @@ public class CameraRepository {
    */
   public List<Camera> findAll() {
     return cameras.values().stream().collect(Collectors.toList());
-  }
-
-  /**
-   * Find all cameras which have a stream url configured.
-   *
-   * @return list of cameras with stream url
-   */
-  public List<Camera> findAllWithStreamUrl() {
-    return cameras.values().stream().filter(Camera::hasStreamUrl).collect(Collectors.toList());
   }
 
   /**

@@ -11,8 +11,6 @@ public class Camera {
 
   private String name;
 
-  private Integer rotation;
-
   @JsonIgnore
   private String host;
 
@@ -27,32 +25,35 @@ public class Camera {
 
   private String snapshotUrl;
 
-  private String streamUrl;
+  private boolean snapshotEnabled;
+
+  private boolean streamEnabled;
 
   /**
    * Constructs a new camera.
    *
    * @param id the unique id of the camera
    * @param name the camera name
-   * @param rotation optional rotation property
    * @param host the (internal) host the camera is running on
    * @param ftpUsername the ftp username for incoming files
    * @param ftpPassword the ftp password for incoming files
    * @param ftpIncomingDirectory the ftp incoming directory
    * @param snapshotUrl optional url to retrieve snapshots
-   * @param streamUrl optional url to the camera stream
+   * @param snapshotEnabled true if snapshots are enabled
+   * @param streamEnabled true if streaming is enabled
    */
-  public Camera(String id, String name, Integer rotation, String host, String ftpUsername, String ftpPassword,
-      String ftpIncomingDirectory, String snapshotUrl, String streamUrl) {
+  public Camera(String id, String name, String host, String ftpUsername, String ftpPassword,
+      String ftpIncomingDirectory, String snapshotUrl, boolean snapshotEnabled, boolean streamEnabled) {
+
     this.id = id;
     this.name = name;
-    this.rotation = rotation;
     this.host = host;
     this.ftpUsername = ftpUsername;
     this.ftpPassword = ftpPassword;
     this.ftpIncomingDirectory = ftpIncomingDirectory;
     this.snapshotUrl = snapshotUrl;
-    this.streamUrl = streamUrl;
+    this.snapshotEnabled = snapshotEnabled;
+    this.streamEnabled = streamEnabled;
   }
 
   public String getId() {
@@ -61,10 +62,6 @@ public class Camera {
 
   public String getName() {
     return name;
-  }
-
-  public Integer getRotation() {
-    return rotation;
   }
 
   public String getHost() {
@@ -91,12 +88,12 @@ public class Camera {
     return snapshotUrl;
   }
 
-  public boolean hasStreamUrl() {
-    return streamUrl != null;
+  public boolean isSnapshotEnabled() {
+    return snapshotEnabled;
   }
 
-  public String getStreamUrl() {
-    return streamUrl;
+  public boolean isStreamEnabled() {
+    return streamEnabled;
   }
 
 }
