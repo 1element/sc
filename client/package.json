@@ -15,7 +15,8 @@
     "vue": "^2.5.2",
     "vue-images-loaded": "^1.1.2",
     "vue-progressbar": "^0.7.3",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-simple-spinner": "^1.2.8"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.5",

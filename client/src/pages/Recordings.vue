@@ -4,11 +4,15 @@
       <div class="col">
         <h5>Recordings</h5>
       </div>
-      <div class="col-auto" v-if="currentArchiveFilter !== 'true'">
+      <div class="col-auto" v-if="showArchiveButton">
         <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
       </div>
     </div>
     <!-- /.row -->
+
+    <div v-if="isLoading">
+      <spinner message="Loading..."></spinner>
+    </div>
 
     <div class="row">
       <div class="col">
@@ -19,77 +23,96 @@
     </div>
     <!-- /.row -->
 
-    <div class="row mt-1 mb-2">
-      <div class="col">
-        <div class="card">
-          <div class="card-header">
-            {{ page.totalElements }} recordings. Page {{ page.number + 1 }} of {{ page.totalPages }}.
-          </div>
-          <div class="card-body">
-            <div class="row justify-content-between">
-              <div class="col">
-                <dropdown v-bind:items="cameras" initial-selection-id="" v-on:selected="cameraDropdownCallback"></dropdown>
-              </div>
-              <div class="col-auto">
-                <dropdown v-bind:items="filter" initial-selection-id="false" v-on:selected="filterDropdownCallback"></dropdown>
+    <div v-if="!isLoading">
+      <div class="row mt-1 mb-2">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              {{ page.totalElements }} recordings. <span v-if="page.totalPages > 0">Page {{ page.number + 1 }} of {{ page.totalPages }}.</span>
+            </div>
+            <div class="card-body">
+              <div class="row justify-content-between">
+                <div class="col">
+                  <dropdown v-bind:items="cameras" initial-selection-id="" v-on:selected="cameraDropdownCallback"></dropdown>
+                </div>
+                <div class="col-auto">
+                  <dropdown v-bind:items="filter" initial-selection-id="false" v-on:selected="filterDropdownCallback"></dropdown>
+                </div>
               </div>
             </div>
           </div>
+          <!-- /.card -->
         </div>
-        <!-- /.card -->
+        <!-- /.col -->
       </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
+      <!-- /.row -->
 
-    <div class="row thumbnails">
-      <div class="col-4 col-xl-1 col-lg-2 col-md-2 col-sm-3 edge-to-edge" v-for="recording in recordings">
-        <a v-bind:href="`${properties.imageBaseUrl}${recording.fileName}`">
-          <figure class="figure">
-            <img class="img-fluid img-thumbnail" v-bind:src="`${properties.imageBaseUrl}${properties.imageThumbnailPrefix}${recording.fileName}`"/>
-            <figcaption class="figure-caption text-center">
-              {{ recording.receivedAt.year }}-{{ recording.receivedAt.monthValue }}-{{ recording.receivedAt.dayOfMonth }}
-              {{ recording.receivedAt.hour }}:{{ recording.receivedAt.minute }}:{{ recording.receivedAt.second }}
-            </figcaption>
-          </figure>
-        </a>
+      <div class="row thumbnails">
+        <div class="col-4 col-xl-1 col-lg-2 col-md-2 col-sm-3 edge-to-edge" v-for="recording in recordings">
+          <router-link :to="{ name: 'recordings-detail', params: { id: recording.id } }">
+            <figure class="figure">
+              <img class="img-fluid img-thumbnail" v-bind:src="`${properties.imageBaseUrl}${properties.imageThumbnailPrefix}${recording.fileName}`"/>
+              <figcaption class="figure-caption text-center">
+                {{ recording.receivedAt.year }}-{{ recording.receivedAt.monthValue }}-{{ recording.receivedAt.dayOfMonth }}
+                {{ recording.receivedAt.hour }}:{{ recording.receivedAt.minute }}:{{ recording.receivedAt.second }}
+              </figcaption>
+            </figure>
+          </router-link>
+        </div>
       </div>
-    </div>
-    <!-- /.row -->
+      <!-- /.row -->
 
-    <div class="row mt-3 text-center" v-if="currentArchiveFilter !== 'true'">
-      <div class="col">
-        <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
+      <div class="row mt-3 text-center" v-if="showArchiveButton">
+        <div class="col">
+          <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
+        </div>
       </div>
-    </div>
-    <!-- /.row -->
+      <!-- /.row -->
 
-    <div class="row mt-2">
-      <div class="col">
-        <b-pagination size="sm" align="center" :total-rows="page.totalElements" :per-page="page.size" v-model="currentPageNumber"></b-pagination>
+      <div class="row mt-2">
+        <div class="col">
+          <b-pagination size="sm" align="center" :total-rows="page.totalElements" :per-page="page.size" v-model="currentPageNumber"></b-pagination>
+        </div>
       </div>
+      <!-- /.row -->
     </div>
-    <!-- /.row -->
   </div>
 </template>
 
 <script>
+import Spinner from 'vue-simple-spinner';
 import Dropdown from '../components/Dropdown';
 import ArchiveButton from '../components/ArchiveButton';
 import api from '../services/api';
 
 export default {
   name: 'Recordings',
-  components: { Dropdown, ArchiveButton },
+  components: { Spinner, Dropdown, ArchiveButton },
 
   created() {
     this.fetchProperties();
     this.fetchCameras();
     this.fetchRecordings();
+
+    /**
+     * Catch the window scroll event.
+     */
+    const catchScroll = () => {
+      this.visible = (window.pageYOffset > parseInt(this.visibleOffset, 10));
+    };
+    window.smoothscroll = () => {
+      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(window.smoothscroll);
+        window.scrollTo(0, Math.floor(currentScroll - (currentScroll / 5)));
+      }
+    };
+    window.onscroll = catchScroll;
   },
 
   data() {
     return {
+      isLoading: true,
       currentCameraId: '',
       currentPageNumber: 1,
       currentArchiveFilter: 'false',
@@ -125,11 +148,17 @@ export default {
     fetchRecordings() {
       api().get(`recordings?camera=${this.currentCameraId}&page=${this.currentPageNumber - 1}&archive=${this.currentArchiveFilter}`)
         .then((response) => {
-          this.recordings = response.data._embedded.surveillanceImageList;
+          if (response.data._embedded) {
+            this.recordings = response.data._embedded.surveillanceImageList;
+          } else {
+            this.recordings = [];
+          }
           this.page = response.data.page;
+          this.isLoading = false;
         })
         .catch((error) => {
           this.errorMessage = error.message;
+          this.isLoading = false;
         });
     },
 
@@ -190,6 +219,13 @@ export default {
       this.currentPageNumber = 1;
     },
 
+    /**
+     * Scrolls to the top of the window.
+     */
+    scrollToTop() {
+      window.smoothscroll();
+    },
+
   },
 
   watch: {
@@ -198,6 +234,16 @@ export default {
      */
     currentPageNumber() {
       this.fetchRecordings();
+      this.scrollToTop();
+    },
+  },
+
+  computed: {
+    showArchiveButton() {
+      if (!this.isLoading && this.currentArchiveFilter !== 'true' && this.page.totalElements > 0) {
+        return true;
+      }
+      return false;
     },
   },
 

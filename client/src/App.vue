@@ -2,7 +2,9 @@
   <div id="app">
     <app-navigation></app-navigation>
     <main role="main" class="container-fluid">
-      <router-view></router-view>
+      <keep-alive include="Recordings">
+        <router-view></router-view>
+      </keep-alive>
     </main>
     <vue-progress-bar></vue-progress-bar>
   </div>
