@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:th="http://www.thymeleaf.org">
-
   <channel>
     <title th:text="#{feed.status.title}">Surveillance Center Status</title>
-    <link th:text="${baseUrl}"></link>
     <description th:text="#{feed.status.title}">Surveillance Center Status</description>
     <item>
       <title th:text="#{feed.status.date}">Date</title>
-      <link th:text="${baseUrl}"></link>
       <description th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2017-06-25 10:55:13</description>
     </item>
     <item th:each="result : ${imagesCameraSummaryResult}">
       <title th:text="${result.camera.name}">Front door</title>
-      <link th:text="@{${baseUrl}(camera=${result.camera.id})}"></link>
       <description th:if="${result.mostRecentDate != null}"
                    th:text="${result.count} + ' (' + ${#temporals.format(result.mostRecentDate, 'yyyy-MM-dd HH:mm:ss')} + ')'">124 (2017-06-25 10:45:33)</description>
       <description th:unless="${result.mostRecentDate != null}" th:text="${result.count}">0</description>

@@ -21,8 +21,6 @@ public final class URIConstants {
   // Feed
   public static final String FEED_ROOT = "/feed";
 
-  public static final String FEED_STATUS = "/status";
-
   public static final String FEED_CAMERAS = "/cameras";
 
   // API
