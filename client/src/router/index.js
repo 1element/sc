@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Login from '@/pages/Login';
 import Recordings from '@/pages/Recordings';
+import RecordingsDetail from '@/pages/RecordingsDetail';
 import Liveview from '@/pages/Liveview';
 import LiveviewDetail from '@/pages/LiveviewDetail';
 import Livestream from '@/pages/Livestream';
@@ -28,6 +29,11 @@ export default new Router({
       path: '/recordings',
       name: 'recordings',
       component: Recordings,
+    },
+    {
+      path: '/recordings/:id',
+      name: 'recordings-detail',
+      component: RecordingsDetail,
     },
     {
       path: '/liveview',
