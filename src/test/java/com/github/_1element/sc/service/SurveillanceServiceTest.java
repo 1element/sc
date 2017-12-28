@@ -148,11 +148,4 @@ public class SurveillanceServiceTest {
     assertTrue(contentResult.stream().anyMatch(e -> image3.equals(e)));
   }
 
-  @Test
-  public void testGetMostRecentImageDate() throws Exception {
-    LocalDateTime result = surveillanceService.getMostRecentImageDate();
-
-    assertEquals(time1, result);
-  }
-
 }

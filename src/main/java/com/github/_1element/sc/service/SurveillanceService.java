@@ -71,17 +71,6 @@ public class SurveillanceService {
   }
 
   /**
-   * Returns most recent image date by querying database.
-   *
-   * @return most recent image date
-   */
-  public LocalDateTime getMostRecentImageDate() {
-    List<LocalDateTime> resultList = imageRepository.getMostRecentImageDate(new PageRequest(0, 1));
-
-    return resultList.stream().findFirst().orElse(null);
-  }
-
-  /**
    * Returns images summary for each camera.
    *
    * @return the images camera summary result

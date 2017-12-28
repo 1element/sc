@@ -10,8 +10,6 @@ public final class URIConstants {
 
   public static final String API_RECORDINGS = "/recordings";
 
-  public static final String API_RECORDINGS_COUNT = "/recordings/count";
-
   public static final String API_CAMERAS = "/cameras";
 
   public static final String API_PUSH_NOTIFICATION_SETTINGS = "/push-notification-settings";

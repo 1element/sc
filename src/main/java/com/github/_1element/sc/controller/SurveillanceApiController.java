@@ -198,7 +198,7 @@ public class SurveillanceApiController {
    *
    * @param id the camera id to retrieve
    * @return camera resource
-   * @throws ResourceNotFoundException exception in case of invalid id
+   * @throws CameraNotFoundException exception in case of invalid id
    */
   @GetMapping(value = URIConstants.API_CAMERAS + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public CameraResource camera(@PathVariable String id) throws CameraNotFoundException {
@@ -209,37 +209,6 @@ public class SurveillanceApiController {
     }
 
     return convertCameraToResource(camera);
-  }
-
-  /**
-   * Returns the total amount of (non-archived) recordings.
-   *
-   * @return images count
-   */
-  @GetMapping(URIConstants.API_RECORDINGS_COUNT)
-  public ImagesCountResult recordingsCount() {
-    Long imagesCount = imageRepository.countAllImages();
-
-    return new ImagesCountResult(imagesCount);
-  }
-
-  /**
-   * Bulk update all recordings.
-   * Currently only archived flag set to true is supported.
-   *
-   * @param surveillanceImage surveillance image with archived flag set to true
-   * @throws UnsupportedOperationException exception if unsupported operation is requested
-   */
-  @PostMapping(URIConstants.API_RECORDINGS)
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void bulkUpdateRecordings(@RequestBody SurveillanceImage surveillanceImage)
-      throws UnsupportedOperationException {
-    boolean isArchived = surveillanceImage.isArchived();
-    if (!isArchived) {
-      throw new UnsupportedOperationException("Archived flag must be true.");
-    }
-
-    imageRepository.updateAllArchiveState(isArchived);
   }
 
   /**
