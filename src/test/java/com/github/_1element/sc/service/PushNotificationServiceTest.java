@@ -3,7 +3,6 @@ package com.github._1element.sc.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -11,8 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import java.util.List;
-
+import com.github._1element.sc.dto.PushNotificationSettingResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +28,12 @@ import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.PushNotificationSetting;
 import com.github._1element.sc.domain.pushnotification.PushNotificationClient;
 import com.github._1element.sc.domain.pushnotification.PushNotificationClientFactory;
-import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
 import com.github._1element.sc.events.PushNotificationEvent;
 import com.github._1element.sc.properties.PushNotificationProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.PushNotificationSettingRepository;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SurveillanceCenterApplication.class)
@@ -88,26 +87,26 @@ public class PushNotificationServiceTest {
 
   @Test
   public void testGetAllSettings() throws Exception {
-    List<CameraPushNotificationSettingResult> settings = pushNotificationService.getAllSettings();
+    List<PushNotificationSettingResource> settings = pushNotificationService.getAllSettings();
 
     assertTrue(settings.size() == 4);
 
     assertNotNull(settings.get(0));
-    assertEquals("Front door", settings.get(0).getCamera().getName());
-    assertEquals("testcamera1", settings.get(0).getCamera().getId());
-    assertTrue(settings.get(0).getPushNotificationSetting().isEnabled());
+    assertEquals("Front door", settings.get(0).getCameraName());
+    assertEquals("testcamera1", settings.get(0).getCameraId());
+    assertTrue(settings.get(0).isEnabled());
 
     assertNotNull(settings.get(1));
-    assertEquals("Backyard", settings.get(1).getCamera().getName());
-    assertEquals("testcamera2", settings.get(1).getCamera().getId());
-    assertFalse(settings.get(1).getPushNotificationSetting().isEnabled());
+    assertEquals("Backyard", settings.get(1).getCameraName());
+    assertEquals("testcamera2", settings.get(1).getCameraId());
+    assertFalse(settings.get(1).isEnabled());
   }
 
   @Test
   public void testSendMessage() throws Exception {
-    pushNotificationService.sendMessage("Test title", "Test message", "http://test.local/");
+    pushNotificationService.sendMessage("Test title", "Test message");
 
-    verify(pushNotificationClientMock).sendMessage("Test title", "Test message", "http://test.local/");
+    verify(pushNotificationClientMock).sendMessage("Test title", "Test message");
   }
 
   @Test
@@ -126,7 +125,7 @@ public class PushNotificationServiceTest {
 
     pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
 
-    verify(pushNotificationClientMock).sendMessage(any(), any(), any());
+    verify(pushNotificationClientMock).sendMessage(any(), any());
   }
 
   @Test
@@ -151,18 +150,7 @@ public class PushNotificationServiceTest {
     pushNotificationService.handlePushNotificationEvent(pushNotificationEvent);
 
     // sendMessage() should only be invoked once (group time should be applied)
-    verify(pushNotificationClientMock, times(1)).sendMessage(any(), any(), any());
-  }
-
-  @Test
-  public void testBuildCameraUrl() throws Exception {
-    assertEquals("http://example.local/sc/recordings?camera=testcamera1", pushNotificationService.buildCameraUrl("testcamera1"));
-  }
-
-  @Test
-  public void testBuildCameraUrlWithNoConfiguration() throws Exception {
-    ReflectionTestUtils.setField(properties, "url", "");
-    assertNull(pushNotificationService.buildCameraUrl("testcamera2"));
+    verify(pushNotificationClientMock, times(1)).sendMessage(any(), any());
   }
 
   @Test

@@ -4,9 +4,9 @@ import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.PushNotificationSetting;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.domain.SurveillanceProperties;
-import com.github._1element.sc.dto.CameraPushNotificationSettingResult;
 import com.github._1element.sc.dto.CameraResource;
 import com.github._1element.sc.dto.ImagesCountResult;
+import com.github._1element.sc.dto.PushNotificationSettingResource;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.exception.ProxyException;
 import com.github._1element.sc.exception.ResourceNotFoundException;
@@ -248,7 +248,7 @@ public class SurveillanceApiController {
    * @return list of push notification settings
    */
   @GetMapping(value = URIConstants.API_PUSH_NOTIFICATION_SETTINGS, produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<CameraPushNotificationSettingResult> pushNotificationSettingsList() {
+  public List<PushNotificationSettingResource> pushNotificationSettingsList() {
     return pushNotificationService.getAllSettings();
   }
 

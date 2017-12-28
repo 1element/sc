@@ -26,17 +26,17 @@
     <!-- /.row -->
 
     <div class="row pb-1" v-for="setting in settings">
-      <div class="col col-lg-2">{{ setting.camera.name }}</div>
+      <div class="col col-lg-2">{{ setting.cameraName }}</div>
       <div class="col col-lg-10">
         <div class="btn-group">
           <b-button size="sm"
-             :pressed="setting.pushNotificationSetting.enabled"
-             :variant="setting.pushNotificationSetting.enabled ? 'primary' : 'secondary'"
-             v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">ON</b-button>
+             :pressed="setting.enabled"
+             :variant="setting.enabled ? 'primary' : 'secondary'"
+             v-on:click="toggleSetting(setting.cameraId)">ON</b-button>
           <b-button size="sm"
-             :pressed="!setting.pushNotificationSetting.enabled"
-             :variant="!setting.pushNotificationSetting.enabled ? 'primary' : 'secondary'"
-             v-on:click="toggleSetting(setting.pushNotificationSetting.cameraId)">OFF</b-button>
+             :pressed="!setting.enabled"
+             :variant="!setting.enabled ? 'primary' : 'secondary'"
+             v-on:click="toggleSetting(setting.cameraId)">OFF</b-button>
         </div>
       </div>
     </div>
@@ -82,10 +82,9 @@ export default {
      * Push new state to REST endpoint.
      */
     toggleSetting(cameraId) {
-      const currentSetting = this.settings.find(setting =>
-        setting.pushNotificationSetting.cameraId === cameraId);
+      const currentSetting = this.settings.find(setting => setting.cameraId === cameraId);
 
-      const data = { enabled: !currentSetting.pushNotificationSetting.enabled };
+      const data = { enabled: !currentSetting.enabled };
       api().put(`push-notification-settings/${cameraId}`, data)
         .then(() => {
           this.fetchSettings();

@@ -51,7 +51,7 @@ public class PushoverClientTest {
             .andExpect(method(HttpMethod.POST))
             .andRespond(withSuccess("{ \"status\" : 1}", MediaType.APPLICATION_JSON));
 
-    pushoverClient.sendMessage("Title", "Message text", "https://service.local/");
+    pushoverClient.sendMessage("Title", "Message text");
 
     mockServer.verify();
   }
@@ -62,7 +62,7 @@ public class PushoverClientTest {
       .andExpect(method(HttpMethod.POST))
       .andRespond(withBadRequest());
 
-    pushoverClient.sendMessage("Title", "Message text", "https://service.local/");
+    pushoverClient.sendMessage("Title", "Message text");
 
     mockServer.verify();
   }

@@ -1,6 +1,5 @@
 package com.github._1element.sc.domain.pushnotification; //NOSONAR
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class PushoverClient implements PushNotificationClient {
   }
 
   @Override
-  public void sendMessage(String title, String text, String url) throws PushNotificationClientException {
+  public void sendMessage(String title, String text) throws PushNotificationClientException {
     // pushover does not support receiving json
     // so use a MultiValueMap that will be converted to application/x-www-form-urlencoded
     MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
@@ -54,9 +53,6 @@ public class PushoverClient implements PushNotificationClient {
     requestParams.add(PARAM_USER_TOKEN, properties.getUserToken());
     requestParams.add(PARAM_TITLE, title);
     requestParams.add(PARAM_MESSAGE, text);
-    if (StringUtils.isNotBlank(url)) {
-      requestParams.add(PARAM_URL, url);
-    }
 
     try {
       restTemplate.postForObject(ENDPOINT, requestParams, Void.class);

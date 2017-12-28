@@ -7,6 +7,6 @@ import com.github._1element.sc.exception.PushNotificationClientException;
  */
 public interface PushNotificationClient {
 
-  void sendMessage(String title, String text, String url) throws PushNotificationClientException;
+  void sendMessage(String title, String text) throws PushNotificationClientException;
 
 }
