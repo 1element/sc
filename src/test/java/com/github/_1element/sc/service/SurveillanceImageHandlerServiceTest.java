@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.github._1element.sc.domain.Camera;
@@ -36,9 +35,6 @@ public class SurveillanceImageHandlerServiceTest {
 
   @Mock
   private SurveillanceImageRepository imageRepository;
-
-  @Mock
-  private CounterService counterService;
 
   @Mock
   private ApplicationEventPublisher eventPublisher;

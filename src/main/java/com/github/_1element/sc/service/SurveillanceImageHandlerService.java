@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -36,9 +35,6 @@ public class SurveillanceImageHandlerService {
 
   @Autowired
   private ApplicationEventPublisher eventPublisher;
-
-  @Autowired
-  private CounterService counterService;
 
   private static final String SEPARATOR = "-";
 
@@ -90,9 +86,7 @@ public class SurveillanceImageHandlerService {
           imageReceivedEvent.getSource().getId(), LocalDateTime.now());
       imageRepository.save(image);
 
-      // actuator metrics
       LOG.info("New surveillance image '{}' was received.", image.getFileName());
-      counterService.increment("images.received");
 
       // publish events to invoke remote copy and push notification
       eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
