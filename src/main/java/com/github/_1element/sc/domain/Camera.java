@@ -1,6 +1,6 @@
 package com.github._1element.sc.domain; //NOSONAR
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Surveillance camera POJO.
@@ -11,16 +11,12 @@ public class Camera {
 
   private String name;
 
-  @JsonIgnore
   private String host;
 
-  @JsonIgnore
   private String ftpUsername;
 
-  @JsonIgnore
   private String ftpPassword;
 
-  @JsonIgnore
   private String ftpIncomingDirectory;
 
   private String snapshotUrl;
@@ -44,6 +40,10 @@ public class Camera {
    */
   public Camera(String id, String name, String host, String ftpUsername, String ftpPassword,
       String ftpIncomingDirectory, String snapshotUrl, boolean snapshotEnabled, boolean streamEnabled) {
+
+    if ((snapshotEnabled || streamEnabled) && StringUtils.isBlank(snapshotUrl)) {
+      throw new IllegalArgumentException("Snapshot-url must be provided if snapshot-enabled or stream-enabled.");
+    }
 
     this.id = id;
     this.name = name;
