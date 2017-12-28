@@ -50,6 +50,7 @@ dependencies {
   compile('org.apache.commons:commons-lang3:3.4')
   compile('com.google.guava:guava:19.0')
   compile('org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE')
+  compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.3')
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

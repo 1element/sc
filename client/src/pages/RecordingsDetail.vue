@@ -14,8 +14,7 @@
         <figure class="figure">
           <img class="img-fluid" v-bind:src="`${properties.imageBaseUrl}${recording.fileName}`"/>
           <figcaption class="figure-caption text-center" v-if="recording.receivedAt">
-            {{ recording.receivedAt.year }}-{{ recording.receivedAt.monthValue }}-{{ recording.receivedAt.dayOfMonth }}
-            {{ recording.receivedAt.hour }}:{{ recording.receivedAt.minute }}:{{ recording.receivedAt.second }}
+            {{ recording.receivedAt }}
           </figcaption>
         </figure>
       </div>
