@@ -22,7 +22,7 @@
     <div class="row">
       <div class="col edge-to-edge" v-images-loaded:on="getImageLoadingCallback()">
         <figure class="figure">
-          <img class="img-fluid" v-bind:src="camera.snapshotUrl"/>
+          <img class="img-fluid" v-bind:src="camera.snapshotProxyUrl"/>
           <figcaption class="figure-caption text-center">{{ currentTimestamp }}</figcaption>
         </figure>
       </div>
@@ -78,7 +78,7 @@ export default {
      */
     getNewSnapshot() {
       this.$Progress.start();
-      this.camera.snapshotUrl = urlUtils.appendHashFragment(this.camera.snapshotUrl);
+      this.camera.snapshotProxyUrl = urlUtils.appendHashFragment(this.camera.snapshotProxyUrl);
       this.getCurrentTimestamp();
     },
 

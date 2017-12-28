@@ -18,7 +18,7 @@
 
     <div class="row">
       <div class="col edge-to-edge">
-        <img class="img-fluid" v-bind:src="camera.streamUrl"/>
+        <img class="img-fluid" v-bind:src="camera.streamGeneratorUrl"/>
       </div>
     </div>
     <!-- /.row -->

@@ -20,7 +20,7 @@
       <div class="col-sm edge-to-edge" v-for="camera in cameras">
         <router-link :to="{ name: 'livestream-detail', params: { id: camera.id } }">
           <figure class="figure mb-0">
-            <img class="img-fluid" v-bind:src="camera.streamUrl"/>
+            <img class="img-fluid" v-bind:src="camera.streamGeneratorUrl"/>
             <figcaption class="figure-caption text-center">{{ camera.name }}</figcaption>
           </figure>
         </router-link>

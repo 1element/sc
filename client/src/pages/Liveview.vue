@@ -23,7 +23,7 @@
       <div class="col-sm edge-to-edge" v-for="camera in cameras">
         <router-link :to="{ name: 'liveview-detail', params: { id: camera.id } }">
           <figure class="figure mb-0">
-            <img class="img-fluid" v-bind:src="camera.snapshotUrl"/>
+            <img class="img-fluid" v-bind:src="camera.snapshotProxyUrl"/>
             <figcaption class="figure-caption text-center">{{ camera.name }} - {{ currentTimestamp }}</figcaption>
           </figure>
         </router-link>
@@ -92,7 +92,8 @@ export default {
       const modifiedCameraList = cameraList;
 
       for (let i = 0; i < cameraList.length; i += 1) {
-        modifiedCameraList[i].snapshotUrl = urlUtils.appendHashFragment(cameraList[i].snapshotUrl);
+        modifiedCameraList[i].snapshotProxyUrl =
+            urlUtils.appendHashFragment(cameraList[i].snapshotProxyUrl);
       }
 
       return modifiedCameraList;
