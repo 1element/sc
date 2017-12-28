@@ -12,6 +12,13 @@ public class PushNotificationSettingResource {
 
   private boolean enabled;
 
+  /**
+   * Constructor.
+   *
+   * @param cameraId the camera identifier
+   * @param cameraName the camera name
+   * @param enabled the push notification status (enabled/disabled)
+   */
   public PushNotificationSettingResource(String cameraId, String cameraName, boolean enabled) {
     this.cameraId = cameraId;
     this.cameraName = cameraName;

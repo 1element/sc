@@ -7,6 +7,7 @@ import com.github._1element.sc.domain.SurveillanceProperties;
 import com.github._1element.sc.dto.CameraResource;
 import com.github._1element.sc.dto.ImagesCountResult;
 import com.github._1element.sc.dto.PushNotificationSettingResource;
+import com.github._1element.sc.dto.PushNotificationSettingUpdateResource;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.exception.ProxyException;
 import com.github._1element.sc.exception.ResourceNotFoundException;
@@ -222,27 +223,32 @@ public class SurveillanceApiController {
   }
 
   /**
-   * Set push notification settings (enable/disable) for a given camera.
+   * Update push notification settings (enable/disable).
    *
    * @param cameraId the camera id to modify the setting for
-   * @param pushNotificationSetting the push notification setting
-   *
-   * @return the updated push notification setting
+   * @param pushNotificationSettingUpdateResource the push notification setting update resource
    */
-  @PutMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
-  public PushNotificationSetting pushNotificationSettingsUpdate(@PathVariable String cameraId,
-                                                                @RequestBody PushNotificationSetting
-                                                                 pushNotificationSetting)
-      throws ResourceNotFoundException {
+  @PatchMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void pushNotificationSettingsUpdate(@PathVariable String cameraId,
+                                             @RequestBody PushNotificationSettingUpdateResource
+                                               pushNotificationSettingUpdateResource)
+      throws CameraNotFoundException {
 
-    PushNotificationSetting updatePushNotificationSetting = pushNotificationSettingRepository.findByCameraId(cameraId);
-    if (updatePushNotificationSetting == null) {
-      throw new ResourceNotFoundException("Resource '" + cameraId + "' not found.");
+    Camera camera = cameraRepository.findById(cameraId);
+    if (camera == null) {
+      throw new CameraNotFoundException();
     }
 
-    updatePushNotificationSetting.setEnabled(pushNotificationSetting.isEnabled());
+    PushNotificationSetting pushNotificationSetting = pushNotificationSettingRepository.findByCameraId(cameraId);
+    if (pushNotificationSetting == null) {
+      pushNotificationSetting = new PushNotificationSetting(cameraId,
+          pushNotificationSettingUpdateResource.isEnabled());
+    } else {
+      pushNotificationSetting.setEnabled(pushNotificationSettingUpdateResource.isEnabled());
+    }
 
-    return pushNotificationSettingRepository.save(updatePushNotificationSetting);
+    pushNotificationSettingRepository.save(pushNotificationSetting);
   }
 
   /**

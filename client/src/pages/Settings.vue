@@ -84,8 +84,12 @@ export default {
     toggleSetting(cameraId) {
       const currentSetting = this.settings.find(setting => setting.cameraId === cameraId);
 
-      const data = { enabled: !currentSetting.enabled };
-      api().put(`push-notification-settings/${cameraId}`, data)
+      const data = {
+        cameraId: currentSetting.cameraId,
+        enabled: !currentSetting.enabled,
+      };
+
+      api().patch(`push-notification-settings/${cameraId}`, data)
         .then(() => {
           this.fetchSettings();
         })
