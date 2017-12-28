@@ -5,7 +5,8 @@
         <h5>Recordings</h5>
       </div>
       <div class="col-auto" v-if="showArchiveButton">
-        <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
+        <archive-button v-bind:images="recordings" v-bind:latestRecordingReceivedAt="latestRecordingReceivedAt"
+          v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
       </div>
     </div>
     <!-- /.row -->
@@ -61,7 +62,8 @@
 
       <div class="row mt-3 text-center" v-if="showArchiveButton">
         <div class="col">
-          <archive-button v-bind:images="recordings" v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
+          <archive-button v-bind:images="recordings" v-bind:latestRecordingReceivedAt="latestRecordingReceivedAt"
+            v-on:processed="archiveProcessedCallback" v-on:error="archiveErrorCallback"></archive-button>
         </div>
       </div>
       <!-- /.row -->
@@ -118,6 +120,7 @@ export default {
       recordings: [],
       page: [],
       properties: [],
+      latestRecordingReceivedAt: null,
       errorMessage: '',
     };
   },
@@ -147,8 +150,12 @@ export default {
         .then((response) => {
           if (response.data._embedded) {
             this.recordings = response.data._embedded.surveillanceImageList;
+            if (this.latestRecordingReceivedAt == null) {
+              this.latestRecordingReceivedAt = this.recordings[0].receivedAt;
+            }
           } else {
             this.recordings = [];
+            this.latestRecordingReceivedAt = null;
           }
           this.page = response.data.page;
           this.isLoading = false;
@@ -236,6 +243,9 @@ export default {
   },
 
   computed: {
+    /**
+     * Returns true if archive button should be shown, based on various conditions.
+     */
     showArchiveButton() {
       if (!this.isLoading && this.currentArchiveFilter !== 'true' && this.page.totalElements > 0) {
         return true;

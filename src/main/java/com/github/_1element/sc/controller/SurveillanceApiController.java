@@ -5,13 +5,13 @@ import com.github._1element.sc.domain.PushNotificationSetting;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.domain.SurveillanceProperties;
 import com.github._1element.sc.dto.CameraResource;
-import com.github._1element.sc.dto.ImagesCountResult;
 import com.github._1element.sc.dto.PushNotificationSettingResource;
 import com.github._1element.sc.dto.PushNotificationSettingUpdateResource;
+import com.github._1element.sc.dto.SurveillanceImageBulkUpdateResource;
+import com.github._1element.sc.dto.SurveillanceImageUpdateResource;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.exception.ProxyException;
 import com.github._1element.sc.exception.ResourceNotFoundException;
-import com.github._1element.sc.exception.UnsupportedOperationException;
 import com.github._1element.sc.properties.ImageProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.repository.PushNotificationSettingRepository;
@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -170,17 +169,30 @@ public class SurveillanceApiController {
   }
 
   /**
-   * Bulk update/patch SurveillanceImages ("recordings").
-   * Currently the only supported action is to archive images (set {@link SurveillanceImage#archived} to true).
-   * All other attributes are ignored at the moment.
+   * Update a list of SurveillanceImages ("recordings").
+   * Currently the only supported action is to archive images. Thus all provided IDs are collected
+   * and {@link SurveillanceImage#archived} is set to true using one single JPA query.
    *
-   * @param surveillanceImageList the list of surveillance images with attributes to modify
+   * @param surveillanceImageUpdateList the list of surveillance images to update
    */
   @PatchMapping(URIConstants.API_RECORDINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void recordingsUpdate(@RequestBody List<SurveillanceImage> surveillanceImageList) {
-    List<Long> imageIds = surveillanceImageList.stream().map(SurveillanceImage::getId).collect(Collectors.toList());
-    imageRepository.archiveByIds(imageIds);
+  public void recordingsUpdate(@RequestBody List<SurveillanceImageUpdateResource> surveillanceImageUpdateList) {
+    List<Long> imageIds = surveillanceImageUpdateList.stream().map(SurveillanceImageUpdateResource::getId)
+        .collect(Collectors.toList());
+    imageRepository.updateSetArchived(imageIds);
+  }
+
+  /**
+   * Bulk update all recordings before a provided timestamp (non REST compliant action).
+   * Currently the only supported action is to set the archived state.
+   *
+   * @param updateResource the bulk update command
+   */
+  @PostMapping(URIConstants.API_RECORDINGS)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void recordingsBulkUpdate(@RequestBody SurveillanceImageBulkUpdateResource updateResource) {
+    imageRepository.updateArchiveState(updateResource.isArchived(), updateResource.getDateBefore());
   }
 
   /**

@@ -1,9 +1,16 @@
 <template>
-  <b-button size="sm"
-    variant="outline-primary"
-    v-bind:disabled="isLoading"
-    v-bind:active="isLoading"
-    v-on:click="process">Archive recordings</b-button>
+  <b-button-group>
+    <b-button size="sm"
+      variant="outline-primary"
+      v-bind:disabled="isLoading"
+      v-bind:active="isLoading"
+      v-on:click="process">Archive recordings</b-button>
+    <b-dropdown size="sm"
+      variant="outline-primary"
+      v-bind:disabled="isLoading">
+        <b-dropdown-item v-on:click="processAll">Archive all recordings</b-dropdown-item>
+    </b-dropdown>
+  </b-button-group>
 </template>
 
 <script>
@@ -17,6 +24,9 @@ export default {
       type: Array,
       required: true,
     },
+    latestRecordingReceivedAt: {
+      required: true,
+    },
   },
 
   data() {
@@ -26,6 +36,10 @@ export default {
   },
 
   methods: {
+
+    /**
+     * Process archive recordings action.
+     */
     process() {
       this.isLoading = true;
 
@@ -35,6 +49,23 @@ export default {
       });
 
       api().patch('recordings', data)
+        .then(() => {
+          this.$emit('processed');
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.$emit('error', error);
+        });
+    },
+
+    /**
+     * Process archive all recordings action.
+     */
+    processAll() {
+      this.isLoading = true;
+
+      const data = { dateBefore: this.latestRecordingReceivedAt, archived: true };
+      api().post('recordings', data)
         .then(() => {
           this.$emit('processed');
           this.isLoading = false;

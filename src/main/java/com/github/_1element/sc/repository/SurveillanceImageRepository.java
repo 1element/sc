@@ -45,11 +45,11 @@ public interface SurveillanceImageRepository extends JpaRepository<SurveillanceI
   @Modifying
   @Transactional
   @Query("update SurveillanceImage s set s.archived = true where s.id in :ids")
-  void archiveByIds(@Param("ids") List<Long> ids);
+  void updateSetArchived(@Param("ids") List<Long> ids);
 
   @Modifying
   @Transactional
-  @Query("update SurveillanceImage s set s.archived = :value")
-  void updateAllArchiveState(@Param("value") boolean value);
+  @Query("update SurveillanceImage s set s.archived = :value where s.receivedAt <= :dateBefore")
+  void updateArchiveState(@Param("value") boolean value, @Param("dateBefore") LocalDateTime before);
 
 }
