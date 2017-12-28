@@ -71,22 +71,6 @@ public class SurveillanceService {
   }
 
   /**
-   * Returns most recent image date by extracting given page of surveillance images.
-   * This is only wanted if no date filter is present.
-   *
-   * @param images page of surveillance images
-   * @param date   optional date filter
-   * @return the most recent image date
-   */
-  public LocalDateTime getMostRecentImageDate(Page<SurveillanceImage> images, Optional<LocalDate> date) {
-    if (!date.isPresent()) {
-      return images.getContent().stream().map(SurveillanceImage::getReceivedAt).findFirst().orElse(null);
-    }
-
-    return null;
-  }
-
-  /**
    * Returns most recent image date by querying database.
    *
    * @return most recent image date
@@ -120,20 +104,6 @@ public class SurveillanceService {
     }
 
     return result;
-  }
-
-  /**
-   * Returns camera for given identifier, if found.
-   *
-   * @param camera optional camera identifier
-   * @return the camera
-   */
-  public Camera getCamera(Optional<String> camera) {
-    if (camera.isPresent() && StringUtils.isNotBlank(camera.get())) {
-      return cameraRepository.findById(camera.get());
-    }
-
-    return null;
   }
 
 }

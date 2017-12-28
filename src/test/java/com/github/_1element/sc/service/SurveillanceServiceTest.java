@@ -155,37 +155,4 @@ public class SurveillanceServiceTest {
     assertEquals(time1, result);
   }
 
-  @Test
-  public void testGetMostRecentImageDateForPage() throws Exception {
-    Page<SurveillanceImage> images = surveillanceService.getImagesPage(Optional.of("testcamera1"),
-        Optional.empty(), false, new PageRequest(0, 10));
-
-    LocalDateTime result = surveillanceService.getMostRecentImageDate(images, Optional.empty());
-
-    assertEquals(time1, result);
-  }
-
-  @Test
-  public void testGetMostRecentImageDateForPageWithDateFilter() throws Exception {
-    Page<SurveillanceImage> images = surveillanceService.getImagesPage(Optional.of("testcamera1"),
-        Optional.empty(), false, new PageRequest(0, 10));
-
-    LocalDateTime result = surveillanceService.getMostRecentImageDate(images, Optional.of(LocalDate.now()));
-
-    assertNull(result);
-  }
-
-  @Test
-  public void testGetCamera() throws Exception {
-    final Optional<String> camera1 = Optional.of("testcamera1");
-    final Optional<String> emptyCamera = Optional.empty();
-    final Optional<String> emptyCameraString = Optional.of("");
-    final Optional<String> invalidCameraName = Optional.of("invalid-camera-name");
-
-    assertEquals("testcamera1", surveillanceService.getCamera(camera1).getId());
-    assertNull(surveillanceService.getCamera(emptyCamera));
-    assertNull(surveillanceService.getCamera(emptyCameraString));
-    assertNull(surveillanceService.getCamera(invalidCameraName));
-  }
-
 }

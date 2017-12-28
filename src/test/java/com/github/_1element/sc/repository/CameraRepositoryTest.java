@@ -88,12 +88,4 @@ public class CameraRepositoryTest {
     assertNull(cameraRepository.findByFtpUsername(null));
   }
 
-  @Test
-  public void testFindAllWithSnapshotUrl() throws Exception {
-    List<Camera> result = cameraRepository.findAllWithSnapshotUrl();
-
-    assertEquals(3, result.size());
-    assertTrue(result.stream().noneMatch(e -> "Camera without snapshot url".equals(e.getName())));
-  }
-
 }

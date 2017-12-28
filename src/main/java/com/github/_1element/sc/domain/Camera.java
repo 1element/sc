@@ -80,10 +80,6 @@ public class Camera {
     return ftpIncomingDirectory;
   }
 
-  public boolean hasSnapshotUrl() {
-    return snapshotUrl != null;
-  }
-
   public String getSnapshotUrl() {
     return snapshotUrl;
   }

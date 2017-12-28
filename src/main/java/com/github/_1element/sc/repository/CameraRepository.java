@@ -106,15 +106,6 @@ public class CameraRepository {
   }
 
   /**
-   * Find all cameras which have a snapshot url configured.
-   *
-   * @return list of cameras with snapshot url
-   */
-  public List<Camera> findAllWithSnapshotUrl() {
-    return cameras.values().stream().filter(Camera::hasSnapshotUrl).collect(Collectors.toList());
-  }
-
-  /**
    * Find camera by given ftp username.
    *
    * @param ftpUsername ftp username
