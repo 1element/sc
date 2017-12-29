@@ -13,7 +13,6 @@ Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(VueProgressBar);
-require('../node_modules/imagesloaded/imagesloaded.pkgd.min.js');
 
 Vue.filter('formatDate', (value) => {
   if (!value) {
