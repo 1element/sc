@@ -70,7 +70,10 @@
 
       <div class="row mt-2">
         <div class="col">
-          <b-pagination size="sm" align="center" :total-rows="page.totalElements" :per-page="page.size" v-model="currentPageNumber"></b-pagination>
+          <b-pagination size="sm" align="center" :limit="10"
+            :total-rows="page.totalElements"
+            :per-page="page.size"
+            v-model="currentPageNumber"></b-pagination>
         </div>
       </div>
       <!-- /.row -->
