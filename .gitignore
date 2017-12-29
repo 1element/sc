@@ -4,8 +4,8 @@
 .idea/
 .settings/
 .gradle/
-build/
-logs/
-bin/
-out/
+/build/
+/logs/
+/bin/
+/out/
 src/main/resources/application.properties
