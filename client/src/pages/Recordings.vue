@@ -53,7 +53,7 @@
           <router-link :to="{ name: 'recordings-detail', params: { id: recording.id } }">
             <figure class="figure">
               <img class="img-fluid img-thumbnail" v-bind:src="`${properties.imageBaseUrl}${properties.imageThumbnailPrefix}${recording.fileName}`"/>
-              <figcaption class="figure-caption text-center">{{ recording.receivedAt }}</figcaption>
+              <figcaption class="figure-caption text-center">{{ recording.receivedAt | formatDate }}</figcaption>
             </figure>
           </router-link>
         </div>
