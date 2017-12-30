@@ -3,17 +3,17 @@
   "short_name": "Surveillance Center",
   "icons": [
     {
-      "src": "/sc2/static/img/icons/android-chrome-192x192.png",
+      "src": "/sc/static/img/icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/sc2/static/img/icons/android-chrome-512x512.png",
+      "src": "/sc/static/img/icons/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": "/sc2/index.html",
+  "start_url": "/sc/",
   "display": "standalone",
   "background_color": "#343a40",
   "theme_color": "#343a40"

@@ -63,7 +63,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       // don't create session, this is a stateless application
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
       .authorizeRequests()
+      // auth/login controller should be accessible without authentication
       .antMatchers( URIConstants.API_ROOT + URIConstants.API_AUTH).permitAll()
+      // as well as the client (SPA) resources
+      .antMatchers("/").permitAll()
+      .antMatchers("/static/**").permitAll()
+      .antMatchers("/service-worker.js").permitAll()
+      // all other requests must be authenticated!
       .anyRequest().authenticated();
 
     // custom JWT based security filter

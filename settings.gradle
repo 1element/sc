@@ -1,0 +1,3 @@
+include 'client'
+
+rootProject.name = 'surveillancecenter'

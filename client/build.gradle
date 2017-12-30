@@ -1,0 +1,25 @@
+plugins {
+  // https://github.com/srs/gradle-node-plugin/
+  id "com.moowork.node" version "1.2.0"
+}
+
+node {
+  // version of node to use
+  version = '8.9.3'
+  // version of npm to use
+  npmVersion = '5.5.1'
+  // download node using above parameters
+  download = true
+  // work directory for unpacking node
+  workDir = file("${project.projectDir}/gradle/node")
+  // work directory for npm
+  npmWorkDir = file("${project.projectDir}/gradle/npm")
+  // work directory where node_modules should be located
+  nodeModulesDir = file("${project.projectDir}")
+}
+
+task build(type: NpmTask) {
+  args = ['run', 'build']
+}
+
+build.dependsOn(npm_install)
