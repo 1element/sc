@@ -8,6 +8,7 @@ import LiveviewDetail from '@/pages/LiveviewDetail';
 import Livestream from '@/pages/Livestream';
 import LivestreamDetail from '@/pages/LivestreamDetail';
 import Settings from '@/pages/Settings';
+import NotFound from '@/pages/NotFound';
 
 Vue.use(Router);
 
@@ -59,6 +60,11 @@ export default new Router({
       path: '/settings',
       name: 'settings',
       component: Settings,
+    },
+    {
+      path: '*',
+      name: 'not-found',
+      component: NotFound,
     },
   ],
 });

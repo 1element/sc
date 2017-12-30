@@ -37,7 +37,7 @@ export default {
   },
 
   created() {
-    if (this.$route.name === 'login') {
+    if (this.$route.name === 'login' || this.$route.name === 'not-found') {
       this.showNavigation = false;
     }
   },
