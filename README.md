@@ -12,18 +12,17 @@ browse and manage surveillance snapshots.
 
 ## Features
 
-* Written in Java. Runs on Windows, Mac OS X and Linux (Ubuntu, Raspbian, etc.)
+* Written in Java (Spring Boot). Runs on Windows, Mac OS X and Linux (Ubuntu, Raspbian, etc.)
+* Progressive Web Application (PWA)
+* Live stream and snapshot view of cameras (built-in proxy)
 * Built-in FTP server to receive new surveillance images
-* Thumbnail overview of images by date
-* Mobile device friendly layout (responsive design)
+* Thumbnail overview of images
 * Ability to archive already seen images (acknowledge images)
 * Auto removal of old archived images
 * Configurable push notifications (via pushover.net)
 * Optional image copy to remote server (SFTP, FTP)
 * Camera health check
-* Status RSS feeds
-* MJPEG stream transformer/generator
-* Simple livestream and snapshot view of cameras
+* Status RSS feed
 
 Surveillance Center doesn't do any kind of motion detection. 
 You either have to use the built-in motion detection of your IP camera or 
@@ -56,8 +55,7 @@ jar file is located.
    ```
 
 4. Edit the `application.properties` file. This is the main configuration file 
-where your IP cameras, FTP server credentials, push notifications, etc. are 
-configured.
+where your credentials, IP cameras, push notifications, etc. are configured.
 
    Most settings can be left at the default value. But there are a few required 
 ones, see the [configuration document](https://github.com/1element/sc/blob/master/docs/configuration.md) 

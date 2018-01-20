@@ -3,8 +3,7 @@
 First off, thank you for taking the time to contribute to Surveillance Center.
 
 There are many ways to contribute. For example, you might improve the 
-documentation, add new i18n translations, submit bug reports and 
-feature requests or write code.
+documentation, submit bug reports and feature requests or write code.
 
 Here is a quick guide how to submit pull requests:
 

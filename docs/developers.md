@@ -23,15 +23,64 @@ Checkout the `develop` branch as this is the branch where development happens.
 git checkout develop
 ```
 
-Gradle is used to build the project. Execute in the root directory 
-of the project:
+
+### Server development
+
+The server (backend) part is written in Java using the Spring Boot framework.
+
+Gradle is used to build the project. For local development you can run
+
+```
+./gradlew bootRun
+```
+
+in the root directory of the project. This will start the embedded Tomcat 
+server on port 8080 and make your changes available. Make sure you have 
+a proper configured `application.properties` file, either in 
+`src/main/resources/application.properties` or somewhere else accessible.
+
+
+### Client development
+
+The client (frontend) part is a Single Page Application (SPA) with 
+PWA features (Progressive Web Application) written in Javascript (Vue.js).
+
+The sources are located in the `client` subdirectory.
+
+For development you need [Node.js](https://nodejs.org/) and npm 
+(Node Package Manager) installed on your system. Npm ships with Node.js, 
+so you don't have to install it separately.
+
+First of all run npm to install the dependencies:
+
+```
+cd client
+npm install
+```
+
+After this you can run for development:
+
+```
+npm run dev
+```
+
+This will start a local web server on port 8081 with hot-reload, 
+Lint-on-save, etc.
+
+API requests are proxied to the Spring Boot tomcat server on port 8080, so make
+sure this is also running.
+
+
+### Build
+
+The final build and executable jar file packaging is completely done using 
+Gradle. You don't need to have Node.js and npm installed on your system. The 
+gradle-node-plugin will take care of this.
+
+To build the project run
 
 ```
 ./gradlew build
 ```
 
-To run the Spring Boot application execute:
-
-```
-./gradlew bootRun
-```
+in the root directory.
