@@ -60,7 +60,8 @@ public class AbstractSFTPRemoteCopy {
       channel = session.openChannel(SFTP_CHANNEL_NAME);
     } catch (JSchException exception) {
       session.disconnect();
-      throw new SFTPRemoteCopyException("Could not establish SSH connection: " + exception.getMessage(), exception);
+      throw new SFTPRemoteCopyException(String.format("Could not establish SSH connection: %s",
+          exception.getMessage()), exception);
     }
 
     if (channel == null) {
@@ -72,7 +73,8 @@ public class AbstractSFTPRemoteCopy {
       channel.connect();
     } catch (JSchException exception) {
       session.disconnect();
-      throw new SFTPRemoteCopyException("Could not establish SFTP channel: " + exception.getMessage(), exception);
+      throw new SFTPRemoteCopyException(String.format("Could not establish SFTP channel: %s",
+          exception.getMessage()), exception);
     }
 
     if (!(channel instanceof ChannelSftp)) {

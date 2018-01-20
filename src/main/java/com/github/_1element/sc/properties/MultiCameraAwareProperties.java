@@ -33,13 +33,14 @@ public class MultiCameraAwareProperties {
    */
   public <T> T getProperty(String propertyKey, String cameraId, Class<T> targetType) throws PropertyNotFoundException {
     if (StringUtils.isBlank(cameraId)) {
-      throw new PropertyNotFoundException("Property '" + propertyKey + "' not found. Empty camera id was given.");
+      throw new PropertyNotFoundException(String.format("Property '%s' not found. Empty camera id was given.",
+          propertyKey));
     }
 
     String formattedPropertyKey = String.format(propertyKey, cameraId);
 
     if (!environment.containsProperty(formattedPropertyKey)) {
-      throw new PropertyNotFoundException("Property not found for key '" + formattedPropertyKey + "'.");
+      throw new PropertyNotFoundException(String.format("Property not found for key '%s'.", formattedPropertyKey));
     }
 
     return environment.getProperty(formattedPropertyKey, targetType);

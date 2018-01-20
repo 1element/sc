@@ -47,8 +47,8 @@ public abstract class AbstractFTPRemoteCopy {
     ftp.connect(ftpRemoteCopyProperties.getHost());
 
     if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-      throw new FTPRemoteCopyException("Could not connect to remote ftp server '" + ftpRemoteCopyProperties.getHost()
-          + "'. Response was: " + ftp.getReplyString());
+      throw new FTPRemoteCopyException(String.format("Could not connect to remote ftp server '%s'. Response was: %s",
+          ftpRemoteCopyProperties.getHost(), ftp.getReplyString()));
     }
 
     if (!ftp.login(ftpRemoteCopyProperties.getUsername(), ftpRemoteCopyProperties.getPassword())) {

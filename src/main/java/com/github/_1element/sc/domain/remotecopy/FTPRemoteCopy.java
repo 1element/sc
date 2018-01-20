@@ -58,8 +58,8 @@ public class FTPRemoteCopy extends AbstractFTPRemoteCopy implements RemoteCopy {
 
     try (InputStream inputStream = fileService.createInputStream(path)) {
       if (!ftp.storeFile(ftpRemoteCopyProperties.getDir() + path.getFileName().toString(), inputStream)) {
-        throw new FTPRemoteCopyException("Could not upload file to remote FTP server. Response was: "
-            + ftp.getReplyString());
+        throw new FTPRemoteCopyException(String.format("Could not upload file to remote FTP server. Response was: %s",
+            ftp.getReplyString()));
       }
     }
 

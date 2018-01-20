@@ -70,8 +70,8 @@ public class FTPRemoteCopyCleanup extends AbstractFTPRemoteCopy implements Remot
    */
   private void removeOldFiles() throws FTPRemoteCopyException, IOException {
     if (!ftp.changeWorkingDirectory(ftpRemoteCopyProperties.getDir())) {
-      throw new FTPRemoteCopyException("Could not change to directory '" + ftpRemoteCopyProperties.getDir()
-          + "' on remote FTP server. Response was: " + ftp.getReplyString());
+      throw new FTPRemoteCopyException(String.format("Could not change to directory '%s' on remote FTP server. "
+          + "Response was: %s", ftpRemoteCopyProperties.getDir(), ftp.getReplyString()));
     }
 
     sizeRemoved = 0;

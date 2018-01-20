@@ -162,7 +162,7 @@ public class SurveillanceApiController {
     SurveillanceImage image = imageRepository.findOne(id);
 
     if (image == null) {
-      throw new ResourceNotFoundException("Recording " + id + " was not found.");
+      throw new ResourceNotFoundException(String.format("Recording %s was not found.", id));
     }
 
     return new Resource(image);
