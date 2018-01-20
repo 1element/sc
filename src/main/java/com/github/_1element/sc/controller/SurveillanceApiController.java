@@ -160,7 +160,7 @@ public class SurveillanceApiController {
       throw new ResourceNotFoundException(String.format("Recording %s was not found.", id));
     }
 
-    return new Resource(image);
+    return new Resource<>(image);
   }
 
   /**

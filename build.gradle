@@ -74,7 +74,12 @@ eclipse {
 //  forkEvery = 1
 // }
 
+tasks.withType(JavaCompile) {
+  options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+}
+
 task wrapper(type: Wrapper) {
   gradleVersion = '4.3.1'
 }
+
 
