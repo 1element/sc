@@ -151,6 +151,11 @@ public class SurveillanceApiControllerTest {
   }
 
   @Test
+  public void testCameraNotFound() throws Exception {
+    mockMvc.perform(get("/api/v1/cameras/invalid-camera").cookie(tokenCookie)).andExpect(status().isNotFound());
+  }
+
+  @Test
   public void testCamera() throws Exception {
     mockMvc.perform(get("/api/v1/cameras/testcamera1").cookie(tokenCookie))
       .andExpect(status().isOk())
@@ -269,6 +274,22 @@ public class SurveillanceApiControllerTest {
       .andExpect(status().isNoContent());
 
     verify(pushNotificationSettingRepository).save(refEq(expectedPushNotificationSetting));
+  }
+
+  @Test
+  public void testPushNotificationSettingsUpdateCameraNotFound() throws Exception {
+    // arrange
+    String cameraId = "invalidCameraId";
+    JSONObject jsonPayload = new JSONObject();
+    jsonPayload.put("cameraId", cameraId);
+    jsonPayload.put("enabled", true);
+
+    // act + assert
+    mockMvc.perform(patch("/api/v1/push-notification-settings/" + cameraId)
+      .content(jsonPayload.toString())
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .cookie(tokenCookie))
+      .andExpect(status().isNotFound());
   }
 
 }
