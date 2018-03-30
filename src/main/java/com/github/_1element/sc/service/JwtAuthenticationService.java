@@ -1,6 +1,7 @@
 package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.properties.SurveillanceSecurityProperties;
+import com.google.common.annotations.VisibleForTesting;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -112,7 +113,8 @@ public class JwtAuthenticationService {
    * @param token the token to parse
    * @return username
    */
-  private String getUsernameFromToken(String token) {
+  @VisibleForTesting
+  String getUsernameFromToken(String token) {
     return Jwts.parser()
       .setSigningKey(securityProperties.getSecret())
       .parseClaimsJws(token)
@@ -126,7 +128,8 @@ public class JwtAuthenticationService {
    * @param username the username to generate token for
    * @return token
    */
-  private String generateToken(String username) {
+  @VisibleForTesting
+  String generateToken(String username) {
     final Date createdDate = new Date();
     final Date expirationDate = calculateExpirationDate(createdDate);
 
@@ -144,7 +147,8 @@ public class JwtAuthenticationService {
    * @param createdDate the creation date
    * @return expiration date
    */
-  private Date calculateExpirationDate(Date createdDate) {
+  @VisibleForTesting
+  Date calculateExpirationDate(Date createdDate) {
     return new Date(createdDate.getTime() + securityProperties.getTokenExpiration() * 1000L);
   }
 
@@ -154,7 +158,8 @@ public class JwtAuthenticationService {
    * @param httpServletRequest the http request to read cookie from
    * @return token
    */
-  private String getTokenFromCookie(HttpServletRequest httpServletRequest) {
+  @VisibleForTesting
+  String getTokenFromCookie(HttpServletRequest httpServletRequest) {
     Cookie cookie = WebUtils.getCookie(httpServletRequest, securityProperties.getCookieName());
     return cookie != null ? cookie.getValue() : null;
   }
@@ -165,7 +170,8 @@ public class JwtAuthenticationService {
    * @param token the token to use
    * @return cookie
    */
-  private Cookie generateCookie(String token) {
+  @VisibleForTesting
+  Cookie generateCookie(String token) {
     Cookie cookie = new Cookie(securityProperties.getCookieName(), token);
     cookie.setSecure(false);
     cookie.setHttpOnly(true);
