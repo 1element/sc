@@ -49,7 +49,7 @@ public class ModelMappingServiceTest {
 
     // act
     SurveillanceImageResource surveillanceImageResource =
-      modelMappingService.convertSurveillanceImageToResource(surveillanceImage);
+        modelMappingService.convertSurveillanceImageToResource(surveillanceImage);
 
     // assert
     assertEquals("testcamera1", surveillanceImageResource.getCameraId());

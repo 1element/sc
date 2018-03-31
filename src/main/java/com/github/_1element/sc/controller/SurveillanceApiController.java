@@ -138,9 +138,10 @@ public class SurveillanceApiController {
 
     Optional<String> camera = Optional.ofNullable(cameraId);
 
-    Page<SurveillanceImage> surveillanceImages = surveillanceService.getImagesPage(camera, localDate, isArchive, pageRequest);
+    Page<SurveillanceImage> surveillanceImages =
+        surveillanceService.getImagesPage(camera, localDate, isArchive, pageRequest);
     Page<SurveillanceImageResource> surveillanceImageResources = surveillanceImages.map(
-      modelMappingService::convertSurveillanceImageToResource);
+        modelMappingService::convertSurveillanceImageToResource);
 
     Link selfLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(SurveillanceApiController.class)
         .recordingsList(cameraId, page, size, isArchive, date, assembler)).withSelfRel();

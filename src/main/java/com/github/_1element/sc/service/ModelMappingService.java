@@ -70,7 +70,7 @@ public class ModelMappingService {
    */
   public SurveillanceImageResource convertSurveillanceImageToResource(SurveillanceImage surveillanceImage) {
     SurveillanceImageResource surveillanceImageResource =
-      modelMapper.map(surveillanceImage, SurveillanceImageResource.class);
+        modelMapper.map(surveillanceImage, SurveillanceImageResource.class);
 
     // add camera name
     Camera camera = cameraRepository.findById(surveillanceImage.getCameraId());
