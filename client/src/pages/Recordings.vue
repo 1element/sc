@@ -152,7 +152,7 @@ export default {
       api().get(`recordings?camera=${this.currentCameraId}&page=${this.currentPageNumber - 1}&archive=${this.currentArchiveFilter}`)
         .then((response) => {
           if (response.data._embedded) {
-            this.recordings = response.data._embedded.surveillanceImageList;
+            this.recordings = response.data._embedded.surveillanceImageResourceList;
             if (this.latestRecordingReceivedAt == null) {
               this.latestRecordingReceivedAt = this.recordings[0].receivedAt;
             }

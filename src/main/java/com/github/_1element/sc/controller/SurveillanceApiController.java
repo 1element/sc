@@ -8,6 +8,7 @@ import com.github._1element.sc.dto.CameraResource;
 import com.github._1element.sc.dto.PushNotificationSettingResource;
 import com.github._1element.sc.dto.PushNotificationSettingUpdateResource;
 import com.github._1element.sc.dto.SurveillanceImageBulkUpdateResource;
+import com.github._1element.sc.dto.SurveillanceImageResource;
 import com.github._1element.sc.dto.SurveillanceImageUpdateResource;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.exception.ResourceNotFoundException;
@@ -117,13 +118,13 @@ public class SurveillanceApiController {
    * @return paged SurveillanceImage resources
    */
   @GetMapping(value = URIConstants.API_RECORDINGS, produces = MediaType.APPLICATION_JSON_VALUE)
-  public PagedResources<Resource<SurveillanceImage>> recordingsList(
+  public PagedResources<Resource<SurveillanceImageResource>> recordingsList(
                                       @RequestParam(required = false, value = "camera") String cameraId,
                                       @RequestParam(required = false, value = "page") Integer pageParam,
                                       @RequestParam(required = false, value = "size") Integer sizeParam,
                                       @RequestParam(required = false, value = "archive") boolean isArchive,
                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                                      PagedResourcesAssembler<SurveillanceImage> assembler) {
+                                      PagedResourcesAssembler<SurveillanceImageResource> assembler) {
 
     int page = (pageParam != null) ? pageParam : 0;
     int size = (sizeParam != null) ? sizeParam : imageProperties.getPageSize();
@@ -137,12 +138,14 @@ public class SurveillanceApiController {
 
     Optional<String> camera = Optional.ofNullable(cameraId);
 
-    Page<SurveillanceImage> recordings = surveillanceService.getImagesPage(camera, localDate, isArchive, pageRequest);
+    Page<SurveillanceImage> surveillanceImages = surveillanceService.getImagesPage(camera, localDate, isArchive, pageRequest);
+    Page<SurveillanceImageResource> surveillanceImageResources = surveillanceImages.map(
+      modelMappingService::convertSurveillanceImageToResource);
 
     Link selfLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(SurveillanceApiController.class)
         .recordingsList(cameraId, page, size, isArchive, date, assembler)).withSelfRel();
 
-    return assembler.toResource(recordings, selfLink);
+    return assembler.toResource(surveillanceImageResources, selfLink);
   }
 
   /**
@@ -153,14 +156,14 @@ public class SurveillanceApiController {
    * @throws ResourceNotFoundException exception in case of invalid id
    */
   @GetMapping(value = URIConstants.API_RECORDINGS + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Resource<SurveillanceImage> recording(@PathVariable long id) throws ResourceNotFoundException {
+  public SurveillanceImageResource recording(@PathVariable long id) throws ResourceNotFoundException {
     SurveillanceImage image = imageRepository.findOne(id);
 
     if (image == null) {
       throw new ResourceNotFoundException(String.format("Recording %s was not found.", id));
     }
 
-    return new Resource<>(image);
+    return modelMappingService.convertSurveillanceImageToResource(image);
   }
 
   /**

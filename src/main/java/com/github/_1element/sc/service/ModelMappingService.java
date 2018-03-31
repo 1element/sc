@@ -3,9 +3,12 @@ package com.github._1element.sc.service; //NOSONAR
 import com.github._1element.sc.controller.SurveillanceProxyController;
 import com.github._1element.sc.controller.SurveillanceStreamGenerationController;
 import com.github._1element.sc.domain.Camera;
+import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.dto.CameraResource;
+import com.github._1element.sc.dto.SurveillanceImageResource;
 import com.github._1element.sc.exception.CameraNotFoundException;
 import com.github._1element.sc.exception.ProxyException;
+import com.github._1element.sc.repository.CameraRepository;
 import com.github._1element.sc.utils.URIConstants;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -23,11 +26,14 @@ public class ModelMappingService {
 
   private ModelMapper modelMapper;
 
+  private CameraRepository cameraRepository;
+
   private static final Logger LOG = LoggerFactory.getLogger(ModelMappingService.class);
 
   @Autowired
-  public ModelMappingService(ModelMapper modelMapper) {
+  public ModelMappingService(ModelMapper modelMapper, CameraRepository cameraRepository) {
     this.modelMapper = modelMapper;
+    this.cameraRepository = cameraRepository;
   }
 
   /**
@@ -54,6 +60,25 @@ public class ModelMappingService {
     cameraResource.setStreamGeneratorUrl(streamGeneratorUrl);
 
     return cameraResource;
+  }
+
+  /**
+   * Converts the provided {@link SurveillanceImage} to a {@link SurveillanceImageResource}.
+   *
+   * @param surveillanceImage the surveillance image to convert
+   * @return converted surveillance image resource
+   */
+  public SurveillanceImageResource convertSurveillanceImageToResource(SurveillanceImage surveillanceImage) {
+    SurveillanceImageResource surveillanceImageResource =
+      modelMapper.map(surveillanceImage, SurveillanceImageResource.class);
+
+    // add camera name
+    Camera camera = cameraRepository.findById(surveillanceImage.getCameraId());
+    if (camera != null) {
+      surveillanceImageResource.setCameraName(camera.getName());
+    }
+
+    return surveillanceImageResource;
   }
 
 }
