@@ -6,8 +6,57 @@ software like Nginx or Motion.
 
 ### Table of contents
 
-1. [Motion](#motion)
-2. [Nginx](#nginx)
+1. [Systemd](#systemd)
+2. [Motion](#motion)
+3. [Nginx](#nginx)
+
+
+### Systemd
+
+To run Surveillance Center as a systemd service create a script named 
+`sc.service` and place it in `/etc/systemd/system` directory.
+
+The following script offers an example:
+
+```
+[Unit]
+Description=Surveillance Center
+After=multi-user.target
+
+[Service]
+User=myuser
+Group=mygroup
+Type=simple
+WorkingDirectory=/path/to/surveillancecenter/
+ExecStart=/usr/bin/java -jar /path/to/surveillancecenter/surveillancecenter.jar
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Make sure to change the `WorkingDirectory` and `ExecStart` paths as well 
+as the `User` and `Group` fields.
+
+Afterwards you can reload systemd by executing:
+
+```
+sudo systemctl daemon-reload
+```
+
+To configure the service to be automatically started at boot time run:
+
+```
+sudo systemctl enable sc.service
+```
+
+To start the service right now and show the status use these commands:
+
+```
+sudo systemctl start sc.service
+sudo systemctl status sc.service
+```
 
 
 ### Motion
