@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -108,7 +109,8 @@ public class SurveillanceApiControllerTest {
 
   @Test
   public void testRecordingsList() throws Exception {
-    Page<SurveillanceImage> pageResult = new PageImpl<>(Arrays.asList(surveillanceImage, surveillanceImage2), null, 2);
+    PageRequest pageRequest = new PageRequest(0, 10);
+    Page<SurveillanceImage> pageResult = new PageImpl<>(Arrays.asList(surveillanceImage, surveillanceImage2), pageRequest, 2);
     given(imageRepository.findAllByArchived(anyBoolean(), any(Pageable.class))).willReturn(pageResult);
 
     mockMvc.perform(get("/api/v1/recordings").cookie(tokenCookie))

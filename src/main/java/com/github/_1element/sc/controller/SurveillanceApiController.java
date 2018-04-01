@@ -144,7 +144,7 @@ public class SurveillanceApiController {
         modelMappingService::convertSurveillanceImageToResource);
 
     Link selfLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(SurveillanceApiController.class)
-        .recordingsList(cameraId, page, size, isArchive, date, assembler)).withSelfRel();
+        .recordingsList(cameraId, page, size, isArchive, date, assembler)).withSelfRel().expand();
 
     return assembler.toResource(surveillanceImageResources, selfLink);
   }
