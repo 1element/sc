@@ -102,6 +102,11 @@ public class MqttService implements MqttCallbackExtended {
     // no-op
   }
 
+  /**
+   * Create connect options.
+   *
+   * @return connect options
+   */
   private MqttConnectOptions createConnectOptions() {
     MqttConnectOptions connectOptions = new MqttConnectOptions();
     connectOptions.setCleanSession(false);
@@ -112,6 +117,9 @@ public class MqttService implements MqttCallbackExtended {
     return connectOptions;
   }
 
+  /**
+   * Subscribe to topic.
+   */
   private void subscribe() {
     try {
       mqttClient.subscribe(properties.getTopicFilter());

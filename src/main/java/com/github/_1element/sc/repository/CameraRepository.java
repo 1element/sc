@@ -1,6 +1,8 @@
 package com.github._1element.sc.repository; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
+import com.github._1element.sc.domain.CameraFtp;
+import com.github._1element.sc.domain.CameraPicture;
 import com.github._1element.sc.exception.PropertyNotFoundException;
 import com.github._1element.sc.properties.MultiCameraAwareProperties;
 import com.google.common.base.Splitter;
@@ -84,8 +86,10 @@ public class CameraRepository {
       boolean streamEnabled = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_ENABLED, cameraId,
           boolean.class, true);
 
-      Camera camera = new Camera(cameraId, name, host, ftpUsername, ftpPassword, ftpIncomingDirectory, mqttTopic,
-          snapshotUrl, snapshotEnabled, streamEnabled);
+      CameraFtp ftp = new CameraFtp(ftpUsername, ftpPassword, ftpIncomingDirectory);
+      CameraPicture picture = new CameraPicture(snapshotUrl, snapshotEnabled, streamEnabled);
+
+      Camera camera = new Camera(cameraId, name, host, mqttTopic, ftp, picture);
       cameras.put(cameraId, camera);
     }
   }
@@ -117,8 +121,8 @@ public class CameraRepository {
    */
   public Camera findByFtpUsername(String ftpUsername) {
     return cameras.values().stream()
-      .filter(camera -> Objects.nonNull(camera.getFtpUsername()))
-      .filter(camera -> camera.getFtpUsername().equals(ftpUsername))
+      .filter(camera -> Objects.nonNull(camera.getFtp().getUsername()))
+      .filter(camera -> camera.getFtp().getUsername().equals(ftpUsername))
       .findFirst().orElse(null);
   }
 

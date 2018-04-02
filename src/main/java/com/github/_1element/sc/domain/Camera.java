@@ -1,7 +1,5 @@
 package com.github._1element.sc.domain; //NOSONAR
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Surveillance camera POJO.
  */
@@ -13,51 +11,30 @@ public class Camera {
 
   private String host;
 
-  private String ftpUsername;
-
-  private String ftpPassword;
-
-  private String ftpIncomingDirectory;
-
   private String mqttTopic;
 
-  private String snapshotUrl;
+  private CameraFtp ftp;
 
-  private boolean snapshotEnabled;
-
-  private boolean streamEnabled;
+  private CameraPicture picture;
 
   /**
    * Constructs a new camera.
+   *
    * @param id the unique id of the camera
    * @param name the camera name
    * @param host the (internal) host the camera is running on
-   * @param ftpUsername the ftp username for incoming files
-   * @param ftpPassword the ftp password for incoming files
-   * @param ftpIncomingDirectory the ftp incoming directory
    * @param mqttTopic the mqtt topic
-   * @param snapshotUrl optional url to retrieve snapshots
-   * @param snapshotEnabled true if snapshots are enabled
-   * @param streamEnabled true if streaming is enabled
+   * @param ftp the ftp settings
+   * @param picture the picture settings
    */
-  public Camera(String id, String name, String host, String ftpUsername, String ftpPassword,
-                String ftpIncomingDirectory, String mqttTopic, String snapshotUrl,
-                boolean snapshotEnabled, boolean streamEnabled) {
-
-    if ((snapshotEnabled || streamEnabled) && StringUtils.isBlank(snapshotUrl)) {
-      throw new IllegalArgumentException("Snapshot-url must be provided if snapshot-enabled or stream-enabled.");
-    }
-
+  public Camera(String id, String name, String host,
+                String mqttTopic, CameraFtp ftp, CameraPicture picture) {
     this.id = id;
     this.name = name;
     this.host = host;
-    this.ftpUsername = ftpUsername;
-    this.ftpPassword = ftpPassword;
-    this.ftpIncomingDirectory = ftpIncomingDirectory;
+    this.ftp = ftp;
+    this.picture = picture;
     this.mqttTopic = mqttTopic;
-    this.snapshotUrl = snapshotUrl;
-    this.snapshotEnabled = snapshotEnabled;
-    this.streamEnabled = streamEnabled;
   }
 
   public String getId() {
@@ -72,32 +49,16 @@ public class Camera {
     return host;
   }
 
-  public String getFtpUsername() {
-    return ftpUsername;
+  public CameraFtp getFtp() {
+    return ftp;
   }
 
-  public String getFtpPassword() {
-    return ftpPassword;
-  }
-
-  public String getFtpIncomingDirectory() {
-    return ftpIncomingDirectory;
+  public CameraPicture getPicture() {
+    return picture;
   }
 
   public String getMqttTopic() {
     return mqttTopic;
-  }
-
-  public String getSnapshotUrl() {
-    return snapshotUrl;
-  }
-
-  public boolean isSnapshotEnabled() {
-    return snapshotEnabled;
-  }
-
-  public boolean isStreamEnabled() {
-    return streamEnabled;
   }
 
 }

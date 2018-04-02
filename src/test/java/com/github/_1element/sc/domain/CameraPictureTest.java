@@ -4,26 +4,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(JUnit4.class)
-public class CameraTest {
+public class CameraPictureTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmptySnapshotUrl() throws Exception {
-    new Camera(null, null, null, null, null, null, null, "", true, true);
+    new CameraPicture("", true, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullSnapshotUrl() throws Exception {
-    new Camera(null, null, null, null, null, null, null, null, true, true);
+    new CameraPicture(null, true, true);
   }
 
   @Test
   public void testDisabledSnapshotAndStream() throws Exception {
-    Camera camera = new Camera("cameraId", null, null, null, null, null, null, "", false, false);
+    CameraPicture cameraPicture = new CameraPicture("", false, false);
 
-    assertEquals("cameraId", camera.getId());
+    assertFalse(cameraPicture.isSnapshotEnabled());
+    assertFalse(cameraPicture.isStreamEnabled());
   }
 
 }

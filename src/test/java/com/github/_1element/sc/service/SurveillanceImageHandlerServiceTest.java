@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.github._1element.sc.domain.CameraFtp;
+import com.github._1element.sc.domain.CameraPicture;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +64,7 @@ public class SurveillanceImageHandlerServiceTest {
     when(fileService.getUniquePrefix()).thenReturn("unique-prefix");
 
     byte[] imageData = "Image Data".getBytes();
-    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, false, false);
+    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
     ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
 
     // act
@@ -83,7 +85,7 @@ public class SurveillanceImageHandlerServiceTest {
     when(fileService.getPath(expectedDestinationFileName)).thenReturn(destinationPathMock);
 
     byte[] imageData = "Image Data".getBytes();
-    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, false, false);
+    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
     ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
 
     // act

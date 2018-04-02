@@ -44,7 +44,7 @@ public class SurveillanceProxyController {
       throw new CameraNotFoundException();
     }
 
-    return proxyService.retrieveImage(camera.getSnapshotUrl());
+    return proxyService.retrieveImage(camera.getPicture().getSnapshotUrl());
   }
 
 }

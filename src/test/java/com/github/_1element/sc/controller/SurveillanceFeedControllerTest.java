@@ -47,10 +47,10 @@ public class SurveillanceFeedControllerTest {
   public void testCamerasFeed() throws Exception {
     // arrange
     LocalDateTime localDateTime = LocalDateTime.of(2018, 1, 20, 15, 45, 0, 0);
-    Camera camera1 = new Camera("idCamera1", "Camera 1", null, null, null, null, null, null, false, false);
+    Camera camera1 = new Camera("idCamera1", "Camera 1", null, null, null, null);
     ImagesCameraSummaryResult cameraSummaryResult1 = new ImagesCameraSummaryResult(camera1, 102L, localDateTime);
 
-    Camera camera2 = new Camera("idCamera2", "Camera 2", null, null, null, null, null, null, false, false);
+    Camera camera2 = new Camera("idCamera2", "Camera 2", null, null, null, null);
     ImagesCameraSummaryResult cameraSummaryResult2 = new ImagesCameraSummaryResult(camera2, 22L, localDateTime);
 
     given(surveillanceService.getImagesCameraSummary())

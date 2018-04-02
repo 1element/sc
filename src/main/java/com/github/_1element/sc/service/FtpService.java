@@ -2,6 +2,7 @@ package com.github._1element.sc.service; //NOSONAR
 
 import com.github._1element.sc.domain.Camera;
 import com.github._1element.sc.domain.UploadFtplet;
+import com.github._1element.sc.properties.FtpProperties;
 import com.github._1element.sc.repository.CameraRepository;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.Ftplet;
@@ -10,7 +11,6 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import org.apache.ftpserver.FtpServer;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Ftp service class. Will start ftp server.
+ * FTP service class. Will start FTP server.
  */
 @Service
 public class FtpService {
@@ -35,37 +35,41 @@ public class FtpService {
 
   private UploadFtplet uploadFtplet;
 
-  @Value("${sc.ftp.enabled:false}")
-  private boolean enabled;
-
-  @Value("${sc.ftp.port:2221}")
-  private int ftpServerPort;
+  private FtpProperties properties;
 
   private FtpServer server;
 
   private PropertiesUserManagerFactory userManagerFactory;
 
+  /**
+   * Constructor.
+   *
+   * @param cameraRepository the camera repository
+   * @param uploadFtplet the upload ftplet
+   * @param properties the properties
+   */
   @Autowired
-  public FtpService(CameraRepository cameraRepository, UploadFtplet uploadFtplet) {
+  public FtpService(CameraRepository cameraRepository, UploadFtplet uploadFtplet, FtpProperties properties) {
     this.cameraRepository = cameraRepository;
     this.uploadFtplet = uploadFtplet;
+    this.properties = properties;
   }
 
   /**
-   * Start ftp server.
+   * Start FTP server.
    *
    * @throws FtpException exception in case of an error
    */
   @PostConstruct
   public void start() throws FtpException {
-    if (!enabled) {
+    if (!properties.isEnabled()) {
       return;
     }
 
     FtpServerFactory ftpServerFactory = new FtpServerFactory();
     ListenerFactory listenerFactory = new ListenerFactory();
 
-    listenerFactory.setPort(ftpServerPort);
+    listenerFactory.setPort(properties.getPort());
     ftpServerFactory.addListener("default", listenerFactory.createListener());
 
     // user manager
@@ -83,7 +87,7 @@ public class FtpService {
   }
 
   /**
-   * Stop ftp server.
+   * Stop FTP server.
    */
   @PreDestroy
   public void stop() {
@@ -93,7 +97,7 @@ public class FtpService {
   }
 
   /**
-   * Populate ftp credentials and home directories.
+   * Populate FTP credentials and home directories.
    *
    * @return user manager
    * @throws FtpException exception in case of an error
@@ -106,9 +110,9 @@ public class FtpService {
 
     for (Camera camera : cameraRepository.findAll()) {
       BaseUser user = new BaseUser();
-      user.setName(camera.getFtpUsername());
-      user.setPassword(camera.getFtpPassword());
-      user.setHomeDirectory(camera.getFtpIncomingDirectory());
+      user.setName(camera.getFtp().getUsername());
+      user.setPassword(camera.getFtp().getPassword());
+      user.setHomeDirectory(camera.getFtp().getIncomingDirectory());
       user.setAuthorities(authorities);
 
       userManager.save(user);

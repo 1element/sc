@@ -61,7 +61,7 @@ public class SurveillanceStreamGenerationController {
       throw new CameraNotFoundException();
     }
 
-    if (!camera.isStreamEnabled()) {
+    if (!camera.getPicture().isStreamEnabled()) {
       throw new ForbiddenException("MJPEG stream generation is disabled.");
     }
 
@@ -69,7 +69,7 @@ public class SurveillanceStreamGenerationController {
     mjpegGenerationService.setCacheControlHeader(response);
 
     try {
-      mjpegGenerationService.writeSnapshotToOutputStream(camera.getSnapshotUrl(), response);
+      mjpegGenerationService.writeSnapshotToOutputStream(camera.getPicture().getSnapshotUrl(), response);
     } catch (IOException | RestClientException exception) {
       LOG.debug("MJPEG streaming terminated: {}", exception.getMessage());
     }

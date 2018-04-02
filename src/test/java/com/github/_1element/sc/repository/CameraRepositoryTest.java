@@ -41,23 +41,23 @@ public class CameraRepositoryTest {
 
     assertEquals("Front door", camera1.getName());
     assertEquals("192.168.1.50", camera1.getHost());
-    assertEquals("username", camera1.getFtpUsername());
-    assertEquals("password", camera1.getFtpPassword());
-    assertEquals("https://localhost/cam1/snapshot", camera1.getSnapshotUrl());
-    assertEquals("/tmp/camera1/", camera1.getFtpIncomingDirectory());
-    assertTrue(camera1.isStreamEnabled());
-    assertTrue(camera1.isSnapshotEnabled());
+    assertEquals("username", camera1.getFtp().getUsername());
+    assertEquals("password", camera1.getFtp().getPassword());
+    assertEquals("https://localhost/cam1/snapshot", camera1.getPicture().getSnapshotUrl());
+    assertEquals("/tmp/camera1/", camera1.getFtp().getIncomingDirectory());
+    assertTrue(camera1.getPicture().isStreamEnabled());
+    assertTrue(camera1.getPicture().isSnapshotEnabled());
 
     Camera camera2 = cameraRepository.findById("testcamera2");
 
     assertEquals("Backyard", camera2.getName());
     assertEquals("192.168.1.51", camera2.getHost());
-    assertEquals("user2", camera2.getFtpUsername());
-    assertEquals("password2", camera2.getFtpPassword());
-    assertEquals("https://localhost/cam2/snapshot", camera2.getSnapshotUrl());
-    assertEquals("/tmp/camera2/", camera2.getFtpIncomingDirectory());
-    assertTrue(camera2.isSnapshotEnabled());
-    assertFalse(camera2.isStreamEnabled());
+    assertEquals("user2", camera2.getFtp().getUsername());
+    assertEquals("password2", camera2.getFtp().getPassword());
+    assertEquals("https://localhost/cam2/snapshot", camera2.getPicture().getSnapshotUrl());
+    assertEquals("/tmp/camera2/", camera2.getFtp().getIncomingDirectory());
+    assertTrue(camera2.getPicture().isSnapshotEnabled());
+    assertFalse(camera2.getPicture().isStreamEnabled());
   }
 
   @Test
@@ -65,8 +65,8 @@ public class CameraRepositoryTest {
     Camera camera1 = cameraRepository.findByFtpUsername("username");
 
     assertEquals("testcamera1", camera1.getId());
-    assertEquals("password", camera1.getFtpPassword());
-    assertEquals("/tmp/camera1/", camera1.getFtpIncomingDirectory());
+    assertEquals("password", camera1.getFtp().getPassword());
+    assertEquals("/tmp/camera1/", camera1.getFtp().getIncomingDirectory());
   }
 
   @Test
@@ -74,8 +74,8 @@ public class CameraRepositoryTest {
     Camera camera2 = cameraRepository.findByFtpUsername("user2");
 
     assertEquals("testcamera2", camera2.getId());
-    assertEquals("password2", camera2.getFtpPassword());
-    assertEquals("/tmp/camera2/", camera2.getFtpIncomingDirectory());
+    assertEquals("password2", camera2.getFtp().getPassword());
+    assertEquals("/tmp/camera2/", camera2.getFtp().getIncomingDirectory());
   }
 
   @Test

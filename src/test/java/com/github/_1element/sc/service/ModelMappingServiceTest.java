@@ -2,6 +2,7 @@ package com.github._1element.sc.service;
 
 import com.github._1element.sc.SurveillanceCenterApplication;
 import com.github._1element.sc.domain.Camera;
+import com.github._1element.sc.domain.CameraPicture;
 import com.github._1element.sc.domain.SurveillanceImage;
 import com.github._1element.sc.dto.CameraResource;
 import com.github._1element.sc.dto.SurveillanceImageResource;
@@ -28,8 +29,8 @@ public class ModelMappingServiceTest {
   @Test
   public void testConvertCameraToResource() throws Exception {
     // arrange
-    Camera camera = new Camera("front", "Camera Name", "internal-host.example", "ftpUser",
-        "ftpPass", "/ftp/dir", "mqttTopic", "http://internal.example/snapshot.cgi", true, true);
+    CameraPicture picture = new CameraPicture("http://internal.example/snapshot.cgi", true, true);
+    Camera camera = new Camera("front", "Camera Name", "internal-host.example", "mqttTopic", null, picture);
 
     // act
     CameraResource cameraResource = modelMappingService.convertCameraToResource(camera);
