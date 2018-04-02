@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 public class ImageThumbnailProperties {
 
   private int width = 200;
-  
+
   private int height = 200;
-  
+
   private double quality = 0.8;
 
   public int getWidth() {
     return width;
   }
 
-  public void setWidth(int width) {
+  public void setWidth(final int width) {
     this.width = width;
   }
 
@@ -28,7 +28,7 @@ public class ImageThumbnailProperties {
     return height;
   }
 
-  public void setHeight(int height) {
+  public void setHeight(final int height) {
     this.height = height;
   }
 
@@ -36,8 +36,8 @@ public class ImageThumbnailProperties {
     return quality;
   }
 
-  public void setQuality(double quality) {
+  public void setQuality(final double quality) {
     this.quality = quality;
   }
-  
+
 }

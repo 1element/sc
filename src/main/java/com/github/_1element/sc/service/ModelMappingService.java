@@ -24,14 +24,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModelMappingService {
 
-  private ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
   private static final Logger LOG = LoggerFactory.getLogger(ModelMappingService.class);
 
   @Autowired
-  public ModelMappingService(ModelMapper modelMapper, CameraRepository cameraRepository) {
+  public ModelMappingService(final ModelMapper modelMapper, final CameraRepository cameraRepository) {
     this.modelMapper = modelMapper;
     this.cameraRepository = cameraRepository;
   }
@@ -42,8 +42,8 @@ public class ModelMappingService {
    * @param camera the camera to convert
    * @return converted camera resource
    */
-  public CameraResource convertCameraToResource(Camera camera) {
-    CameraResource cameraResource = modelMapper.map(camera, CameraResource.class);
+  public CameraResource convertCameraToResource(final Camera camera) {
+    final CameraResource cameraResource = modelMapper.map(camera, CameraResource.class);
 
     String snapshotProxyUrl = null;
     try {
@@ -53,7 +53,7 @@ public class ModelMappingService {
       LOG.debug("Exception occurred during link building: '{}'", exception.getMessage());
     }
     // methodOn() does not work because of void return type
-    String streamGeneratorUrl = ControllerLinkBuilder.linkTo(SurveillanceStreamGenerationController.class)
+    final String streamGeneratorUrl = ControllerLinkBuilder.linkTo(SurveillanceStreamGenerationController.class)
         .slash(URIConstants.GENERATE_MJPEG.replace("{id}", camera.getId())).toString();
 
     cameraResource.setSnapshotProxyUrl(snapshotProxyUrl);
@@ -68,12 +68,12 @@ public class ModelMappingService {
    * @param surveillanceImage the surveillance image to convert
    * @return converted surveillance image resource
    */
-  public SurveillanceImageResource convertSurveillanceImageToResource(SurveillanceImage surveillanceImage) {
-    SurveillanceImageResource surveillanceImageResource =
+  public SurveillanceImageResource convertSurveillanceImageToResource(final SurveillanceImage surveillanceImage) {
+    final SurveillanceImageResource surveillanceImageResource =
         modelMapper.map(surveillanceImage, SurveillanceImageResource.class);
 
     // add camera name
-    Camera camera = cameraRepository.findById(surveillanceImage.getCameraId());
+    final Camera camera = cameraRepository.findById(surveillanceImage.getCameraId());
     if (camera != null) {
       surveillanceImageResource.setCameraName(camera.getName());
     }

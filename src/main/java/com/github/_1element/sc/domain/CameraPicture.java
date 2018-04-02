@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CameraPicture {
 
-  private String snapshotUrl;
-  private boolean snapshotEnabled;
-  private boolean streamEnabled;
+  private final String snapshotUrl;
+  private final boolean snapshotEnabled;
+  private final boolean streamEnabled;
 
   /**
    * Constructs a new camera picture value object.
@@ -18,7 +18,7 @@ public class CameraPicture {
    * @param snapshotEnabled true if snapshots are enabled
    * @param streamEnabled true if streaming is enabled
    */
-  public CameraPicture(String snapshotUrl, boolean snapshotEnabled, boolean streamEnabled) {
+  public CameraPicture(final String snapshotUrl, final boolean snapshotEnabled, final boolean streamEnabled) {
     if ((snapshotEnabled || streamEnabled) && StringUtils.isBlank(snapshotUrl)) {
       throw new IllegalArgumentException("Snapshot-url must be provided if snapshot-enabled or stream-enabled.");
     }

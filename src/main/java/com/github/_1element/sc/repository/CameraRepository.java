@@ -24,12 +24,12 @@ import java.util.stream.Collectors;
 @Component
 public class CameraRepository {
 
-  private MultiCameraAwareProperties multiCameraAwareProperties;
+  private final MultiCameraAwareProperties multiCameraAwareProperties;
 
   @Value("${sc.cameras.available}")
   private String camerasAvailable;
 
-  private Map<String, Camera> cameras = new LinkedHashMap<>();
+  private final Map<String, Camera> cameras = new LinkedHashMap<>();
 
   private static final String PROPERTY_NAME = MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "name";
 
@@ -59,7 +59,7 @@ public class CameraRepository {
   private static final String SEPARATOR = ",";
 
   @Autowired
-  public CameraRepository(MultiCameraAwareProperties multiCameraAwareProperties) {
+  public CameraRepository(final MultiCameraAwareProperties multiCameraAwareProperties) {
     this.multiCameraAwareProperties = multiCameraAwareProperties;
   }
 
@@ -70,26 +70,28 @@ public class CameraRepository {
    */
   @PostConstruct
   private void initialize() throws PropertyNotFoundException {
-    List<String> camerasAvailableList = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().omitEmptyStrings()
+    final List<String> camerasAvailableList = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().omitEmptyStrings()
         .split(camerasAvailable));
 
-    for (String cameraId : camerasAvailableList) {
-      String name = multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId);
-      String host = multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId);
-      String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
-      String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
-      String ftpIncomingDirectory = multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId);
-      String mqttTopic = multiCameraAwareProperties.getProperty(PROPERTY_MQTT_TOPIC, cameraId, String.class, null);
-      String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, String.class, null);
-      boolean snapshotEnabled = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_ENABLED, cameraId,
+    for (final String cameraId : camerasAvailableList) {
+      final String name = multiCameraAwareProperties.getProperty(PROPERTY_NAME, cameraId);
+      final String host = multiCameraAwareProperties.getProperty(PROPERTY_HOST, cameraId);
+      final String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
+      final String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
+      final String ftpIncomingDirectory = multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId);
+      final String mqttTopic = multiCameraAwareProperties.getProperty(PROPERTY_MQTT_TOPIC, cameraId,
+          String.class, null);
+      final String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId,
+          String.class, null);
+      final boolean snapshotEnabled = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_ENABLED, cameraId,
           boolean.class, true);
-      boolean streamEnabled = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_ENABLED, cameraId,
+      final boolean streamEnabled = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_ENABLED, cameraId,
           boolean.class, true);
 
-      CameraFtp ftp = new CameraFtp(ftpUsername, ftpPassword, ftpIncomingDirectory);
-      CameraPicture picture = new CameraPicture(snapshotUrl, snapshotEnabled, streamEnabled);
+      final CameraFtp ftp = new CameraFtp(ftpUsername, ftpPassword, ftpIncomingDirectory);
+      final CameraPicture picture = new CameraPicture(snapshotUrl, snapshotEnabled, streamEnabled);
 
-      Camera camera = new Camera(cameraId, name, host, mqttTopic, ftp, picture);
+      final Camera camera = new Camera(cameraId, name, host, mqttTopic, ftp, picture);
       cameras.put(cameraId, camera);
     }
   }
@@ -100,7 +102,7 @@ public class CameraRepository {
    * @param cameraId camera identifier
    * @return the camera
    */
-  public Camera findById(String cameraId) {
+  public Camera findById(final String cameraId) {
     return cameras.get(cameraId);
   }
 
@@ -119,7 +121,7 @@ public class CameraRepository {
    * @param ftpUsername ftp username
    * @return the camera
    */
-  public Camera findByFtpUsername(String ftpUsername) {
+  public Camera findByFtpUsername(final String ftpUsername) {
     return cameras.values().stream()
       .filter(camera -> Objects.nonNull(camera.getFtp().getUsername()))
       .filter(camera -> camera.getFtp().getUsername().equals(ftpUsername))
@@ -132,7 +134,7 @@ public class CameraRepository {
    * @param mqttTopic the mqtt topic
    * @return the camera
    */
-  public Camera findByMqttTopic(String mqttTopic) {
+  public Camera findByMqttTopic(final String mqttTopic) {
     return cameras.values().stream()
       .filter(camera -> Objects.nonNull(camera.getMqttTopic()))
       .filter(camera -> camera.getMqttTopic().equals(mqttTopic))

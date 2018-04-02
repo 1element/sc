@@ -13,28 +13,28 @@ public class PushNotificationProperties {
   private boolean enabled = false;
 
   private String adapter;
-  
+
   private String apiToken;
 
   private String userToken;
 
   private long groupTime = 0;
-  
+
   private String url;
 
   public boolean isEnabled() {
     return enabled;
   }
 
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
   }
-  
+
   public String getAdapter() {
     return adapter;
   }
 
-  public void setAdapter(String adapter) {
+  public void setAdapter(final String adapter) {
     this.adapter = adapter;
   }
 
@@ -42,7 +42,7 @@ public class PushNotificationProperties {
     return apiToken;
   }
 
-  public void setApiToken(String apiToken) {
+  public void setApiToken(final String apiToken) {
     this.apiToken = apiToken;
   }
 
@@ -50,7 +50,7 @@ public class PushNotificationProperties {
     return userToken;
   }
 
-  public void setUserToken(String userToken) {
+  public void setUserToken(final String userToken) {
     this.userToken = userToken;
   }
 
@@ -58,7 +58,7 @@ public class PushNotificationProperties {
     return groupTime;
   }
 
-  public void setGroupTime(long groupTime) {
+  public void setGroupTime(final long groupTime) {
     this.groupTime = groupTime;
   }
 
@@ -66,8 +66,8 @@ public class PushNotificationProperties {
     return url;
   }
 
-  public void setUrl(String url) {
+  public void setUrl(final String url) {
     this.url = url;
   }
-  
+
 }

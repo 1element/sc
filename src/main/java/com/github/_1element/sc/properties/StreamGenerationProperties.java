@@ -13,7 +13,7 @@ public class StreamGenerationProperties {
     return mjpegDelay;
   }
 
-  public void setMjpegDelay(int mjpegDelay) {
+  public void setMjpegDelay(final int mjpegDelay) {
     this.mjpegDelay = mjpegDelay;
   }
 

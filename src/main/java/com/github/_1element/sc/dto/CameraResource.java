@@ -19,7 +19,7 @@ public class CameraResource {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -27,7 +27,7 @@ public class CameraResource {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -35,7 +35,7 @@ public class CameraResource {
     return snapshotProxyUrl;
   }
 
-  public void setSnapshotProxyUrl(String snapshotProxyUrl) {
+  public void setSnapshotProxyUrl(final String snapshotProxyUrl) {
     this.snapshotProxyUrl = snapshotProxyUrl;
   }
 
@@ -43,7 +43,7 @@ public class CameraResource {
     return streamGeneratorUrl;
   }
 
-  public void setStreamGeneratorUrl(String streamGeneratorUrl) {
+  public void setStreamGeneratorUrl(final String streamGeneratorUrl) {
     this.streamGeneratorUrl = streamGeneratorUrl;
   }
 

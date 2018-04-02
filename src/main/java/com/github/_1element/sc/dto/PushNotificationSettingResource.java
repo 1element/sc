@@ -6,11 +6,11 @@ package com.github._1element.sc.dto; //NOSONAR
  */
 public class PushNotificationSettingResource {
 
-  private String cameraId;
+  private final String cameraId;
 
-  private String cameraName;
+  private final String cameraName;
 
-  private boolean enabled;
+  private final boolean enabled;
 
   /**
    * Constructor.
@@ -19,7 +19,7 @@ public class PushNotificationSettingResource {
    * @param cameraName the camera name
    * @param enabled the push notification status (enabled/disabled)
    */
-  public PushNotificationSettingResource(String cameraId, String cameraName, boolean enabled) {
+  public PushNotificationSettingResource(final String cameraId, final String cameraName, final boolean enabled) {
     this.cameraId = cameraId;
     this.cameraName = cameraName;
     this.enabled = enabled;

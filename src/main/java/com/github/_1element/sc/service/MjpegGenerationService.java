@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MjpegGenerationService {
 
-  private StreamGenerationProperties streamGenerationProperties;
+  private final StreamGenerationProperties streamGenerationProperties;
 
   private final RestTemplateBuilder restTemplateBuilder;
 
@@ -29,8 +29,8 @@ public class MjpegGenerationService {
 
   private static final String MJPEG_HEAD = MJPEG_BOUNDARY + NL + "Content-type: image/jpeg" + NL + "Content-Length: ";
 
-  public MjpegGenerationService(StreamGenerationProperties streamGenerationProperties,
-                                RestTemplateBuilder restTemplateBuilder) {
+  public MjpegGenerationService(final StreamGenerationProperties streamGenerationProperties,
+                                final RestTemplateBuilder restTemplateBuilder) {
     this.streamGenerationProperties = streamGenerationProperties;
     this.restTemplateBuilder = restTemplateBuilder;
   }
@@ -44,13 +44,14 @@ public class MjpegGenerationService {
    * @throws IOException if output stream could not be written (e.g. client disconnects)
    * @throws RestClientException if an HTTP error occurred while accessing the snapshot URL
    */
-  public void writeSnapshotToOutputStream(String snapshotUrl, HttpServletResponse response) throws IOException {
-    RestTemplate restTemplate = RestTemplateUtils.buildWithAuth(restTemplateBuilder, snapshotUrl);
+  public void writeSnapshotToOutputStream(final String snapshotUrl, final HttpServletResponse response)
+      throws IOException {
+    final RestTemplate restTemplate = RestTemplateUtils.buildWithAuth(restTemplateBuilder, snapshotUrl);
 
-    OutputStream outputStream = response.getOutputStream();
+    final OutputStream outputStream = response.getOutputStream();
 
     while (!Thread.currentThread().isInterrupted()) {
-      byte[] imageData = restTemplate.getForObject(snapshotUrl, byte[].class);
+      final byte[] imageData = restTemplate.getForObject(snapshotUrl, byte[].class);
 
       outputStream.write((MJPEG_HEAD + imageData.length + NL + NL).getBytes());
       outputStream.write(imageData);
@@ -59,7 +60,7 @@ public class MjpegGenerationService {
 
       try {
         TimeUnit.MILLISECONDS.sleep(streamGenerationProperties.getMjpegDelay());
-      } catch (InterruptedException exception) {
+      } catch (final InterruptedException exception) {
         Thread.currentThread().interrupt();
       }
     }
@@ -70,7 +71,7 @@ public class MjpegGenerationService {
    *
    * @param response HTTP response to set header
    */
-  public void setContentType(HttpServletResponse response) {
+  public void setContentType(final HttpServletResponse response) {
     response.setContentType("multipart/x-mixed-replace; boundary=" + MJPEG_BOUNDARY);
   }
 
@@ -79,7 +80,7 @@ public class MjpegGenerationService {
    *
    * @param response HTTP response to set header
    */
-  public void setCacheControlHeader(HttpServletResponse response) {
+  public void setCacheControlHeader(final HttpServletResponse response) {
     response.setHeader("Cache-Control", "no-cache, private");
   }
 

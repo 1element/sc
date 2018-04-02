@@ -24,7 +24,7 @@ public class SurveillanceSecurityProperties {
     return username;
   }
 
-  public void setUsername(String username) {
+  public void setUsername(final String username) {
     this.username = username;
   }
 
@@ -32,7 +32,7 @@ public class SurveillanceSecurityProperties {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
@@ -40,7 +40,7 @@ public class SurveillanceSecurityProperties {
     return secret;
   }
 
-  public void setSecret(String secret) {
+  public void setSecret(final String secret) {
     this.secret = secret;
   }
 
@@ -48,7 +48,7 @@ public class SurveillanceSecurityProperties {
     return cookieName;
   }
 
-  public void setCookieName(String cookieName) {
+  public void setCookieName(final String cookieName) {
     this.cookieName = cookieName;
   }
 
@@ -56,7 +56,7 @@ public class SurveillanceSecurityProperties {
     return tokenExpiration;
   }
 
-  public void setTokenExpiration(int tokenExpiration) {
+  public void setTokenExpiration(final int tokenExpiration) {
     this.tokenExpiration = tokenExpiration;
   }
 

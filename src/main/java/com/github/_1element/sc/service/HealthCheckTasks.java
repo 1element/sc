@@ -23,13 +23,13 @@ import java.util.Map;
 @Component
 public class HealthCheckTasks {
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private PushNotificationService pushNotificationService;
+  private final PushNotificationService pushNotificationService;
 
-  private MessageSource messageSource;
+  private final MessageSource messageSource;
 
-  private static Map<Camera, Status> statusTrackingMap = new HashMap<>();
+  private static final Map<Camera, Status> statusTrackingMap = new HashMap<>();
 
   @Value("${sc.healthcheck.timeout:10000}")
   private int timeout;
@@ -52,8 +52,9 @@ public class HealthCheckTasks {
    * @param messageSource the message source used for localization
    */
   @Autowired
-  public HealthCheckTasks(CameraRepository cameraRepository, PushNotificationService pushNotificationService,
-                          MessageSource messageSource) {
+  public HealthCheckTasks(final CameraRepository cameraRepository,
+                          final PushNotificationService pushNotificationService,
+                          final MessageSource messageSource) {
     this.cameraRepository = cameraRepository;
     this.pushNotificationService = pushNotificationService;
     this.messageSource = messageSource;
@@ -68,24 +69,24 @@ public class HealthCheckTasks {
   public void performCameraHealthChecks() {
     LOG.debug("Health check started.");
 
-    for (Camera camera : cameraRepository.findAll()) {
+    for (final Camera camera : cameraRepository.findAll()) {
       Status currentStatus;
       try {
-        InetAddress inetAddress = InetAddress.getByName(camera.getHost());
+        final InetAddress inetAddress = InetAddress.getByName(camera.getHost());
         currentStatus = inetAddress.isReachable(timeout) ? Status.UP : Status.DOWN;
         LOG.debug("Health status for host '{}' is: {}", camera.getHost(), currentStatus);
-      } catch (Exception exception) {
+      } catch (final Exception exception) {
         LOG.debug("Could not determine health status for host '{}', exception was: '{}'",
             camera.getHost(), exception.getMessage());
         currentStatus = Status.DOWN;
       }
 
-      Status previousStatus = statusTrackingMap.get(camera);
+      final Status previousStatus = statusTrackingMap.get(camera);
       if ((previousStatus != null) && (previousStatus != currentStatus)) {
         LOG.info("Camera health check. Host {} has new status: {}", camera.getHost(), currentStatus);
-        String title = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_TITLE, null,
+        final String title = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_TITLE, null,
             LocaleContextHolder.getLocale());
-        String message = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE,
+        final String message = messageSource.getMessage(MESSAGE_PROPERTIES_HEALTHCHECK_MESSAGE,
             new Object[]{camera.getName(), camera.getHost(), currentStatus}, LocaleContextHolder.getLocale());
         pushNotificationService.sendMessage(title, message);
       }

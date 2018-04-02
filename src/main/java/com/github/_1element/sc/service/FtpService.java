@@ -31,11 +31,11 @@ import java.util.Map;
 @Service
 public class FtpService {
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private UploadFtplet uploadFtplet;
+  private final UploadFtplet uploadFtplet;
 
-  private FtpProperties properties;
+  private final FtpProperties properties;
 
   private FtpServer server;
 
@@ -49,7 +49,8 @@ public class FtpService {
    * @param properties the properties
    */
   @Autowired
-  public FtpService(CameraRepository cameraRepository, UploadFtplet uploadFtplet, FtpProperties properties) {
+  public FtpService(final CameraRepository cameraRepository, final UploadFtplet uploadFtplet,
+                    final FtpProperties properties) {
     this.cameraRepository = cameraRepository;
     this.uploadFtplet = uploadFtplet;
     this.properties = properties;
@@ -66,8 +67,8 @@ public class FtpService {
       return;
     }
 
-    FtpServerFactory ftpServerFactory = new FtpServerFactory();
-    ListenerFactory listenerFactory = new ListenerFactory();
+    final FtpServerFactory ftpServerFactory = new FtpServerFactory();
+    final ListenerFactory listenerFactory = new ListenerFactory();
 
     listenerFactory.setPort(properties.getPort());
     ftpServerFactory.addListener("default", listenerFactory.createListener());
@@ -77,7 +78,7 @@ public class FtpService {
     ftpServerFactory.setUserManager(populateUserManager());
 
     // ftplet
-    Map<String, Ftplet> ftpletMap = new HashMap<>();
+    final Map<String, Ftplet> ftpletMap = new HashMap<>();
     ftpletMap.put("uploadFtplet", uploadFtplet);
     ftpServerFactory.setFtplets(ftpletMap);
 
@@ -103,13 +104,13 @@ public class FtpService {
    * @throws FtpException exception in case of an error
    */
   private UserManager populateUserManager() throws FtpException {
-    UserManager userManager = userManagerFactory.createUserManager();
+    final UserManager userManager = userManagerFactory.createUserManager();
 
-    List<Authority> authorities = new ArrayList<>();
+    final List<Authority> authorities = new ArrayList<>();
     authorities.add(new WritePermission());
 
-    for (Camera camera : cameraRepository.findAll()) {
-      BaseUser user = new BaseUser();
+    for (final Camera camera : cameraRepository.findAll()) {
+      final BaseUser user = new BaseUser();
       user.setName(camera.getFtp().getUsername());
       user.setPassword(camera.getFtp().getPassword());
       user.setHomeDirectory(camera.getFtp().getIncomingDirectory());

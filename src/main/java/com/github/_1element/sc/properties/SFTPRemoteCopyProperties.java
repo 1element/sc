@@ -31,7 +31,7 @@ public class SFTPRemoteCopyProperties {
     return enabled;
   }
 
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
   }
 
@@ -39,7 +39,7 @@ public class SFTPRemoteCopyProperties {
     return host;
   }
 
-  public void setHost(String host) {
+  public void setHost(final String host) {
     this.host = host;
   }
 
@@ -47,7 +47,7 @@ public class SFTPRemoteCopyProperties {
     return dir;
   }
 
-  public void setDir(String dir) {
+  public void setDir(final String dir) {
     this.dir = dir;
   }
 
@@ -55,7 +55,7 @@ public class SFTPRemoteCopyProperties {
     return username;
   }
 
-  public void setUsername(String username) {
+  public void setUsername(final String username) {
     this.username = username;
   }
 
@@ -63,7 +63,7 @@ public class SFTPRemoteCopyProperties {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
@@ -71,7 +71,7 @@ public class SFTPRemoteCopyProperties {
     return cleanupEnabled;
   }
 
-  public void setCleanupEnabled(boolean cleanupEnabled) {
+  public void setCleanupEnabled(final boolean cleanupEnabled) {
     this.cleanupEnabled = cleanupEnabled;
   }
 
@@ -79,7 +79,7 @@ public class SFTPRemoteCopyProperties {
     return cleanupMaxDiskSpace;
   }
 
-  public void setCleanupMaxDiskSpace(long cleanupMaxDiskSpace) {
+  public void setCleanupMaxDiskSpace(final long cleanupMaxDiskSpace) {
     this.cleanupMaxDiskSpace = FileUtils.ONE_MB * cleanupMaxDiskSpace;
   }
 
@@ -87,7 +87,7 @@ public class SFTPRemoteCopyProperties {
     return cleanupKeep;
   }
 
-  public void setCleanupKeep(int cleanupKeep) {
+  public void setCleanupKeep(final int cleanupKeep) {
     this.cleanupKeep = cleanupKeep;
   }
 

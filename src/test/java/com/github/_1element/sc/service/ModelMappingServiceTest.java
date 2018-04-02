@@ -29,11 +29,11 @@ public class ModelMappingServiceTest {
   @Test
   public void testConvertCameraToResource() throws Exception {
     // arrange
-    CameraPicture picture = new CameraPicture("http://internal.example/snapshot.cgi", true, true);
-    Camera camera = new Camera("front", "Camera Name", "internal-host.example", "mqttTopic", null, picture);
+    final CameraPicture picture = new CameraPicture("http://internal.example/snapshot.cgi", true, true);
+    final Camera camera = new Camera("front", "Camera Name", "internal-host.example", "mqttTopic", null, picture);
 
     // act
-    CameraResource cameraResource = modelMappingService.convertCameraToResource(camera);
+    final CameraResource cameraResource = modelMappingService.convertCameraToResource(camera);
 
     // assert
     assertEquals("front", cameraResource.getId());
@@ -45,11 +45,11 @@ public class ModelMappingServiceTest {
   @Test
   public void testConvertSurveillanceImageToResource() throws Exception {
     // arrange
-    LocalDateTime localDateTime = LocalDateTime.now();
-    SurveillanceImage surveillanceImage = new SurveillanceImage("fileName.jpg", "testcamera1", localDateTime);
+    final LocalDateTime localDateTime = LocalDateTime.now();
+    final SurveillanceImage surveillanceImage = new SurveillanceImage("fileName.jpg", "testcamera1", localDateTime);
 
     // act
-    SurveillanceImageResource surveillanceImageResource =
+    final SurveillanceImageResource surveillanceImageResource =
         modelMappingService.convertSurveillanceImageToResource(surveillanceImage);
 
     // assert

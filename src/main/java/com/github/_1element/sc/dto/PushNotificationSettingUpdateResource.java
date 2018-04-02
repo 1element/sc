@@ -13,7 +13,7 @@ public class PushNotificationSettingUpdateResource {
     return cameraId;
   }
 
-  public void setCameraId(String cameraId) {
+  public void setCameraId(final String cameraId) {
     this.cameraId = cameraId;
   }
 
@@ -21,7 +21,7 @@ public class PushNotificationSettingUpdateResource {
     return enabled;
   }
 
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
   }
 

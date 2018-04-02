@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(URIConstants.API_ROOT)
 public class SurveillanceAuthenticationController {
 
-  private JwtAuthenticationService jwtAuthenticationService;
+  private final JwtAuthenticationService jwtAuthenticationService;
 
   @Autowired
-  public SurveillanceAuthenticationController(JwtAuthenticationService jwtAuthenticationService) {
+  public SurveillanceAuthenticationController(final JwtAuthenticationService jwtAuthenticationService) {
     this.jwtAuthenticationService = jwtAuthenticationService;
   }
 
@@ -41,15 +41,15 @@ public class SurveillanceAuthenticationController {
    */
   @PostMapping(URIConstants.API_AUTH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
-                                                     HttpServletResponse response) throws AuthenticationException {
+  public void createAuthenticationToken(@RequestBody final JwtAuthenticationRequest authenticationRequest,
+                                        final HttpServletResponse response) throws AuthenticationException {
 
-    Authentication authentication = jwtAuthenticationService.attemptAuthentication(authenticationRequest.getUsername(),
-        authenticationRequest.getPassword());
+    final Authentication authentication = jwtAuthenticationService.attemptAuthentication(
+        authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    Cookie cookie = jwtAuthenticationService.generateTokenCookie(authenticationRequest.getUsername());
+    final Cookie cookie = jwtAuthenticationService.generateTokenCookie(authenticationRequest.getUsername());
     response.addCookie(cookie);
   }
 

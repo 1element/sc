@@ -25,12 +25,13 @@ import java.util.Optional;
 @Service
 public class SurveillanceService {
 
-  private SurveillanceImageRepository imageRepository;
+  private final SurveillanceImageRepository imageRepository;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
   @Autowired
-  public SurveillanceService(SurveillanceImageRepository imageRepository, CameraRepository cameraRepository) {
+  public SurveillanceService(final SurveillanceImageRepository imageRepository,
+                             final CameraRepository cameraRepository) {
     this.imageRepository = imageRepository;
     this.cameraRepository = cameraRepository;
   }
@@ -44,8 +45,10 @@ public class SurveillanceService {
    * @param pageable    page request
    * @return the page of surveillance images
    */
-  public Page<SurveillanceImage> getImagesPage(Optional<String> camera, Optional<LocalDate> date, boolean isArchive,
-                                               Pageable pageable) {
+  public Page<SurveillanceImage> getImagesPage(final Optional<String> camera,
+                                               final Optional<LocalDate> date,
+                                               final boolean isArchive,
+                                               final Pageable pageable) {
     LocalDateTime startOfDay = null;
     LocalDateTime endOfDay = null;
 
@@ -76,16 +79,16 @@ public class SurveillanceService {
    * @return the images camera summary result
    */
   public List<ImagesCameraSummaryResult> getImagesCameraSummary() {
-    List<ImagesCameraSummaryResult> result = new ArrayList<>();
-    PageRequest limitPageRequest = new PageRequest(0, 1);
+    final List<ImagesCameraSummaryResult> result = new ArrayList<>();
+    final PageRequest limitPageRequest = new PageRequest(0, 1);
 
-    List<Camera> cameras = cameraRepository.findAll();
+    final List<Camera> cameras = cameraRepository.findAll();
 
-    for (Camera camera : cameras) {
-      Long count = imageRepository.countImagesForCamera(camera.getId());
+    for (final Camera camera : cameras) {
+      final Long count = imageRepository.countImagesForCamera(camera.getId());
       LocalDateTime mostRecentDate = null;
       if (count > 0) {
-        List<LocalDateTime> mostRecentDateList = imageRepository.getMostRecentImageDateForCamera(
+        final List<LocalDateTime> mostRecentDateList = imageRepository.getMostRecentImageDateForCamera(
             camera.getId(), limitPageRequest);
         mostRecentDate = mostRecentDateList.stream().findFirst().orElse(null);
       }

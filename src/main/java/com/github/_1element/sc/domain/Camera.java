@@ -5,17 +5,17 @@ package com.github._1element.sc.domain; //NOSONAR
  */
 public class Camera {
 
-  private String id;
+  private final String id;
 
-  private String name;
+  private final String name;
 
-  private String host;
+  private final String host;
 
-  private String mqttTopic;
+  private final String mqttTopic;
 
-  private CameraFtp ftp;
+  private final CameraFtp ftp;
 
-  private CameraPicture picture;
+  private final CameraPicture picture;
 
   /**
    * Constructs a new camera.
@@ -27,8 +27,8 @@ public class Camera {
    * @param ftp the ftp settings
    * @param picture the picture settings
    */
-  public Camera(String id, String name, String host,
-                String mqttTopic, CameraFtp ftp, CameraPicture picture) {
+  public Camera(final String id, final String name, final String host,
+                final String mqttTopic, final CameraFtp ftp, final CameraPicture picture) {
     this.id = id;
     this.name = name;
     this.host = host;

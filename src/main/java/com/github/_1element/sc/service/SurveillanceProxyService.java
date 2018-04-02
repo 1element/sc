@@ -17,12 +17,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class SurveillanceProxyService {
 
-  private RestTemplateBuilder restTemplateBuilder;
+  private final RestTemplateBuilder restTemplateBuilder;
 
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceProxyService.class);
 
   @Autowired
-  public SurveillanceProxyService(RestTemplateBuilder restTemplateBuilder) {
+  public SurveillanceProxyService(final RestTemplateBuilder restTemplateBuilder) {
     this.restTemplateBuilder = restTemplateBuilder;
   }
 
@@ -32,13 +32,13 @@ public class SurveillanceProxyService {
    * @param url the url to retrieve
    * @return the image response
    */
-  public ResponseEntity<byte[]> retrieveImage(String url) throws ProxyException {
-    RestTemplate restTemplate = RestTemplateUtils.buildWithAuth(restTemplateBuilder, url);
+  public ResponseEntity<byte[]> retrieveImage(final String url) throws ProxyException {
+    final RestTemplate restTemplate = RestTemplateUtils.buildWithAuth(restTemplateBuilder, url);
 
     ResponseEntity<byte[]> response = null;
     try {
       response = restTemplate.getForEntity(url, byte[].class);
-    } catch (RestClientException exception) {
+    } catch (final RestClientException exception) {
       LOG.debug("Could not retrieve snapshot for '{}': '{}'", url, exception.getMessage());
       throw new ProxyException(exception);
     }

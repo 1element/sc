@@ -9,8 +9,6 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.github._1element.sc.domain.CameraFtp;
-import com.github._1element.sc.domain.CameraPicture;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,13 +47,13 @@ public class SurveillanceImageHandlerServiceTest {
    */
   @Before
   public void setUp() throws Exception {
-    ImageProperties imageProperties = new ImageProperties();
+    MockitoAnnotations.initMocks(this);
+
+    final ImageProperties imageProperties = new ImageProperties();
     imageProperties.setStorageDir("/tmp/sc-storage/");
 
     surveillanceImageHandlerService = new SurveillanceImageHandlerService(imageRepository, fileService,
-        thumbnailService, imageProperties);
-
-    MockitoAnnotations.initMocks(this);
+        thumbnailService, imageProperties, eventPublisher);
   }
 
   @Test
@@ -63,12 +61,12 @@ public class SurveillanceImageHandlerServiceTest {
     // arrange
     when(fileService.getUniquePrefix()).thenReturn("unique-prefix");
 
-    byte[] imageData = "Image Data".getBytes();
-    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
-    ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
+    final byte[] imageData = "Image Data".getBytes();
+    final Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
+    final ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
 
     // act
-    String result = surveillanceImageHandlerService.populateDestinationFileName(imageReceivedEvent);
+    final String result = surveillanceImageHandlerService.populateDestinationFileName(imageReceivedEvent);
 
     // assert
     assertEquals("/tmp/sc-storage/unique-prefix-testcamera1.jpg", result);
@@ -77,16 +75,16 @@ public class SurveillanceImageHandlerServiceTest {
   @Test
   public void testHandleImageReceivedEvent() throws Exception {
     // arrange
-    String expectedDestinationFileName = "/tmp/sc-storage/unique-prefix-testcamera1.jpg";
+    final String expectedDestinationFileName = "/tmp/sc-storage/unique-prefix-testcamera1.jpg";
     when(fileService.getUniquePrefix()).thenReturn("unique-prefix");
 
-    Path destinationPathMock = mock(Path.class);
+    final Path destinationPathMock = mock(Path.class);
     when(destinationPathMock.getFileName()).thenReturn(Paths.get(expectedDestinationFileName));
     when(fileService.getPath(expectedDestinationFileName)).thenReturn(destinationPathMock);
 
-    byte[] imageData = "Image Data".getBytes();
-    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
-    ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
+    final byte[] imageData = "Image Data".getBytes();
+    final Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null);
+    final ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
 
     // act
     surveillanceImageHandlerService.handleImageReceivedEvent(imageReceivedEvent);

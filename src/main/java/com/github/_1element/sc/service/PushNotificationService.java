@@ -34,17 +34,17 @@ import java.util.Map;
 @Service
 public class PushNotificationService {
 
-  private PushNotificationClientFactory pushNotificationClientFactory;
+  private final PushNotificationClientFactory pushNotificationClientFactory;
 
-  private PushNotificationSettingRepository pushNotificationSettingRepository;
+  private final PushNotificationSettingRepository pushNotificationSettingRepository;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private PushNotificationProperties properties;
+  private final PushNotificationProperties properties;
 
-  private MessageSource messageSource;
+  private final MessageSource messageSource;
 
-  private static Map<String, Instant> lastPushNotification = new HashMap<>();
+  private static final Map<String, Instant> lastPushNotification = new HashMap<>();
 
   private static final String MESSAGE_PROPERTIES_PUSH_TITLE = "push-notification.title";
 
@@ -62,11 +62,11 @@ public class PushNotificationService {
    * @param messageSource the message source for localization
    */
   @Autowired
-  public PushNotificationService(PushNotificationClientFactory pushNotificationClientFactory,
-                                 PushNotificationSettingRepository pushNotificationSettingRepository,
-                                 CameraRepository cameraRepository,
-                                 PushNotificationProperties properties,
-                                 MessageSource messageSource) {
+  public PushNotificationService(final PushNotificationClientFactory pushNotificationClientFactory,
+                                 final PushNotificationSettingRepository pushNotificationSettingRepository,
+                                 final CameraRepository cameraRepository,
+                                 final PushNotificationProperties properties,
+                                 final MessageSource messageSource) {
     this.pushNotificationClientFactory = pushNotificationClientFactory;
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
     this.cameraRepository = cameraRepository;
@@ -80,18 +80,19 @@ public class PushNotificationService {
    * @param title message title
    * @param text message text
    */
-  public void sendMessage(String title, String text) {
+  public void sendMessage(final String title, final String text) {
     if (!properties.isEnabled()) {
       LOG.debug("Push notifications are disabled.");
       return;
     }
 
-    PushNotificationClient pushNotificationClient = pushNotificationClientFactory.getClient(properties.getAdapter());
+    final PushNotificationClient pushNotificationClient =
+        pushNotificationClientFactory.getClient(properties.getAdapter());
 
     try {
       pushNotificationClient.sendMessage(title, text);
       LOG.debug("Push notification with title '{}' was sent.", title);
-    } catch (PushNotificationClientException exception) {
+    } catch (final PushNotificationClientException exception) {
       LOG.error("Push notification with title '{}' was not sent. {}", title, exception.getMessage());
     }
   }
@@ -103,10 +104,10 @@ public class PushNotificationService {
    * @param pushNotificationEvent push notification event
    */
   @EventListener
-  public void handlePushNotificationEvent(PushNotificationEvent pushNotificationEvent) {
+  public void handlePushNotificationEvent(final PushNotificationEvent pushNotificationEvent) {
     // check if notifications are enabled for this camera
-    Camera camera = pushNotificationEvent.getCamera();
-    PushNotificationSetting setting = pushNotificationSettingRepository.findByCameraId(camera.getId());
+    final Camera camera = pushNotificationEvent.getCamera();
+    final PushNotificationSetting setting = pushNotificationSettingRepository.findByCameraId(camera.getId());
     if (setting == null || (!setting.isEnabled())) {
       LOG.debug("Push notifications are disabled for camera '{}'.", camera.getId());
       return;
@@ -118,9 +119,9 @@ public class PushNotificationService {
     }
 
     // send push message
-    String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()},
+    final String title = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_TITLE, new Object[]{camera.getName()},
         LocaleContextHolder.getLocale());
-    String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(),
+    final String message = messageSource.getMessage(MESSAGE_PROPERTIES_PUSH_MESSAGE, new Object[]{camera.getName(),
         LocalDateTime.now().toString()}, LocaleContextHolder.getLocale());
     sendMessage(title, message);
   }
@@ -131,11 +132,11 @@ public class PushNotificationService {
    * @return camera push notification setting
    */
   public List<PushNotificationSettingResource> getAllSettings() {
-    List<PushNotificationSettingResource> resourcesList = new ArrayList<>();
+    final List<PushNotificationSettingResource> resourcesList = new ArrayList<>();
 
-    for (Camera camera : cameraRepository.findAll()) {
-      PushNotificationSetting setting = pushNotificationSettingRepository.findByCameraId(camera.getId());
-      boolean enabled = (setting != null) ? setting.isEnabled() : false;
+    for (final Camera camera : cameraRepository.findAll()) {
+      final PushNotificationSetting setting = pushNotificationSettingRepository.findByCameraId(camera.getId());
+      final boolean enabled = (setting != null) ? setting.isEnabled() : false;
       resourcesList.add(new PushNotificationSettingResource(camera.getId(), camera.getName(), enabled));
     }
 
@@ -151,11 +152,11 @@ public class PushNotificationService {
    * @return true if rate limit is reached
    */
   @VisibleForTesting
-  synchronized boolean hasRateLimitReached(String cameraId) {
-    Instant currentInstant = Instant.now();
-    Instant lastPushNotificationInstant = lastPushNotification.get(cameraId);
+  synchronized boolean hasRateLimitReached(final String cameraId) {
+    final Instant currentInstant = Instant.now();
+    final Instant lastPushNotificationInstant = lastPushNotification.get(cameraId);
     if ((lastPushNotificationInstant != null) && (properties.getGroupTime() > 0)) {
-      long minutesBetween = ChronoUnit.MINUTES.between(lastPushNotificationInstant, currentInstant);
+      final long minutesBetween = ChronoUnit.MINUTES.between(lastPushNotificationInstant, currentInstant);
       if (minutesBetween < properties.getGroupTime()) {
         LOG.debug("Push notification was not sent. Last push notification for camera '{}' was {} minute(s) ago. "
             + "Group time is {} minute(s).", cameraId, minutesBetween, properties.getGroupTime());

@@ -16,10 +16,10 @@ import java.util.Objects;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-  private SurveillanceSecurityProperties securityProperties;
+  private final SurveillanceSecurityProperties securityProperties;
 
   @Autowired
-  public JwtUserDetailsService(SurveillanceSecurityProperties securityProperties) {
+  public JwtUserDetailsService(final SurveillanceSecurityProperties securityProperties) {
     this.securityProperties = securityProperties;
   }
 
@@ -32,7 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
    * @throws UsernameNotFoundException if user was not found
    */
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
     Objects.requireNonNull(securityProperties.getUsername(), "Username must not be null. Check your configuration.");
     Objects.requireNonNull(securityProperties.getPassword(), "Password must not be null. Check your configuration.");
     Objects.requireNonNull(username, "Provided username must not be null.");

@@ -27,11 +27,11 @@ import java.util.Objects;
 @Component
 public class MqttService implements MqttCallbackExtended {
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private ApplicationEventPublisher eventPublisher;
+  private final ApplicationEventPublisher eventPublisher;
 
-  private MqttProperties properties;
+  private final MqttProperties properties;
 
   private MqttClient mqttClient;
 
@@ -45,8 +45,8 @@ public class MqttService implements MqttCallbackExtended {
    * @param properties the mqtt properties
    */
   @Autowired
-  public MqttService(CameraRepository cameraRepository, ApplicationEventPublisher eventPublisher,
-                     MqttProperties properties) {
+  public MqttService(final CameraRepository cameraRepository, final ApplicationEventPublisher eventPublisher,
+                     final MqttProperties properties) {
     this.cameraRepository = cameraRepository;
     this.eventPublisher = eventPublisher;
     this.properties = properties;
@@ -65,17 +65,17 @@ public class MqttService implements MqttCallbackExtended {
       mqttClient.setCallback(this);
       mqttClient.connect(createConnectOptions());
       subscribe();
-    } catch (MqttException exception) {
+    } catch (final MqttException exception) {
       LOG.error("Error during connection to MQTT broker '{}', reason: '{}'",
           properties.getBrokerConnection(), exception.getMessage());
     }
   }
 
   @Override
-  public void messageArrived(String topic, MqttMessage message) throws Exception {
+  public void messageArrived(final String topic, final MqttMessage message) throws Exception {
     LOG.debug("MQTT message arrived for topic '{}'", topic);
 
-    Camera camera = cameraRepository.findByMqttTopic(topic);
+    final Camera camera = cameraRepository.findByMqttTopic(topic);
     if (camera == null) {
       LOG.warn("No matching camera found for MQTT topic '{}'. Incoming image was not processed.", topic);
       return;
@@ -85,7 +85,7 @@ public class MqttService implements MqttCallbackExtended {
   }
 
   @Override
-  public void connectComplete(boolean reconnect, String serverURI) {
+  public void connectComplete(final boolean reconnect, final String serverURI) {
     if (reconnect) {
       subscribe();
     }
@@ -93,12 +93,12 @@ public class MqttService implements MqttCallbackExtended {
   }
 
   @Override
-  public void connectionLost(Throwable cause) {
+  public void connectionLost(final Throwable cause) {
     LOG.debug("Connection lost to MQTT broker, cause: '{}'", cause.getMessage());
   }
 
   @Override
-  public void deliveryComplete(IMqttDeliveryToken token) {
+  public void deliveryComplete(final IMqttDeliveryToken token) {
     // no-op
   }
 
@@ -108,7 +108,7 @@ public class MqttService implements MqttCallbackExtended {
    * @return connect options
    */
   private MqttConnectOptions createConnectOptions() {
-    MqttConnectOptions connectOptions = new MqttConnectOptions();
+    final MqttConnectOptions connectOptions = new MqttConnectOptions();
     connectOptions.setCleanSession(false);
     connectOptions.setAutomaticReconnect(true);
     connectOptions.setUserName(properties.getUsername());
@@ -123,7 +123,7 @@ public class MqttService implements MqttCallbackExtended {
   private void subscribe() {
     try {
       mqttClient.subscribe(properties.getTopicFilter());
-    } catch (MqttException exception) {
+    } catch (final MqttException exception) {
       LOG.warn("Error during subscribe for topic '{}', cause '{}'", properties.getTopicFilter(),
           exception.getMessage());
     }

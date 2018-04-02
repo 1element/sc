@@ -22,11 +22,11 @@ public class PushNotificationSetting {
   protected PushNotificationSetting() {
   }
 
-  public PushNotificationSetting(String cameraId, boolean enabled) {
+  public PushNotificationSetting(final String cameraId, final boolean enabled) {
     this.cameraId = cameraId;
     this.enabled = enabled;
   }
-  
+
   public String getCameraId() {
     return cameraId;
   }
@@ -35,8 +35,8 @@ public class PushNotificationSetting {
     return enabled;
   }
 
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
   }
-  
+
 }

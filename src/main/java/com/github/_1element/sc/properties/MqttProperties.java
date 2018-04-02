@@ -24,7 +24,7 @@ public class MqttProperties {
     return enabled;
   }
 
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
   }
 
@@ -32,7 +32,7 @@ public class MqttProperties {
     return brokerConnection;
   }
 
-  public void setBrokerConnection(String brokerConnection) {
+  public void setBrokerConnection(final String brokerConnection) {
     this.brokerConnection = brokerConnection;
   }
 
@@ -40,7 +40,7 @@ public class MqttProperties {
     return topicFilter;
   }
 
-  public void setTopicFilter(String topicFilter) {
+  public void setTopicFilter(final String topicFilter) {
     this.topicFilter = topicFilter;
   }
 
@@ -48,7 +48,7 @@ public class MqttProperties {
     return username;
   }
 
-  public void setUsername(String username) {
+  public void setUsername(final String username) {
     this.username = username;
   }
 
@@ -56,7 +56,7 @@ public class MqttProperties {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 

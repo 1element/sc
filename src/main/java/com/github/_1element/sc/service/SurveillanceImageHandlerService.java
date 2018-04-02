@@ -26,16 +26,15 @@ import com.github._1element.sc.repository.SurveillanceImageRepository;
 @Service
 public class SurveillanceImageHandlerService {
 
-  private SurveillanceImageRepository imageRepository;
+  private final SurveillanceImageRepository imageRepository;
 
-  private FileService fileService;
+  private final FileService fileService;
 
-  private ThumbnailService thumbnailService;
+  private final ThumbnailService thumbnailService;
 
-  private ImageProperties imageProperties;
+  private final ImageProperties imageProperties;
 
-  @Autowired
-  private ApplicationEventPublisher eventPublisher;
+  private final ApplicationEventPublisher eventPublisher;
 
   private static final String SEPARATOR = "-";
 
@@ -52,12 +51,16 @@ public class SurveillanceImageHandlerService {
    * @param imageProperties the image properties
    */
   @Autowired
-  public SurveillanceImageHandlerService(SurveillanceImageRepository imageRepository, FileService fileService,
-                                         ThumbnailService thumbnailService, ImageProperties imageProperties) {
+  public SurveillanceImageHandlerService(final SurveillanceImageRepository imageRepository,
+                                         final FileService fileService,
+                                         final ThumbnailService thumbnailService,
+                                         final ImageProperties imageProperties,
+                                         final ApplicationEventPublisher eventPublisher) {
     this.imageRepository = imageRepository;
     this.fileService = fileService;
     this.thumbnailService = thumbnailService;
     this.imageProperties = imageProperties;
+    this.eventPublisher = eventPublisher;
   }
 
   /**
@@ -68,9 +71,9 @@ public class SurveillanceImageHandlerService {
    */
   @Async
   @EventListener
-  public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) {
-    String destinationFileName = populateDestinationFileName(imageReceivedEvent);
-    Path destinationPath = fileService.getPath(destinationFileName);
+  public void handleImageReceivedEvent(final ImageReceivedEvent imageReceivedEvent) {
+    final String destinationFileName = populateDestinationFileName(imageReceivedEvent);
+    final Path destinationPath = fileService.getPath(destinationFileName);
 
     try {
       // write file to disk
@@ -80,7 +83,7 @@ public class SurveillanceImageHandlerService {
       thumbnailService.createThumbnail(destinationPath);
 
       // store image information in database
-      SurveillanceImage image = new SurveillanceImage(destinationPath.getFileName().toString(),
+      final SurveillanceImage image = new SurveillanceImage(destinationPath.getFileName().toString(),
           imageReceivedEvent.getSource().getId(), LocalDateTime.now());
       imageRepository.save(image);
 
@@ -89,7 +92,7 @@ public class SurveillanceImageHandlerService {
       // publish events to invoke remote copy and push notification
       eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName));
       eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
-    } catch (IOException exception) {
+    } catch (final IOException exception) {
       LOG.error("Error while writing image to final storage directory: '{}'",
           exception.getMessage());
     }
@@ -102,7 +105,7 @@ public class SurveillanceImageHandlerService {
    * @return the destination file name
    */
   @VisibleForTesting
-  String populateDestinationFileName(ImageReceivedEvent imageReceivedEvent) {
+  String populateDestinationFileName(final ImageReceivedEvent imageReceivedEvent) {
     return imageProperties.getStorageDir() + fileService.getUniquePrefix() + SEPARATOR
         + imageReceivedEvent.getSource().getId() + IMAGE_EXTENSION;
   }

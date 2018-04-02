@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(URIConstants.PROXY_ROOT)
 public class SurveillanceProxyController {
 
-  private SurveillanceProxyService proxyService;
+  private final SurveillanceProxyService proxyService;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
   @Autowired
-  public SurveillanceProxyController(SurveillanceProxyService proxyService, CameraRepository cameraRepository) {
+  public SurveillanceProxyController(final SurveillanceProxyService proxyService,
+                                     final CameraRepository cameraRepository) {
     this.proxyService = proxyService;
     this.cameraRepository = cameraRepository;
   }
@@ -35,10 +36,10 @@ public class SurveillanceProxyController {
    * @throws CameraNotFoundException if camera id was not found
    */
   @GetMapping(URIConstants.PROXY_SNAPSHOT)
-  public ResponseEntity<byte[]> retrieveSnapshot(@PathVariable String id)
+  public ResponseEntity<byte[]> retrieveSnapshot(@PathVariable final String id)
       throws CameraNotFoundException, ProxyException {
 
-    Camera camera = cameraRepository.findById(id);
+    final Camera camera = cameraRepository.findById(id);
 
     if (camera == null) {
       throw new CameraNotFoundException();

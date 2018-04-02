@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping(URIConstants.FEED_ROOT)
 public class SurveillanceFeedController {
 
-  private SurveillanceService surveillanceService;
+  private final SurveillanceService surveillanceService;
 
   @Autowired
-  public SurveillanceFeedController(SurveillanceService surveillanceService) {
+  public SurveillanceFeedController(final SurveillanceService surveillanceService) {
     this.surveillanceService = surveillanceService;
   }
 
@@ -29,8 +29,8 @@ public class SurveillanceFeedController {
    * @return rendered RSS feed
    */
   @GetMapping(URIConstants.FEED_CAMERAS)
-  public String camerasfeed(Model model) {
-    List<ImagesCameraSummaryResult> imagesCameraSummaryResult = surveillanceService.getImagesCameraSummary();
+  public String camerasfeed(final Model model) {
+    final List<ImagesCameraSummaryResult> imagesCameraSummaryResult = surveillanceService.getImagesCameraSummary();
 
     model.addAttribute("imagesCameraSummaryResult", imagesCameraSummaryResult);
 

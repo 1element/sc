@@ -19,12 +19,12 @@ import net.coobird.thumbnailator.name.Rename;
 @Service
 public class ThumbnailService {
 
-  private ImageThumbnailProperties imageThumbnailProperties;
+  private final ImageThumbnailProperties imageThumbnailProperties;
 
   private static final Logger LOG = LoggerFactory.getLogger(ThumbnailService.class);
 
   @Autowired
-  public ThumbnailService(ImageThumbnailProperties imageThumbnailProperties) {
+  public ThumbnailService(final ImageThumbnailProperties imageThumbnailProperties) {
     this.imageThumbnailProperties = imageThumbnailProperties;
   }
 
@@ -33,13 +33,13 @@ public class ThumbnailService {
    *
    * @param path the file path to create a thumbnail for
    */
-  public void createThumbnail(Path path) {
+  public void createThumbnail(final Path path) {
     try {
       Thumbnails.of(path.toFile())
         .size(imageThumbnailProperties.getWidth(), imageThumbnailProperties.getHeight())
         .outputQuality(imageThumbnailProperties.getQuality())
         .toFiles(Rename.PREFIX_DOT_THUMBNAIL);
-    } catch (IOException exception) {
+    } catch (final IOException exception) {
       LOG.warn("Unable to generate thumbnail: {}", exception.getMessage());
     }
   }

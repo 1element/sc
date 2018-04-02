@@ -10,11 +10,11 @@ import java.util.Objects;
  */
 public class ImagesCameraSummaryResult {
 
-  private Camera camera;
+  private final Camera camera;
 
-  private Long count;
+  private final Long count;
 
-  private LocalDateTime mostRecentDate;
+  private final LocalDateTime mostRecentDate;
 
   /**
    * Constructs a new summary of surveillance images for each camera.
@@ -23,7 +23,7 @@ public class ImagesCameraSummaryResult {
    * @param count the count of images
    * @param mostRecentDate the most recent image date
    */
-  public ImagesCameraSummaryResult(Camera camera, Long count, LocalDateTime mostRecentDate) {
+  public ImagesCameraSummaryResult(final Camera camera, final Long count, final LocalDateTime mostRecentDate) {
     this.camera = camera;
     this.count = count;
     this.mostRecentDate = mostRecentDate;
@@ -46,7 +46,7 @@ public class ImagesCameraSummaryResult {
     if (!(other instanceof ImagesCameraSummaryResult)) {
       return false;
     }
-    ImagesCameraSummaryResult castOther = (ImagesCameraSummaryResult) other;
+    final ImagesCameraSummaryResult castOther = (ImagesCameraSummaryResult) other;
     return Objects.equals(camera, castOther.camera) && Objects.equals(count, castOther.count)
         && Objects.equals(mostRecentDate, castOther.mostRecentDate);
   }

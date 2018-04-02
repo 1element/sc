@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class MultiCameraAwareProperties {
 
-  private Environment environment;
+  private final Environment environment;
 
   public static final String PROPERTY_MULTI_CAMERA_PREFIX = "sc.camera[%s].";
 
   @Autowired
-  public MultiCameraAwareProperties(Environment environment) {
+  public MultiCameraAwareProperties(final Environment environment) {
     this.environment = environment;
   }
 
@@ -31,13 +31,14 @@ public class MultiCameraAwareProperties {
    * @return property value
    * @throws PropertyNotFoundException exception if property was not found
    */
-  public <T> T getProperty(String propertyKey, String cameraId, Class<T> targetType) throws PropertyNotFoundException {
+  public <T> T getProperty(final String propertyKey, final String cameraId, final Class<T> targetType)
+      throws PropertyNotFoundException {
     if (StringUtils.isBlank(cameraId)) {
       throw new PropertyNotFoundException(String.format("Property '%s' not found. Empty camera id was given.",
           propertyKey));
     }
 
-    String formattedPropertyKey = String.format(propertyKey, cameraId);
+    final String formattedPropertyKey = String.format(propertyKey, cameraId);
 
     if (!environment.containsProperty(formattedPropertyKey)) {
       throw new PropertyNotFoundException(String.format("Property not found for key '%s'.", formattedPropertyKey));
@@ -56,10 +57,11 @@ public class MultiCameraAwareProperties {
    *
    * @return property value
    */
-  public <T> T getProperty(String propertyKey, String cameraId, Class<T> targetType, T defaultValue) {
+  public <T> T getProperty(final String propertyKey, final String cameraId, final Class<T> targetType,
+                           final T defaultValue) {
     try {
       return getProperty(propertyKey, cameraId, targetType);
-    } catch (Exception exception) {
+    } catch (final Exception exception) {
       return defaultValue;
     }
   }
@@ -73,7 +75,7 @@ public class MultiCameraAwareProperties {
    * @return property value
    * @throws PropertyNotFoundException exception if property was not found
    */
-  public String getProperty(String propertyKey, String cameraId) throws PropertyNotFoundException {
+  public String getProperty(final String propertyKey, final String cameraId) throws PropertyNotFoundException {
     return getProperty(propertyKey, cameraId, String.class);
   }
 

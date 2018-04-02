@@ -26,11 +26,11 @@ import java.nio.file.Paths;
 @Component
 public class UploadFtplet extends DefaultFtplet {
 
-  private ApplicationEventPublisher eventPublisher;
+  private final ApplicationEventPublisher eventPublisher;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private FileService fileService;
+  private final FileService fileService;
 
   private static final String SEPARATOR = "/";
 
@@ -50,8 +50,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @param fileService the file service
    */
   @Autowired
-  public UploadFtplet(ApplicationEventPublisher eventPublisher, CameraRepository cameraRepository,
-                      FileService fileService) {
+  public UploadFtplet(final ApplicationEventPublisher eventPublisher, final CameraRepository cameraRepository,
+                      final FileService fileService) {
     this.eventPublisher = eventPublisher;
     this.cameraRepository = cameraRepository;
     this.fileService = fileService;
@@ -67,7 +67,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onUploadStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+  public FtpletResult onUploadStart(final FtpSession session, final FtpRequest request)
+      throws FtpException, IOException {
     if (!fileService.hasValidExtension(request.getArgument())) {
       session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, INVALID_EXTENSION_MESSAGE));
       return FtpletResult.SKIP;
@@ -86,16 +87,16 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
-    String userRoot = session.getUser().getHomeDirectory();
-    String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
-    String fileArgument = request.getArgument();
-    Path filePath = Paths.get(userRoot + currentDirectory + SEPARATOR + fileArgument);
+  public FtpletResult onUploadEnd(final FtpSession session, final FtpRequest request) throws FtpException, IOException {
+    final String userRoot = session.getUser().getHomeDirectory();
+    final String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
+    final String fileArgument = request.getArgument();
+    final Path filePath = Paths.get(userRoot + currentDirectory + SEPARATOR + fileArgument);
 
     LOG.debug("File '{}' was uploaded to ftp server.", fileArgument);
 
-    Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
-    byte[] fileData = fileService.readAllBytes(filePath);
+    final Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
+    final byte[] fileData = fileService.readAllBytes(filePath);
     fileService.delete(filePath); // delete temporary file
 
     eventPublisher.publishEvent(new ImageReceivedEvent(fileData, camera));
@@ -113,7 +114,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onDeleteStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+  public FtpletResult onDeleteStart(final FtpSession session, final FtpRequest request)
+      throws FtpException, IOException {
     session.write(new DefaultFtpReply(FtpReply.REPLY_450_REQUESTED_FILE_ACTION_NOT_TAKEN,
         NO_PERMISSION_DELETE_MESSAGE));
     return FtpletResult.SKIP;
@@ -129,7 +131,8 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onDownloadStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+  public FtpletResult onDownloadStart(final FtpSession session, final FtpRequest request)
+      throws FtpException, IOException {
     session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, NO_PERMISSION_MESSAGE));
     return FtpletResult.SKIP;
   }
@@ -143,7 +146,7 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onConnect(FtpSession session) throws FtpException, IOException {
+  public FtpletResult onConnect(final FtpSession session) throws FtpException, IOException {
     LOG.debug("Client '{}' connected to ftp server.", session.getClientAddress().getHostString());
     return super.onConnect(session);
   }
@@ -157,7 +160,7 @@ public class UploadFtplet extends DefaultFtplet {
    * @throws IOException exception if an I/O error occurs
    */
   @Override
-  public FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {
+  public FtpletResult onDisconnect(final FtpSession session) throws FtpException, IOException {
     LOG.debug("Client '{}' disconnected from ftp server.", session.getClientAddress().getHostString());
     return super.onDisconnect(session);
   }

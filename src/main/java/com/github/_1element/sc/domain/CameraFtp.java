@@ -5,9 +5,9 @@ package com.github._1element.sc.domain; //NOSONAR
  */
 public class CameraFtp {
 
-  private String username;
-  private String password;
-  private String incomingDirectory;
+  private final String username;
+  private final String password;
+  private final String incomingDirectory;
 
   /**
    * Constructs a new camera ftp value object.
@@ -16,7 +16,7 @@ public class CameraFtp {
    * @param password the ftp password for incoming files
    * @param incomingDirectory the ftp incoming directory
    */
-  public CameraFtp(String username, String password, String incomingDirectory) {
+  public CameraFtp(final String username, final String password, final String incomingDirectory) {
     this.username = username;
     this.password = password;
     this.incomingDirectory = incomingDirectory;

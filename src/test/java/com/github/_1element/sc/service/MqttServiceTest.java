@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
@@ -41,8 +42,8 @@ public class MqttServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    mqttService = new MqttService(cameraRepository, eventPublisher, properties);
     MockitoAnnotations.initMocks(this);
+    mqttService = new MqttService(cameraRepository, eventPublisher, properties);
   }
 
   @Test
@@ -77,6 +78,9 @@ public class MqttServiceTest {
 
   @Test
   public void testConnectComplete() throws Exception {
+    // arrange
+    ReflectionTestUtils.setField(mqttService, "mqttClient", mqttClient);
+
     // act
     mqttService.connectComplete(false, "brokerUri");
 
@@ -88,6 +92,7 @@ public class MqttServiceTest {
   public void testConnectCompleteReconnect() throws Exception {
     // arrange
     when(properties.getTopicFilter()).thenReturn("topic-filter");
+    ReflectionTestUtils.setField(mqttService, "mqttClient", mqttClient);
 
     // act
     mqttService.connectComplete(true, "brokerUri");

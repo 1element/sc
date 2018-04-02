@@ -21,7 +21,7 @@ public class CameraPictureTest {
 
   @Test
   public void testDisabledSnapshotAndStream() throws Exception {
-    CameraPicture cameraPicture = new CameraPicture("", false, false);
+    final CameraPicture cameraPicture = new CameraPicture("", false, false);
 
     assertFalse(cameraPicture.isSnapshotEnabled());
     assertFalse(cameraPicture.isStreamEnabled());

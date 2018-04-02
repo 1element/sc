@@ -24,9 +24,9 @@ import com.github._1element.sc.utils.URIConstants;
 @RequestMapping(URIConstants.GENERATE_ROOT)
 public class SurveillanceStreamGenerationController {
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private MjpegGenerationService mjpegGenerationService;
+  private final MjpegGenerationService mjpegGenerationService;
 
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceStreamGenerationController.class);
 
@@ -37,8 +37,8 @@ public class SurveillanceStreamGenerationController {
    * @param mjpegGenerationService the MJPEG generation service
    */
   @Autowired
-  public SurveillanceStreamGenerationController(CameraRepository cameraRepository,
-                                                MjpegGenerationService mjpegGenerationService) {
+  public SurveillanceStreamGenerationController(final CameraRepository cameraRepository,
+                                                final MjpegGenerationService mjpegGenerationService) {
     this.cameraRepository = cameraRepository;
     this.mjpegGenerationService = mjpegGenerationService;
   }
@@ -52,10 +52,10 @@ public class SurveillanceStreamGenerationController {
    * @throws CameraNotFoundException exception if provided camera id could not be found
    */
   @GetMapping(URIConstants.GENERATE_MJPEG)
-  public void generateMJPEG(@PathVariable String id, HttpServletResponse response)
+  public void generateMJPEG(@PathVariable final String id, final HttpServletResponse response)
       throws ForbiddenException, CameraNotFoundException {
 
-    Camera camera = cameraRepository.findById(id);
+    final Camera camera = cameraRepository.findById(id);
 
     if (camera == null) {
       throw new CameraNotFoundException();

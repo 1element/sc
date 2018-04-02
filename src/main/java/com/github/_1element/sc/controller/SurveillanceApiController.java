@@ -56,21 +56,21 @@ import java.util.stream.Collectors;
 @RequestMapping(URIConstants.API_ROOT)
 public class SurveillanceApiController {
 
-  private SurveillanceService surveillanceService;
+  private final SurveillanceService surveillanceService;
 
-  private SurveillanceImageRepository imageRepository;
+  private final SurveillanceImageRepository imageRepository;
 
-  private CameraRepository cameraRepository;
+  private final CameraRepository cameraRepository;
 
-  private PushNotificationSettingRepository pushNotificationSettingRepository;
+  private final PushNotificationSettingRepository pushNotificationSettingRepository;
 
-  private PushNotificationService pushNotificationService;
+  private final PushNotificationService pushNotificationService;
 
-  private SurveillanceProperties surveillanceProperties;
+  private final SurveillanceProperties surveillanceProperties;
 
-  private ImageProperties imageProperties;
+  private final ImageProperties imageProperties;
 
-  private ModelMappingService modelMappingService;
+  private final ModelMappingService modelMappingService;
 
   private static final String SORT_FIELD = "receivedAt";
 
@@ -87,14 +87,14 @@ public class SurveillanceApiController {
    * @param modelMappingService the model mapping service to use for entity to dto projection
    */
   @Autowired
-  public SurveillanceApiController(SurveillanceImageRepository imageRepository,
-                                   PushNotificationSettingRepository pushNotificationSettingRepository,
-                                   PushNotificationService pushNotificationService,
-                                   SurveillanceService surveillanceService,
-                                   CameraRepository cameraRepository,
-                                   SurveillanceProperties surveillanceProperties,
-                                   ImageProperties imageProperties,
-                                   ModelMappingService modelMappingService) {
+  public SurveillanceApiController(final SurveillanceImageRepository imageRepository,
+                                   final PushNotificationSettingRepository pushNotificationSettingRepository,
+                                   final PushNotificationService pushNotificationService,
+                                   final SurveillanceService surveillanceService,
+                                   final CameraRepository cameraRepository,
+                                   final SurveillanceProperties surveillanceProperties,
+                                   final ImageProperties imageProperties,
+                                   final ModelMappingService modelMappingService) {
     this.imageRepository = imageRepository;
     this.pushNotificationSettingRepository = pushNotificationSettingRepository;
     this.pushNotificationService = pushNotificationService;
@@ -119,31 +119,32 @@ public class SurveillanceApiController {
    */
   @GetMapping(value = URIConstants.API_RECORDINGS, produces = MediaType.APPLICATION_JSON_VALUE)
   public PagedResources<Resource<SurveillanceImageResource>> recordingsList(
-                                      @RequestParam(required = false, value = "camera") String cameraId,
-                                      @RequestParam(required = false, value = "page") Integer pageParam,
-                                      @RequestParam(required = false, value = "size") Integer sizeParam,
-                                      @RequestParam(required = false, value = "archive") boolean isArchive,
-                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                                      PagedResourcesAssembler<SurveillanceImageResource> assembler) {
+      @RequestParam(required = false, value = "camera") final String cameraId,
+      @RequestParam(required = false, value = "page") final Integer pageParam,
+      @RequestParam(required = false, value = "size") final Integer sizeParam,
+      @RequestParam(required = false, value = "archive") final boolean isArchive,
+      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date date,
+      final PagedResourcesAssembler<SurveillanceImageResource> assembler) {
 
-    int page = (pageParam != null) ? pageParam : 0;
-    int size = (sizeParam != null) ? sizeParam : imageProperties.getPageSize();
+    final int page = (pageParam != null) ? pageParam : 0;
+    final int size = (sizeParam != null) ? sizeParam : imageProperties.getPageSize();
 
-    PageRequest pageRequest = new PageRequest(page, size, new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD)));
+    final Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, SORT_FIELD));
+    final PageRequest pageRequest = new PageRequest(page, size, sort);
 
     Optional<LocalDate> localDate = Optional.empty();
     if (date != null) {
       localDate = Optional.of(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }
 
-    Optional<String> camera = Optional.ofNullable(cameraId);
+    final Optional<String> camera = Optional.ofNullable(cameraId);
 
-    Page<SurveillanceImage> surveillanceImages =
+    final Page<SurveillanceImage> surveillanceImages =
         surveillanceService.getImagesPage(camera, localDate, isArchive, pageRequest);
-    Page<SurveillanceImageResource> surveillanceImageResources = surveillanceImages.map(
+    final Page<SurveillanceImageResource> surveillanceImageResources = surveillanceImages.map(
         modelMappingService::convertSurveillanceImageToResource);
 
-    Link selfLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(SurveillanceApiController.class)
+    final Link selfLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(SurveillanceApiController.class)
         .recordingsList(cameraId, page, size, isArchive, date, assembler)).withSelfRel().expand();
 
     return assembler.toResource(surveillanceImageResources, selfLink);
@@ -157,8 +158,8 @@ public class SurveillanceApiController {
    * @throws ResourceNotFoundException exception in case of invalid id
    */
   @GetMapping(value = URIConstants.API_RECORDINGS + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public SurveillanceImageResource recording(@PathVariable long id) throws ResourceNotFoundException {
-    SurveillanceImage image = imageRepository.findOne(id);
+  public SurveillanceImageResource recording(@PathVariable final long id) throws ResourceNotFoundException {
+    final SurveillanceImage image = imageRepository.findOne(id);
 
     if (image == null) {
       throw new ResourceNotFoundException(String.format("Recording %s was not found.", id));
@@ -176,8 +177,8 @@ public class SurveillanceApiController {
    */
   @PatchMapping(URIConstants.API_RECORDINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void recordingsUpdate(@RequestBody List<SurveillanceImageUpdateResource> surveillanceImageUpdateList) {
-    List<Long> imageIds = surveillanceImageUpdateList.stream().map(SurveillanceImageUpdateResource::getId)
+  public void recordingsUpdate(@RequestBody final List<SurveillanceImageUpdateResource> surveillanceImageUpdateList) {
+    final List<Long> imageIds = surveillanceImageUpdateList.stream().map(SurveillanceImageUpdateResource::getId)
         .collect(Collectors.toList());
     imageRepository.updateSetArchived(imageIds);
   }
@@ -190,7 +191,7 @@ public class SurveillanceApiController {
    */
   @PostMapping(URIConstants.API_RECORDINGS)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void recordingsBulkUpdate(@RequestBody SurveillanceImageBulkUpdateResource updateResource) {
+  public void recordingsBulkUpdate(@RequestBody final SurveillanceImageBulkUpdateResource updateResource) {
     imageRepository.updateArchiveState(updateResource.isArchived(), updateResource.getDateBefore());
   }
 
@@ -201,7 +202,7 @@ public class SurveillanceApiController {
    */
   @GetMapping(value = URIConstants.API_CAMERAS, produces = MediaType.APPLICATION_JSON_VALUE)
   public List<CameraResource> camerasList() {
-    List<Camera> cameras = cameraRepository.findAll();
+    final List<Camera> cameras = cameraRepository.findAll();
     return cameras.stream().map(modelMappingService::convertCameraToResource).collect(Collectors.toList());
   }
 
@@ -213,8 +214,8 @@ public class SurveillanceApiController {
    * @throws CameraNotFoundException exception in case of invalid id
    */
   @GetMapping(value = URIConstants.API_CAMERAS + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public CameraResource camera(@PathVariable String id) throws CameraNotFoundException {
-    Camera camera = cameraRepository.findById(id);
+  public CameraResource camera(@PathVariable final String id) throws CameraNotFoundException {
+    final Camera camera = cameraRepository.findById(id);
 
     if (camera == null) {
       throw new CameraNotFoundException();
@@ -241,12 +242,12 @@ public class SurveillanceApiController {
    */
   @PatchMapping(URIConstants.API_PUSH_NOTIFICATION_SETTINGS + "/{cameraId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void pushNotificationSettingsUpdate(@PathVariable String cameraId,
-                                             @RequestBody PushNotificationSettingUpdateResource
+  public void pushNotificationSettingsUpdate(@PathVariable final String cameraId,
+                                             @RequestBody final PushNotificationSettingUpdateResource
                                                pushNotificationSettingUpdateResource)
       throws CameraNotFoundException {
 
-    Camera camera = cameraRepository.findById(cameraId);
+    final Camera camera = cameraRepository.findById(cameraId);
     if (camera == null) {
       throw new CameraNotFoundException();
     }

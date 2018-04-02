@@ -23,7 +23,7 @@ public class SurveillanceImage {
 
   private LocalDateTime receivedAt;
 
-  private boolean archived = false;
+  private final boolean archived = false;
 
   protected SurveillanceImage() {
   }
@@ -35,7 +35,7 @@ public class SurveillanceImage {
    * @param cameraId the camera identifier
    * @param receivedAt the received at time
    */
-  public SurveillanceImage(String fileName, String cameraId, LocalDateTime receivedAt) {
+  public SurveillanceImage(final String fileName, final String cameraId, final LocalDateTime receivedAt) {
     this.fileName = fileName;
     this.cameraId = cameraId;
     this.receivedAt = receivedAt;
@@ -71,7 +71,7 @@ public class SurveillanceImage {
     if (!(other instanceof SurveillanceImage)) {
       return false;
     }
-    SurveillanceImage castOther = (SurveillanceImage) other;
+    final SurveillanceImage castOther = (SurveillanceImage) other;
     return Objects.equals(id, castOther.id) && Objects.equals(fileName, castOther.fileName)
         && Objects.equals(cameraId, castOther.cameraId) && Objects.equals(receivedAt, castOther.receivedAt)
         && Objects.equals(archived, castOther.archived);

@@ -23,7 +23,7 @@ public class SurveillanceImageResource {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(final long id) {
     this.id = id;
   }
 
@@ -31,7 +31,7 @@ public class SurveillanceImageResource {
     return fileName;
   }
 
-  public void setFileName(String fileName) {
+  public void setFileName(final String fileName) {
     this.fileName = fileName;
   }
 
@@ -39,7 +39,7 @@ public class SurveillanceImageResource {
     return cameraId;
   }
 
-  public void setCameraId(String cameraId) {
+  public void setCameraId(final String cameraId) {
     this.cameraId = cameraId;
   }
 
@@ -47,7 +47,7 @@ public class SurveillanceImageResource {
     return cameraName;
   }
 
-  public void setCameraName(String cameraName) {
+  public void setCameraName(final String cameraName) {
     this.cameraName = cameraName;
   }
 
@@ -55,7 +55,7 @@ public class SurveillanceImageResource {
     return receivedAt;
   }
 
-  public void setReceivedAt(LocalDateTime receivedAt) {
+  public void setReceivedAt(final LocalDateTime receivedAt) {
     this.receivedAt = receivedAt;
   }
 
@@ -63,7 +63,7 @@ public class SurveillanceImageResource {
     return archived;
   }
 
-  public void setArchived(boolean archived) {
+  public void setArchived(final boolean archived) {
     this.archived = archived;
   }
 

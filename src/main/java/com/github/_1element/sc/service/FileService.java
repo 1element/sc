@@ -23,14 +23,14 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class FileService {
 
-  private ImageProperties imageProperties;
+  private final ImageProperties imageProperties;
 
   private static final String DATE_TIME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
 
   private static final String SEPARATOR = "-";
 
   @Autowired
-  public FileService(ImageProperties imageProperties) {
+  public FileService(final ImageProperties imageProperties) {
     this.imageProperties = imageProperties;
   }
 
@@ -42,12 +42,12 @@ public class FileService {
    * @param filename filename to check
    * @return true if extension is valid
    */
-  public boolean hasValidExtension(String filename) {
+  public boolean hasValidExtension(final String filename) {
     if (imageProperties.getValidExtensions() == null) {
       return true;
     }
 
-    for (String validExtension : imageProperties.getValidExtensions()) {
+    for (final String validExtension : imageProperties.getValidExtensions()) {
       if (StringUtils.endsWithIgnoreCase(filename, validExtension)) {
         return true;
       }
@@ -62,7 +62,7 @@ public class FileService {
    * @return prefix
    */
   public String getUniquePrefix() {
-    String timestamp = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).format(LocalDateTime.now());
+    final String timestamp = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).format(LocalDateTime.now());
 
     return timestamp + SEPARATOR + RandomStringUtils.randomAlphabetic(7);
   }
@@ -74,7 +74,7 @@ public class FileService {
    * @return a new input stream
    * @throws IOException IO exception in case of an error
    */
-  public InputStream createInputStream(Path path) throws IOException {
+  public InputStream createInputStream(final Path path) throws IOException {
     return Files.newInputStream(path);
   }
 
@@ -84,7 +84,7 @@ public class FileService {
    * @param path the path to the file to delete
    * @throws IOException IO exception in case of an error
    */
-  public void delete(Path path) throws IOException {
+  public void delete(final Path path) throws IOException {
     Files.delete(path);
   }
 
@@ -96,7 +96,7 @@ public class FileService {
    * @param more additional strings to be joined to form the path string
    * @return the resulting Path
    */
-  public Path getPath(String first, String... more) {
+  public Path getPath(final String first, final String... more) {
     return Paths.get(first, more);
   }
 
@@ -109,7 +109,7 @@ public class FileService {
    * @param destinationPath the destination path
    * @throws IOException IO exception in case of an error
    */
-  public void moveFile(Path sourcePath, Path destinationPath) throws IOException {
+  public void moveFile(final Path sourcePath, final Path destinationPath) throws IOException {
     Files.move(sourcePath, destinationPath);
   }
 
@@ -122,7 +122,7 @@ public class FileService {
    * @return the path
    * @throws IOException if an IO error occurs
    */
-  public Path write(Path path, byte[] bytes) throws IOException {
+  public Path write(final Path path, final byte[] bytes) throws IOException {
     return Files.write(path, bytes);
   }
 
@@ -134,7 +134,7 @@ public class FileService {
    * @return a byte array containing the bytes read from the file
    * @throws IOException if an IO error occurs
    */
-  public byte[] readAllBytes(Path path) throws IOException {
+  public byte[] readAllBytes(final Path path) throws IOException {
     return Files.readAllBytes(path);
   }
 

@@ -31,11 +31,11 @@ import java.util.Date;
 @Service
 public class JwtAuthenticationService {
 
-  private UserDetailsService userDetailsService;
+  private final UserDetailsService userDetailsService;
 
-  private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
 
-  private SurveillanceSecurityProperties securityProperties;
+  private final SurveillanceSecurityProperties securityProperties;
 
   private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
@@ -47,8 +47,9 @@ public class JwtAuthenticationService {
    * @param securityProperties the security properties to use (secret, cookie-name, expiration, etc.)
    */
   @Autowired
-  public JwtAuthenticationService(UserDetailsService userDetailsService, AuthenticationManager authenticationManager,
-                                  SurveillanceSecurityProperties securityProperties) {
+  public JwtAuthenticationService(final UserDetailsService userDetailsService,
+                                  final AuthenticationManager authenticationManager,
+                                  final SurveillanceSecurityProperties securityProperties) {
     this.userDetailsService = userDetailsService;
     this.authenticationManager = authenticationManager;
     this.securityProperties = securityProperties;
@@ -60,14 +61,14 @@ public class JwtAuthenticationService {
    * @param request the http request
    * @return Authentication if user is legitimated, otherwise null
    */
-  public Authentication getAuthentication(HttpServletRequest request) {
-    String token = getTokenFromCookie(request);
+  public Authentication getAuthentication(final HttpServletRequest request) {
+    final String token = getTokenFromCookie(request);
 
     if (token != null) {
       String username = null;
       try {
         username = getUsernameFromToken(token);
-      } catch (ExpiredJwtException exception) {
+      } catch (final ExpiredJwtException exception) {
         LOG.warn("The token is expired and not valid anymore: {}", exception.getMessage());
       } catch (MalformedJwtException | SignatureException exception) {
         LOG.warn("An error occurred while parsing JWT token: {]", exception.getMessage());
@@ -75,7 +76,7 @@ public class JwtAuthenticationService {
 
       // if a username was returned the token is valid
       if (username != null) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
       }
     }
@@ -92,7 +93,8 @@ public class JwtAuthenticationService {
    * @return Authentication if credentials are valid, exception otherwise
    * @throws AuthenticationException if authentication failed
    */
-  public Authentication attemptAuthentication(String username, String password) throws AuthenticationException {
+  public Authentication attemptAuthentication(final String username, final String password)
+      throws AuthenticationException {
     return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
   }
 
@@ -102,8 +104,8 @@ public class JwtAuthenticationService {
    * @param username the username to generate token for
    * @return cookie
    */
-  public Cookie generateTokenCookie(String username) {
-    String token = generateToken(username);
+  public Cookie generateTokenCookie(final String username) {
+    final String token = generateToken(username);
     return generateCookie(token);
   }
 
@@ -114,7 +116,7 @@ public class JwtAuthenticationService {
    * @return username
    */
   @VisibleForTesting
-  String getUsernameFromToken(String token) {
+  String getUsernameFromToken(final String token) {
     return Jwts.parser()
       .setSigningKey(securityProperties.getSecret())
       .parseClaimsJws(token)
@@ -129,7 +131,7 @@ public class JwtAuthenticationService {
    * @return token
    */
   @VisibleForTesting
-  String generateToken(String username) {
+  String generateToken(final String username) {
     final Date createdDate = new Date();
     final Date expirationDate = calculateExpirationDate(createdDate);
 
@@ -148,7 +150,7 @@ public class JwtAuthenticationService {
    * @return expiration date
    */
   @VisibleForTesting
-  Date calculateExpirationDate(Date createdDate) {
+  Date calculateExpirationDate(final Date createdDate) {
     return new Date(createdDate.getTime() + securityProperties.getTokenExpiration() * 1000L);
   }
 
@@ -159,8 +161,8 @@ public class JwtAuthenticationService {
    * @return token
    */
   @VisibleForTesting
-  String getTokenFromCookie(HttpServletRequest httpServletRequest) {
-    Cookie cookie = WebUtils.getCookie(httpServletRequest, securityProperties.getCookieName());
+  String getTokenFromCookie(final HttpServletRequest httpServletRequest) {
+    final Cookie cookie = WebUtils.getCookie(httpServletRequest, securityProperties.getCookieName());
     return cookie != null ? cookie.getValue() : null;
   }
 
@@ -171,8 +173,8 @@ public class JwtAuthenticationService {
    * @return cookie
    */
   @VisibleForTesting
-  Cookie generateCookie(String token) {
-    Cookie cookie = new Cookie(securityProperties.getCookieName(), token);
+  Cookie generateCookie(final String token) {
+    final Cookie cookie = new Cookie(securityProperties.getCookieName(), token);
     cookie.setSecure(false);
     cookie.setHttpOnly(true);
     cookie.setMaxAge(securityProperties.getTokenExpiration());

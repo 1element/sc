@@ -20,7 +20,7 @@ public class ImageProperties {
     return storageDir;
   }
 
-  public void setStorageDir(String storageDir) {
+  public void setStorageDir(final String storageDir) {
     this.storageDir = storageDir;
   }
 
@@ -28,7 +28,7 @@ public class ImageProperties {
     return validExtensions;
   }
 
-  public void setValidExtensions(String[] validExtensions) {
+  public void setValidExtensions(final String[] validExtensions) {
     this.validExtensions = validExtensions;
   }
 
@@ -36,7 +36,7 @@ public class ImageProperties {
     return pageSize;
   }
 
-  public void setPageSize(int pageSize) {
+  public void setPageSize(final int pageSize) {
     this.pageSize = pageSize;
   }
 

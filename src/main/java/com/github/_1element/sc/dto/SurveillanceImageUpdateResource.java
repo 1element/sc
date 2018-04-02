@@ -13,7 +13,7 @@ public class SurveillanceImageUpdateResource {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(final long id) {
     this.id = id;
   }
 
@@ -21,7 +21,7 @@ public class SurveillanceImageUpdateResource {
     return archived;
   }
 
-  public void setArchived(boolean archived) {
+  public void setArchived(final boolean archived) {
     this.archived = archived;
   }
 

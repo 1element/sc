@@ -34,8 +34,6 @@ public class PushoverClient implements PushNotificationClient {
 
   private static final String PARAM_MESSAGE = "message";
 
-  private static final String PARAM_URL = "url";
-
   private static final Logger LOG = LoggerFactory.getLogger(PushoverClient.class);
 
   @Autowired

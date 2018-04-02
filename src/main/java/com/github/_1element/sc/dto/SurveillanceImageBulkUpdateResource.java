@@ -15,7 +15,7 @@ public class SurveillanceImageBulkUpdateResource {
     return dateBefore;
   }
 
-  public void setDateBefore(LocalDateTime dateBefore) {
+  public void setDateBefore(final LocalDateTime dateBefore) {
     this.dateBefore = dateBefore;
   }
 
@@ -23,7 +23,7 @@ public class SurveillanceImageBulkUpdateResource {
     return archived;
   }
 
-  public void setArchived(boolean archived) {
+  public void setArchived(final boolean archived) {
     this.archived = archived;
   }
 
