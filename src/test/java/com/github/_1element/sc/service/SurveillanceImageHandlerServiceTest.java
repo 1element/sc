@@ -1,9 +1,10 @@
 package com.github._1element.sc.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -28,9 +28,6 @@ import com.github._1element.sc.repository.SurveillanceImageRepository;
 public class SurveillanceImageHandlerServiceTest {
 
   @Mock
-  private FileService fileService;
-
-  @Mock
   private ThumbnailService thumbnailService;
 
   @Mock
@@ -39,24 +36,17 @@ public class SurveillanceImageHandlerServiceTest {
   @Mock
   private ApplicationEventPublisher eventPublisher;
 
+  @Mock
+  private FileService fileService;
+
   @InjectMocks
   private SurveillanceImageHandlerService surveillanceImageHandlerService;
 
-  private static Camera testcamera1;
-
-  private static final String SOURCE_TESTFILE_NAME = "incoming-testfile.jpg";
-
-  private static final String DESTINATION_TESTFILE_PATH = "/tmp/sc-storage/null-testcamera1-incoming-testfile.jpg";
-
   /**
-   * Setup for all tests.
-   *
-   * @throws Exception exception in case of an error
+   * Setup.
    */
   @Before
   public void setUp() throws Exception {
-    testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, false, false);
-
     ImageProperties imageProperties = new ImageProperties();
     imageProperties.setStorageDir("/tmp/sc-storage/");
 
@@ -67,25 +57,42 @@ public class SurveillanceImageHandlerServiceTest {
   }
 
   @Test
+  public void testPopulateDestinationFileName() throws Exception {
+    // arrange
+    when(fileService.getUniquePrefix()).thenReturn("unique-prefix");
+
+    byte[] imageData = "Image Data".getBytes();
+    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, false, false);
+    ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
+
+    // act
+    String result = surveillanceImageHandlerService.populateDestinationFileName(imageReceivedEvent);
+
+    // assert
+    assertEquals("/tmp/sc-storage/unique-prefix-testcamera1.jpg", result);
+  }
+
+  @Test
   public void testHandleImageReceivedEvent() throws Exception {
-    // prepare mocks
-    Path sourcePathMock = mock(Path.class);
-    Mockito.when(sourcePathMock.getFileName()).thenReturn(Paths.get(SOURCE_TESTFILE_NAME));
+    // arrange
+    String expectedDestinationFileName = "/tmp/sc-storage/unique-prefix-testcamera1.jpg";
+    when(fileService.getUniquePrefix()).thenReturn("unique-prefix");
 
     Path destinationPathMock = mock(Path.class);
-    Mockito.when(destinationPathMock.getFileName()).thenReturn(Paths.get(DESTINATION_TESTFILE_PATH));
+    when(destinationPathMock.getFileName()).thenReturn(Paths.get(expectedDestinationFileName));
+    when(fileService.getPath(expectedDestinationFileName)).thenReturn(destinationPathMock);
 
-    Mockito.when(fileService.getPath(SOURCE_TESTFILE_NAME)).thenReturn(sourcePathMock);
-    Mockito.when(fileService.getPath(DESTINATION_TESTFILE_PATH)).thenReturn(destinationPathMock);
+    byte[] imageData = "Image Data".getBytes();
+    Camera testcamera1 = new Camera("testcamera1", null, null, null, null, null, null, null, false, false);
+    ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(imageData, testcamera1);
 
-    // execute
-    ImageReceivedEvent imageReceivedEvent = new ImageReceivedEvent(SOURCE_TESTFILE_NAME, testcamera1);
+    // act
     surveillanceImageHandlerService.handleImageReceivedEvent(imageReceivedEvent);
 
-    // verify behaviour
-    verify(fileService).getPath(eq(SOURCE_TESTFILE_NAME));
-    verify(fileService).getPath(eq(DESTINATION_TESTFILE_PATH));
-    verify(fileService).moveFile(eq(sourcePathMock), eq(destinationPathMock));
+    // assert
+    verify(fileService).getPath(expectedDestinationFileName);
+    verify(fileService).write(destinationPathMock, imageData);
+    verify(thumbnailService).createThumbnail(destinationPathMock);
     verify(imageRepository).save(any(SurveillanceImage.class));
   }
 

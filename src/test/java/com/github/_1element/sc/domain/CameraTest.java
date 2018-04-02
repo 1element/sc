@@ -11,17 +11,17 @@ public class CameraTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmptySnapshotUrl() throws Exception {
-    new Camera(null, null, null, null, null, null, "", true, true);
+    new Camera(null, null, null, null, null, null, null, "", true, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullSnapshotUrl() throws Exception {
-    new Camera(null, null, null, null, null, null, null, true, true);
+    new Camera(null, null, null, null, null, null, null, null, true, true);
   }
 
   @Test
   public void testDisabledSnapshotAndStream() throws Exception {
-    Camera camera = new Camera("cameraId", null, null, null, null, null, "", false, false);
+    Camera camera = new Camera("cameraId", null, null, null, null, null, null, "", false, false);
 
     assertEquals("cameraId", camera.getId());
   }

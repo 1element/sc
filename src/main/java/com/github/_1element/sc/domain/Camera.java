@@ -19,6 +19,8 @@ public class Camera {
 
   private String ftpIncomingDirectory;
 
+  private String mqttTopic;
+
   private String snapshotUrl;
 
   private boolean snapshotEnabled;
@@ -27,19 +29,20 @@ public class Camera {
 
   /**
    * Constructs a new camera.
-   *
    * @param id the unique id of the camera
    * @param name the camera name
    * @param host the (internal) host the camera is running on
    * @param ftpUsername the ftp username for incoming files
    * @param ftpPassword the ftp password for incoming files
    * @param ftpIncomingDirectory the ftp incoming directory
+   * @param mqttTopic the mqtt topic
    * @param snapshotUrl optional url to retrieve snapshots
    * @param snapshotEnabled true if snapshots are enabled
    * @param streamEnabled true if streaming is enabled
    */
   public Camera(String id, String name, String host, String ftpUsername, String ftpPassword,
-      String ftpIncomingDirectory, String snapshotUrl, boolean snapshotEnabled, boolean streamEnabled) {
+                String ftpIncomingDirectory, String mqttTopic, String snapshotUrl,
+                boolean snapshotEnabled, boolean streamEnabled) {
 
     if ((snapshotEnabled || streamEnabled) && StringUtils.isBlank(snapshotUrl)) {
       throw new IllegalArgumentException("Snapshot-url must be provided if snapshot-enabled or stream-enabled.");
@@ -51,6 +54,7 @@ public class Camera {
     this.ftpUsername = ftpUsername;
     this.ftpPassword = ftpPassword;
     this.ftpIncomingDirectory = ftpIncomingDirectory;
+    this.mqttTopic = mqttTopic;
     this.snapshotUrl = snapshotUrl;
     this.snapshotEnabled = snapshotEnabled;
     this.streamEnabled = streamEnabled;
@@ -78,6 +82,10 @@ public class Camera {
 
   public String getFtpIncomingDirectory() {
     return ftpIncomingDirectory;
+  }
+
+  public String getMqttTopic() {
+    return mqttTopic;
   }
 
   public String getSnapshotUrl() {

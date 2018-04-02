@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class SurveillanceImageHandlerService {
 
   private static final String SEPARATOR = "-";
 
+  private static final String IMAGE_EXTENSION = ".jpg";
+
   private static final Logger LOG = LoggerFactory.getLogger(SurveillanceImageHandlerService.class);
 
   /**
@@ -66,17 +69,12 @@ public class SurveillanceImageHandlerService {
   @Async
   @EventListener
   public void handleImageReceivedEvent(ImageReceivedEvent imageReceivedEvent) {
-    // source and destination files
-    Path sourcePath = fileService.getPath(imageReceivedEvent.getFileName());
-    StringBuilder destinationFileName = new StringBuilder(imageProperties.getStorageDir());
-    destinationFileName.append(fileService.getUniquePrefix()).append(SEPARATOR);
-    destinationFileName.append(imageReceivedEvent.getSource().getId()).append(SEPARATOR);
-    destinationFileName.append(sourcePath.getFileName().toString());
-    Path destinationPath = fileService.getPath(destinationFileName.toString());
+    String destinationFileName = populateDestinationFileName(imageReceivedEvent);
+    Path destinationPath = fileService.getPath(destinationFileName);
 
     try {
-      // move file from incoming ftp directory to final storage directory
-      fileService.moveFile(sourcePath, destinationPath);
+      // write file to disk
+      fileService.write(destinationPath, imageReceivedEvent.getImage());
 
       // generate thumbnail
       thumbnailService.createThumbnail(destinationPath);
@@ -89,12 +87,24 @@ public class SurveillanceImageHandlerService {
       LOG.info("New surveillance image '{}' was received.", image.getFileName());
 
       // publish events to invoke remote copy and push notification
-      eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName.toString()));
+      eventPublisher.publishEvent(new RemoteCopyEvent(destinationFileName));
       eventPublisher.publishEvent(new PushNotificationEvent(imageReceivedEvent.getSource()));
     } catch (IOException exception) {
-      LOG.error("Error while moving file from incoming ftp directory to final storage directory: '{}'",
+      LOG.error("Error while writing image to final storage directory: '{}'",
           exception.getMessage());
     }
+  }
+
+  /**
+   * Populate destination file name for given image received event.
+   *
+   * @param imageReceivedEvent the image received event to build file name for
+   * @return the destination file name
+   */
+  @VisibleForTesting
+  String populateDestinationFileName(ImageReceivedEvent imageReceivedEvent) {
+    return imageProperties.getStorageDir() + fileService.getUniquePrefix() + SEPARATOR
+        + imageReceivedEvent.getSource().getId() + IMAGE_EXTENSION;
   }
 
 }

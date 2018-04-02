@@ -7,17 +7,17 @@ import com.github._1element.sc.domain.Camera;
  */
 public class ImageReceivedEvent {
 
-  private String fileName;
+  private byte[] image;
 
   private Camera source;
 
-  public ImageReceivedEvent(String fileName, Camera source) {
-    this.fileName = fileName;
+  public ImageReceivedEvent(byte[] image, Camera source) {
+    this.image = image;
     this.source = source;
   }
 
-  public String getFileName() {
-    return fileName;
+  public byte[] getImage() {
+    return image;
   }
 
   public Camera getSource() {

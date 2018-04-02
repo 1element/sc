@@ -88,4 +88,32 @@ public class CameraRepositoryTest {
     assertNull(cameraRepository.findByFtpUsername(null));
   }
 
+  @Test
+  public void testFindByMqttTopic() throws Exception {
+    Camera camera = cameraRepository.findByMqttTopic("ipcamera-topic/camera1");
+
+    assertEquals("testcamera1", camera.getId());
+  }
+
+  @Test
+  public void testFindByMqttTopicInvalid() throws Exception {
+    Camera camera = cameraRepository.findByMqttTopic("ipcamera-topic/invalid");
+
+    assertNull(camera);
+  }
+
+  @Test
+  public void testFindByMqttTopicNull() throws Exception {
+    Camera camera = cameraRepository.findByMqttTopic(null);
+
+    assertNull(camera);
+  }
+
+  @Test
+  public void testFindByMqttTopicEmpty() throws Exception {
+    Camera camera = cameraRepository.findByMqttTopic("");
+
+    assertNull(camera);
+  }
+
 }

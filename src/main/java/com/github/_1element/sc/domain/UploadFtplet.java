@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Ftp upload component. Will handle incoming file uploads.
@@ -88,14 +90,15 @@ public class UploadFtplet extends DefaultFtplet {
     String userRoot = session.getUser().getHomeDirectory();
     String currentDirectory = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
     String fileArgument = request.getArgument();
+    Path filePath = Paths.get(userRoot + currentDirectory + SEPARATOR + fileArgument);
 
-    LOG.debug("File '{}' was uploaded to ftp server by client '{}'", fileArgument,
-        session.getClientAddress().getHostString());
+    LOG.debug("File '{}' was uploaded to ftp server.", fileArgument);
 
-    String fileName = userRoot + currentDirectory + SEPARATOR + fileArgument;
     Camera camera = cameraRepository.findByFtpUsername(session.getUser().getName());
+    byte[] fileData = fileService.readAllBytes(filePath);
+    fileService.delete(filePath); // delete temporary file
 
-    eventPublisher.publishEvent(new ImageReceivedEvent(fileName, camera));
+    eventPublisher.publishEvent(new ImageReceivedEvent(fileData, camera));
 
     return super.onUploadEnd(session, request);
   }

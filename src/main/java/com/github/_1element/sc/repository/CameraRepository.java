@@ -42,6 +42,9 @@ public class CameraRepository {
   private static final String PROPERTY_FTP_INCOMING_DIR =
       MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "ftp.incoming-dir";
 
+  private static final String PROPERTY_MQTT_TOPIC =
+      MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "mqtt.topic";
+
   private static final String PROPERTY_SNAPSHOT_URL =
       MultiCameraAwareProperties.PROPERTY_MULTI_CAMERA_PREFIX + "snapshot-url";
 
@@ -74,13 +77,14 @@ public class CameraRepository {
       String ftpUsername = multiCameraAwareProperties.getProperty(PROPERTY_FTP_USERNAME, cameraId);
       String ftpPassword = multiCameraAwareProperties.getProperty(PROPERTY_FTP_PASSWORD, cameraId);
       String ftpIncomingDirectory = multiCameraAwareProperties.getProperty(PROPERTY_FTP_INCOMING_DIR, cameraId);
+      String mqttTopic = multiCameraAwareProperties.getProperty(PROPERTY_MQTT_TOPIC, cameraId, String.class, null);
       String snapshotUrl = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_URL, cameraId, String.class, null);
       boolean snapshotEnabled = multiCameraAwareProperties.getProperty(PROPERTY_SNAPSHOT_ENABLED, cameraId,
           boolean.class, true);
       boolean streamEnabled = multiCameraAwareProperties.getProperty(PROPERTY_STREAM_ENABLED, cameraId,
           boolean.class, true);
 
-      Camera camera = new Camera(cameraId, name, host, ftpUsername, ftpPassword, ftpIncomingDirectory,
+      Camera camera = new Camera(cameraId, name, host, ftpUsername, ftpPassword, ftpIncomingDirectory, mqttTopic,
           snapshotUrl, snapshotEnabled, streamEnabled);
       cameras.put(cameraId, camera);
     }
@@ -115,6 +119,19 @@ public class CameraRepository {
     return cameras.values().stream()
       .filter(camera -> Objects.nonNull(camera.getFtpUsername()))
       .filter(camera -> camera.getFtpUsername().equals(ftpUsername))
+      .findFirst().orElse(null);
+  }
+
+  /**
+   * Find camera by given mqtt topic.
+   *
+   * @param mqttTopic the mqtt topic
+   * @return the camera
+   */
+  public Camera findByMqttTopic(String mqttTopic) {
+    return cameras.values().stream()
+      .filter(camera -> Objects.nonNull(camera.getMqttTopic()))
+      .filter(camera -> camera.getMqttTopic().equals(mqttTopic))
       .findFirst().orElse(null);
   }
 

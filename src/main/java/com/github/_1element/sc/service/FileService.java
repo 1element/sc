@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.github._1element.sc.properties.ImageProperties;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -111,6 +111,31 @@ public class FileService {
    */
   public void moveFile(Path sourcePath, Path destinationPath) throws IOException {
     Files.move(sourcePath, destinationPath);
+  }
+
+  /**
+   * Writes bytes to a file.
+   * This is a wrapper for the static {@link Files#write(Path, byte[], OpenOption...)} method.
+   *
+   * @param path the path to the file
+   * @param bytes the byte array to write
+   * @return the path
+   * @throws IOException if an IO error occurs
+   */
+  public Path write(Path path, byte[] bytes) throws IOException {
+    return Files.write(path, bytes);
+  }
+
+  /**
+   * Reads all the bytes from a file.
+   * This is a wrapper for the static {@link Files#readAllBytes(Path)} method.
+   *
+   * @param path the path to the file
+   * @return a byte array containing the bytes read from the file
+   * @throws IOException if an IO error occurs
+   */
+  public byte[] readAllBytes(Path path) throws IOException {
+    return Files.readAllBytes(path);
   }
 
 }

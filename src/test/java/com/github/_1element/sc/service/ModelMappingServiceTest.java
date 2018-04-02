@@ -29,7 +29,7 @@ public class ModelMappingServiceTest {
   public void testConvertCameraToResource() throws Exception {
     // arrange
     Camera camera = new Camera("front", "Camera Name", "internal-host.example", "ftpUser",
-        "ftpPass", "/ftp/dir", "http://internal.example/snapshot.cgi", true, true);
+        "ftpPass", "/ftp/dir", "mqttTopic", "http://internal.example/snapshot.cgi", true, true);
 
     // act
     CameraResource cameraResource = modelMappingService.convertCameraToResource(camera);

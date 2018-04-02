@@ -27,6 +27,7 @@ import javax.servlet.http.Cookie;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -110,7 +111,8 @@ public class SurveillanceApiControllerTest {
   @Test
   public void testRecordingsList() throws Exception {
     PageRequest pageRequest = new PageRequest(0, 10);
-    Page<SurveillanceImage> pageResult = new PageImpl<>(Arrays.asList(surveillanceImage, surveillanceImage2), pageRequest, 2);
+    List<SurveillanceImage> surveillanceImages = Arrays.asList(surveillanceImage, surveillanceImage2);
+    Page<SurveillanceImage> pageResult = new PageImpl<>(surveillanceImages, pageRequest, 2);
     given(imageRepository.findAllByArchived(anyBoolean(), any(Pageable.class))).willReturn(pageResult);
 
     mockMvc.perform(get("/api/v1/recordings").cookie(tokenCookie))
