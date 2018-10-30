@@ -22,7 +22,7 @@ apply plugin: 'checkstyle'
 
 jar {
   baseName = 'surveillancecenter'
-  version = '2.1.0-SNAPSHOT'
+  version = '2.1.0'
   exclude('application.properties')
   from('client/dist') {
     into 'public'
